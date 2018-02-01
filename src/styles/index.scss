@@ -1,0 +1,25 @@
+@import '~react-md/src/scss/react-md';
+@include react-md-everything;
+
+$achieve-red: #AB182F;
+
+$achieve-white: #ffffff;
+$achieve-grey: #EBF1F5;
+$achieve-darkgrey: #656565;
+
+$achieve-blue: #5FC9F0;
+$achieve-green: #3DB862;
+
+$achieve-yellow: #FFCE00;
+$achieve-orange: #F37629;
+
+$md-primary-color: $achieve-blue;
+$md-secondary-color: $achieve-green;
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Montserrat', sans-serif;
+}
+
+@import 'login'

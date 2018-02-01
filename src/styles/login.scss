@@ -1,0 +1,27 @@
+.login-toolbar {
+    background-color: $achieve-red;
+    justify-content: center;
+}
+
+.login-logo {
+    padding: 20px;
+}
+
+.md-toolbar--prominent {
+    height: 200px;
+}
+
+.login-fields {
+    flex-direction: column;
+}
+
+.login-content {
+    display: flex;
+    justify-content: center;
+    background-color: $achieve-grey;
+    min-height: 100vw;
+}
+
+img {
+    max-width: 100%;
+}

@@ -7,7 +7,7 @@ import store, { history } from './data/store';
 
 import App from './App';
 
-import './index.scss';
+import './styles/index.scss';
 
 ReactDOM.render(
     <Provider store={store}>
