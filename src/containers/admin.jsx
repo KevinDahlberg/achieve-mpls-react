@@ -14,8 +14,8 @@ export default class Admin extends Component {
                     <img src={logo} alt='achieve mpls logo' />
                 </header>
                 <Switch>
-                    <Route exact path='/admin' component={ViewTickets} />
-                    <Route exact path='/admin/tickets' component={ViewTickets} />
+                    <Route exact path='/home' component={ViewTickets} />
+                    <Route path='/home/tickets' component={ViewTickets} />
                 </Switch>
             </div>
         )

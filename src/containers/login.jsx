@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import fetch from 'isomorphic-fetch';
 
 import {
     Button,
@@ -31,13 +30,18 @@ class Login extends Component {
         const { checkSession } = this.props;
         checkSession()
         .then((res) => {
-            this.props.history.push('/home');
+            console.log(res);
+            if (res.role === 'admin'){
+                this.props.history.push('/admin');
+            } else {
+                this.props.history.push('/coach');
+            }
         })
         .catch((error) => {
             return
         })
     }
-    
+
     showDialog = () => {
         this.setState({ visible: true });
     }
