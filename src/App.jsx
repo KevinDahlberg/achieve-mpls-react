@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
-import { Switch, Route, withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { Switch, Route } from 'react-router-dom';
 
 //views
-import Home from './views/home'
+import Login from './containers/login';
+import Home from './containers/home';
 
 class App extends Component {
+
+
   render() {
     return (
       <div className="App">
         <Switch>
-          <Route exact path='/' component={Home} />
+          <Route exact path='/' component={Login} />
+          <Route exact path='/login' component={Login} />
           <Route exact path='/home' component={Home} />
         </Switch>
       </div>
