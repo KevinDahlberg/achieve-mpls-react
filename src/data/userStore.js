@@ -1,3 +1,5 @@
+import fetch from 'isomorphic-fetch';
+
 const AUTHENTICATE_USER = 'AUTHENTICATE_USER';
 const USER_AUTHENTICATED = 'USER_AUTHENTICATED';
 
