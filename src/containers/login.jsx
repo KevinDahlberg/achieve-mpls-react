@@ -7,6 +7,7 @@ import {
     Toolbar,
 } from 'react-md'
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 
 import {
@@ -24,22 +25,6 @@ class Login extends Component {
             password: '',
             visible: false,
         }
-    }
-
-    componentWillMount() {
-        const { checkSession } = this.props;
-        checkSession()
-        .then((res) => {
-            console.log(res);
-            if (res.role === 'admin'){
-                this.props.history.push('/admin');
-            } else {
-                this.props.history.push('/coach');
-            }
-        })
-        .catch((error) => {
-            return
-        })
     }
 
     showDialog = () => {
@@ -67,10 +52,10 @@ class Login extends Component {
             email: email,
             password: password,
         }
-
         login(objToSend)
         .then((res) => {
-            this.props.history.push('/home');
+            console.log('logged in');
+            this.props.history.push('/admin');
         })
         .catch((error) => {
             this.showDialog();
@@ -135,4 +120,4 @@ const mapDispatchToProps = dispatch => {
         { checkSession, login }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Login));

@@ -7,7 +7,7 @@ const initialState = {
     userName: '',
     userRole: '',
     isAuthenticated: false,
-    authenticating: false,
+    authenticating: true,
 }
 
 /** ACTIONS */
@@ -42,6 +42,7 @@ function authenticating(bool) {
 }
 
 export const login = (creds) => (dispatch) => {
+    dispatch(authenticating(true));
     const objToSend = {
         email: creds.email,
         password: creds.password,
@@ -54,7 +55,6 @@ export const login = (creds) => (dispatch) => {
         body: JSON.stringify(objToSend),
     }
     return new Promise(function(resolve, reject) {
-        dispatch(authenticating(true))
         fetch('http://localhost:5000', init)
         .then(response => response.json())
         .then((data) => {
@@ -69,18 +69,21 @@ export const login = (creds) => (dispatch) => {
 }
 
 export const checkSession = () => (dispatch) => {
+    dispatch(authenticating(true));
     const init = {
         method: 'GET',
         headers: {'Content-Type': 'application/json'},
         credentials: 'include',
     }
     return new Promise((resolve, reject) => {
-        dispatch(authenticating(true));
         fetch('http://localhost:5000/users/clearance', init)
         .then(response => response.json())
         .then((data) => {
             dispatch(setUser(data.username, data.role))
-            .then((data) => resolve(data))
+            .then((data) => {
+                dispatch(authenticating(false));
+                resolve(data)
+            })
         })
         .catch((error) => {
             dispatch(authenticating(false));

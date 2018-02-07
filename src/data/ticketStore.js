@@ -25,6 +25,8 @@ const ticketsReceived = (ticketArray) => {
 }
 
 export const getTickets = (year) => (dispatch) => {
+    console.log('getTickets called');
+    dispatch(gettingTickets(true))
     const init = {
         method: 'GET',
         headers: {'Content-Type': 'application/json'},
@@ -32,14 +34,13 @@ export const getTickets = (year) => (dispatch) => {
     }
     const url = 'http://localhost:5000/tickets/' + year;
     return new Promise((resolve, reject) => {
-        dispatch(gettingTickets(true))
         fetch(url, init)
         .then(response => response.json())
         .then((data) => {
-            console.log(data);
             dispatch(ticketsReceived(data))
-            .then((data) => resolve(data));
+            return data;
         })
+        .then((data) => resolve(data))
         .catch((error) => {
             dispatch(gettingTickets(false));
             reject(error);
@@ -47,7 +48,7 @@ export const getTickets = (year) => (dispatch) => {
     })
 }
 
-const ticketReducer = (state = initialState, action) => {
+function ticketReducer(state = initialState, action) {
     switch (action.type) {
         case GETTING_TICKETS:
         return {

@@ -5,16 +5,26 @@ import { bindActionCreators } from 'redux';
 
 import { getTickets } from '../../data/ticketStore';
 
+import TicketsTable from './ticketsTable';
+
 class ViewTickets extends Component {
 
-    componentWillMount() {
-        const { currentYear } = this.props;
-        getTickets(currentYear);
+    componentDidMount() {
+        const { currentYear, getTickets } = this.props;
+        getTickets(currentYear)
+        .then((res) => console.log(res));
     }
 
     render () {
+        const { tickets } = this.props;
         return (
-            <h2>Completed Exit Tickets</h2>
+            <div className='tickets-table-wrapper'>
+                <h2>Completed Exit Tickets</h2>
+                <div className='tickets-table'>
+                    {tickets.length === 0 ? null
+                    : <TicketsTable tickets={tickets} />}
+                </div>
+            </div>
         )
     }
 }

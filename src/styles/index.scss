@@ -1,6 +1,5 @@
 @import '~react-md/src/scss/react-md';
 @import 'fonts';
-@include react-md-everything;
 
 $achieve-red: #AB182F;
 
@@ -23,6 +22,8 @@ body {
   font-family: 'Montserrat', sans-serif;
 }
 
+@include react-md-everything;
 @import 'login';
 @import 'coach';
 @import 'admin';
+@import 'tickets';
