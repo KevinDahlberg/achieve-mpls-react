@@ -1,5 +1,12 @@
 .admin-header {
     background-color: $achieve-red;
+    max-height: 100px;
+    display: flex;
+}
+
+.admin-logo {
+    max-height: 100px;
+    justify-content: flex-end;
 }
 
 .md-tabs {
