@@ -16,6 +16,10 @@ export default class SingleTicket extends Component {
                 visible={visible}
                 onHide={this.hide}
                 focusOnMount={false}
+                portal={true}
+                lastChild={true}
+                disableScrollLocking={true}
+                renderNode={document.body}
             >
             <h1>{ticket.fname} {ticket.lname}</h1>
             <p>Session {ticket.session_count}, Event {ticket.meeting_count}</p>

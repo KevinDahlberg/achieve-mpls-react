@@ -11,7 +11,7 @@ import * as logo from '../assets/achievempls-logo-white.png';
 import Tickets from '../components/tickets/Tickets';
 import Users from '../components/users/Users';
 import ViewSessions from '../components/viewSessions/viewSessions';
-import ViewTemplates from '../components/viewTemplates/viewTemplates';
+import Forms from '../components/forms/Forms';
 
 export default class Admin extends Component {
     render() {
@@ -31,8 +31,8 @@ export default class Admin extends Component {
                         <Tab label='Manage Users'>
                             <Users />
                         </Tab>
-                        <Tab label='Ticket Templates'>
-                            <ViewTemplates />
+                        <Tab label='Ticket Forms'>
+                            <Forms />
                         </Tab>
                         <Tab label='Manage Sessions'>
                             <ViewSessions />

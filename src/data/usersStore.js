@@ -44,7 +44,8 @@ export const getUsers = (year) => (dispatch) => {
     })
 }
 
-const usersReducer = (state = initialState, action) => {
+function usersReducer(state = initialState, action) {
+    console.log(state, action);
     switch (action.type) {
         case FETCHING_USERS:
         return {

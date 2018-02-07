@@ -20,7 +20,8 @@ export const ticketOptions = {
 export const usersOptions = {
     distance: 100,
     keys: [
-
+        'fname',
+        'lname',
     ],
     location: 0,
     maxPatternLength: 32,

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-class ViewTemplates extends Component {
+class Forms extends Component {
     render() {
         return(
             <div>
@@ -10,4 +10,4 @@ class ViewTemplates extends Component {
     }
 }
 
-export default ViewTemplates
+export default Forms

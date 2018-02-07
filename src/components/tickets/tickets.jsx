@@ -8,8 +8,8 @@ import {
 } from 'react-md';
 
 import { getTickets } from '../../data/ticketStore';
-
 import { ticketOptions } from '../../constants';
+
 import TicketsTable from './TicketsTable';
 import YearMenu from './YearMenu';
 import SingleTicket from './SingleTicket';
@@ -49,6 +49,7 @@ class Tickets extends Component {
 
     render () {
         const { tickets } = this.props;
+        console.log('tickets ', tickets);
         const { search, searchResults, singleTicket, visible } = this.state;
         return (
             <div className='tickets-table-wrapper'>
