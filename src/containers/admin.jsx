@@ -8,7 +8,7 @@ import {
 
 import * as logo from '../assets/achievempls-logo-white.png';
 
-import Tickets from '../components/tickets/tickets';
+import Tickets from '../components/tickets/Tickets';
 import ViewUsers from '../components/viewUsers/viewUsers';
 import ViewSessions from '../components/viewSessions/viewSessions';
 import ViewTemplates from '../components/viewTemplates/viewTemplates';

@@ -92,7 +92,7 @@ export const checkSession = () => (dispatch) => {
     })
 }
 
-function userReducer(state = initialState, action) {
+function authReducer(state = initialState, action) {
     switch (action.type) {
         case USER_AUTHENTICATED:
         return {
@@ -112,4 +112,4 @@ function userReducer(state = initialState, action) {
     }
 }
 
-export default userReducer;
+export default authReducer;

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import Authorization from './authorization';
-import { checkSession } from './data/userStore';
+import { checkSession } from './data/authStore';
 //views
 import Coach from './containers/coach';
 import Login from './containers/login';
@@ -36,8 +36,8 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = userReducer => ({
-  authenticating: userReducer.authenticating,
+const mapStateToProps = authReducer => ({
+  authenticating: authReducer.authenticating,
 })
 
 const mapDispatchToProps = dispatch => {

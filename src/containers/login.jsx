@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 import {
     Button,
     DialogContainer,
@@ -13,7 +12,7 @@ import { bindActionCreators } from 'redux';
 import {
     checkSession,
     login,
-} from '../data/userStore'
+} from '../data/authStore'
 
 import * as logo from '../assets/achievempls-logo-white.png';
 
@@ -111,8 +110,8 @@ class Login extends Component {
 }
 
 const mapStateToProps = state => ({
-    isAuthenticated: state.userReducer.isAuthenticated,
-    authenticating: state.userReducer.authenticating,
+    isAuthenticated: state.authReducer.isAuthenticated,
+    authenticating: state.authReducer.authenticating,
 })
 
 const mapDispatchToProps = dispatch => {

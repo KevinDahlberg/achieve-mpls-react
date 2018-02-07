@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { checkSession } from './data/userStore';
+import { checkSession } from './data/authStore';
 
 const Authorization = (allowedRoles) => (WrappedComponent) => {
     class WithAuthorization extends Component {
@@ -22,10 +22,10 @@ const Authorization = (allowedRoles) => (WrappedComponent) => {
         }
     }
 
-    const mapStateToProps = ({ userReducer }) => ({
-        authenticating: userReducer.authenticating,
-        isAuthenticated: userReducer.isAuthenticated,
-        role: userReducer.userRole
+    const mapStateToProps = ({ authReducer }) => ({
+        authenticating: authReducer.authenticating,
+        isAuthenticated: authReducer.isAuthenticated,
+        role: authReducer.userRole
     })
 
     const mapDispatchToProps = dispatch => {

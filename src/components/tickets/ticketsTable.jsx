@@ -8,6 +8,11 @@ import {
 } from 'react-md';
 
 export default class TicketsTable extends Component {
+
+    onTicketClick = (ticket, e) => {
+        this.props.onTicketClick(ticket);
+    }
+    
     render() {
         const { tickets } = this.props;
         return (
@@ -27,7 +32,7 @@ export default class TicketsTable extends Component {
                 </TableHeader>
                 <TableBody>
                     {tickets.map((ticket, idx) => (
-                        <TableRow key={idx}>
+                        <TableRow key={idx} onClick={(e) => this.onTicketClick(ticket, e)}>
                             <TableColumn>{ticket.session_count}</TableColumn>
                             <TableColumn>{ticket.meeting_count}</TableColumn>
                             <TableColumn>{ticket.fname} {ticket.lname}</TableColumn>
