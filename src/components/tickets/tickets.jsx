@@ -3,7 +3,6 @@ import Fuse from 'fuse.js';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {
-    Button,
     TextField,
 } from 'react-md';
 

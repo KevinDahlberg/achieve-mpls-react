@@ -10,7 +10,7 @@ import * as logo from '../assets/achievempls-logo-white.png';
 
 import Tickets from '../components/tickets/Tickets';
 import Users from '../components/users/Users';
-import ViewSessions from '../components/viewSessions/viewSessions';
+import Sessions from '../components/sessions/Sessions';
 import Forms from '../components/forms/Forms';
 
 export default class Admin extends Component {
@@ -35,7 +35,7 @@ export default class Admin extends Component {
                             <Forms />
                         </Tab>
                         <Tab label='Manage Sessions'>
-                            <ViewSessions />
+                            <Sessions />
                         </Tab>
                     </Tabs>
                 </TabsContainer>
