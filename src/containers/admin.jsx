@@ -9,7 +9,7 @@ import {
 import * as logo from '../assets/achievempls-logo-white.png';
 
 import Tickets from '../components/tickets/Tickets';
-import ViewUsers from '../components/viewUsers/viewUsers';
+import Users from '../components/users/Users';
 import ViewSessions from '../components/viewSessions/viewSessions';
 import ViewTemplates from '../components/viewTemplates/viewTemplates';
 
@@ -29,7 +29,7 @@ export default class Admin extends Component {
                             <Tickets />
                         </Tab>
                         <Tab label='Manage Users'>
-                            <ViewUsers />
+                            <Users />
                         </Tab>
                         <Tab label='Ticket Templates'>
                             <ViewTemplates />

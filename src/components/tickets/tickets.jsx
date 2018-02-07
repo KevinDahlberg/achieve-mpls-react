@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Fuse from 'fuse.js'
+import Fuse from 'fuse.js';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {
@@ -9,7 +9,7 @@ import {
 
 import { getTickets } from '../../data/ticketStore';
 
-import { options } from '../../constants';
+import { ticketOptions } from '../../constants';
 import TicketsTable from './TicketsTable';
 import YearMenu from './YearMenu';
 import SingleTicket from './SingleTicket';
@@ -29,7 +29,7 @@ class Tickets extends Component {
         const { currentYear, getTickets } = this.props;
         getTickets(currentYear)
         .then((res) => {
-            this.fuse = new Fuse(res, options);
+            this.fuse = new Fuse(res, ticketOptions);
             console.log(res)
         });
     }
