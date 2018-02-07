@@ -2,6 +2,7 @@ import fetch from 'isomorphic-fetch';
 
 const AUTHENTICATE_USER = 'AUTHENTICATE_USER';
 const USER_AUTHENTICATED = 'USER_AUTHENTICATED';
+const LOGGED_OUT = 'LOGGED_OUT';
 
 const initialState = {
     userName: '',
@@ -23,6 +24,15 @@ function authenticateUser(userObj) {
 
 function userAuthenticating(bool) {
     return {type: AUTHENTICATE_USER, authenticating: bool}
+}
+
+function userLoggedOut() {
+    return {
+        type: LOGGED_OUT, 
+        isAuthenticated: false,
+        userName: '',
+        userRole: '',
+    }
 }
 
 /** ACTION FUNCTIONS */
@@ -92,6 +102,25 @@ export const checkSession = () => (dispatch) => {
     })
 }
 
+export const logout = () => (dispatch) => {
+    const init = {
+        method: 'GET',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include',
+    }
+    const url = 'http://localhost:5000/logout'
+    return new Promise ((resolve, reject) => {
+        fetch(url, init)
+        .then((response) => {
+            dispatch(userLoggedOut());
+            resolve(response);
+        })
+        .catch((error) => {
+            reject(error);
+        })
+    })
+}
+
 function authReducer(state = initialState, action) {
     switch (action.type) {
         case USER_AUTHENTICATED:
@@ -106,6 +135,13 @@ function authReducer(state = initialState, action) {
         return {
             ...state,
             authenticating: action.authenticating,
+        }
+        case LOGGED_OUT:
+        return {
+            ...state,
+            isAuthenticated: action.isAuthenticated,
+            userName: action.userName,
+            userRole: action.userRole,
         }
         default:
             return state;

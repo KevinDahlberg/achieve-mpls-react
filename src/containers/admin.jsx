@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux'; 
 import {
+    Button,
     TabsContainer,
     Tabs,
     Tab,
@@ -8,17 +10,24 @@ import {
 
 import * as logo from '../assets/achievempls-logo-white.png';
 
+import { logout } from '../data/authStore';
+
 import Tickets from '../components/tickets/Tickets';
 import Users from '../components/users/Users';
 import Sessions from '../components/sessions/Sessions';
 import Forms from '../components/forms/Forms';
 
-export default class Admin extends Component {
+class Admin extends Component {
+
+    logout = () => {
+        this.props.logout();
+    }
     render() {
         return (
             <div>
                 <header className='admin-header'>
                     <img src={logo} className='admin-logo' alt='achieve mpls logo' />
+                    <Button flat onClick={this.logout}>Logout</Button>
                 </header>
                 <TabsContainer panelClassName='md-grid' colored>
                     <Tabs 
@@ -43,3 +52,11 @@ export default class Admin extends Component {
         )
     }
 }
+
+const dispatchToProps = dispatch => {
+    return bindActionCreators(
+        { logout }, dispatch
+    );
+}
+
+export default connect(null, dispatchToProps)(Admin);
