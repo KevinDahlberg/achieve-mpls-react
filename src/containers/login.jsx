@@ -53,8 +53,14 @@ class Login extends Component {
         }
         login(objToSend)
         .then((res) => {
-            console.log('logged in');
-            this.props.history.push('/admin');
+            console.log('logged in, ', res);
+            if (res.role === 'admin') {
+                this.props.history.push('/admin');
+            } else if (res.role === 'coach') {
+                this.props.history.push('/coach');
+            } else {
+                return
+            }
         })
         .catch((error) => {
             this.showDialog();

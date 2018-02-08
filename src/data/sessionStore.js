@@ -39,8 +39,8 @@ export const getSessions = (year) => (dispatch) => {
         .catch((error) => {
             dispatch(fetchingSessions(false));
             reject(error);
-        })
-    })
+        });
+    });
 }
 
 function sessionReducer(state = initialState, action) {

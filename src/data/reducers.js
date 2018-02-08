@@ -6,6 +6,7 @@ import ticketReducer from './ticketStore';
 import usersReducer from './usersStore';
 import formReducer from './formStore';
 import sessionReducer from './sessionStore';
+import coachReducer from './coachStore';
 
 
 const rootReducer = combineReducers({
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
     usersReducer,
     formReducer,
     sessionReducer,
+    coachReducer,
     routing: routerReducer,
 });
 
