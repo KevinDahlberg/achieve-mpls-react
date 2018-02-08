@@ -1,7 +1,8 @@
 import fetch from 'isomorphic-fetch';
+import moment from 'moment';
 
-const FETCHING_USERS = 'FETCHING_USERS'
-const USERS_RECEIVED = 'USERS_RECEIVED'
+const FETCHING_USERS = 'FETCHING_USERS';
+const USERS_RECEIVED = 'USERS_RECEIVED';
 
 const initialState = {
     fetchingUsers: false,
@@ -39,6 +40,29 @@ export const getUsers = (year) => (dispatch) => {
         .then((data) => resolve(data))
         .catch((error) => {
             dispatch(fetchingUsers(false));
+            reject(error);
+        })
+    })
+}
+
+export const resetPW = (user) => (dispatch) => {
+    const chanceExpiration = new Date();
+    chanceExpiration.setDate(chanceExpiration.getDate() + 30);
+    user.chance_expiration = moment(chanceExpiration).format('YYYY-MM-DD');
+    const init = {
+        method: 'GET',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include',
+    }
+    // obj needs id, email, and chance 
+    const url = 'http://localhost:5000/mail'
+    return new Promise((resolve, reject) => {
+        fetch(url, init)
+        .then(response => response.json())
+        .then((res) => {
+            resolve(res);
+        })
+        .catch((error) => {
             reject(error);
         })
     })

@@ -7,7 +7,7 @@ import {
 export default class SingleUser extends Component {
 
     hide = () => {
-        this.props.onDialogHide();
+        this.props.hide();
     }
 
     render() {
