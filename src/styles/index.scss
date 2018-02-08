@@ -19,7 +19,77 @@ $md-secondary-color: $achieve-green;
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Montserrat', sans-serif !important;
+}
+
+// global classes
+.add-text {
+  font-size: 24px;
+  line-height: 42px;
+  padding-right: 50px;
+}
+
+.add-wrapper {
+  padding: 10px;
+}
+
+.dialog-content {
+  word-wrap: normal;
+}
+
+.dialog-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.dialog-col {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+}
+
+.dialog-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.dialog-text {
+  font-size: 16px;
+}
+
+.logout-button {
+  color: $achieve-white !important;
+}
+
+.tab-items {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-left: 50px;
+  margin-right: 50px;
+}
+
+.tab-title {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.tab-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.table-wrapper {
+  background-color: $achieve-white;
+}
+
+.table-container {
+  display: flex;
+  justify-content: center;
+  padding-top: 20px;
 }
 
 @include react-md-everything;

@@ -1,6 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import {
+    Button,
+    Paper,
+} from 'react-md';
 
 import { getForms } from '../../data/formStore';
 
@@ -33,9 +37,20 @@ class Forms extends Component {
         const { forms } = this.props;
         const { singleForm, editVisible } = this.state;
         return(
-            <div>
-                <h2>Ticket Templates</h2>
-                <div className="forms-table">
+            <div className='tab-wrapper'>
+                <div className='tab-title'>
+                    <h2>Ticket Templates</h2>
+                </div>
+                <div className='tab-items'>
+                    <Paper
+                        zDepth={2}
+                        className='add-wrapper'
+                    >
+                        <span className='add-text'>Add Form</span>
+                        <Button floating primary className='add-button'>add</Button>
+                    </Paper>
+                </div>
+                <div className="table-container">
                     {forms.length === 0 ? null :
                     <FormsTable
                         forms={forms}

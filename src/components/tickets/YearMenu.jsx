@@ -5,13 +5,16 @@ import {
 
 export default class YearMenu extends Component {
     render() {
+        const { years, currentYear } = this.props;
+        const currentPlaceholder = currentYear + ' - ' + (currentYear + 1);
         return(
             <SelectField
                 id='year-dropdown-menu'
-                menuItems={['2017', '2018']}
-                placeholder='2017'
-                className='md-cell'
+                menuItems={years}
+                placeholder={currentPlaceholder}
+                sameWidth={true}
                 simplifiedMenu={true}
+                className='md-cell--2'
             />
         )
     }

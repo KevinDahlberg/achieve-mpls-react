@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { DialogContainer } from 'react-md'
+import { DialogContainer, Divider } from 'react-md'
 
 export default class SingleTicket extends Component {
 
@@ -20,28 +20,49 @@ export default class SingleTicket extends Component {
                 lastChild={true}
                 disableScrollLocking={true}
                 renderNode={document.body}
+                width={800}
             >
-            <h1>{ticket.fname} {ticket.lname}</h1>
-            <p>Session {ticket.session_count}, Event {ticket.meeting_count}</p>
-            <h2>Facilitator:</h2>
-            <h3>{ticket.facilitator}</h3>
-            <h2>School:</h2>
-            <h3>{ticket.school}</h3>
-            <h2>Day</h2>
-            <h3>{ticket.day}</h3>
-            <h2>Time</h2>
-            <h3>{ticket.time}</h3>
-            <h2>Grade</h2>
-            <h3>{ticket.grade}</h3>
-            <h2>Responses:</h2>
-            {ticket.response.map((res, idx) => (
-                <div key={idx}>
-                    <h2>Question:</h2>
-                    <h3>{res.question}</h3>
-                    <h2>Answer:</h2>
-                    <h3>{res.answer}</h3>
+            <div className='dialog-content'>
+                <h1>{ticket.fname} {ticket.lname}</h1>
+                <span>Session {ticket.session_count}, Event {ticket.meeting_count}</span>
+                <Divider />
+                <div className='dialog-row'>
+                    <div className='dialog-col'>
+                        <div>
+                            <span className='dialog-title'>Facilitator: </span>
+                            <span className='dialog-text'>{ticket.facilitator}</span>
+                        </div>
+                        <div>
+                            <span className='dialog-title'>School: </span>
+                            <span className='dialog-text'>{ticket.school}</span>
+                        </div>
+                        <div>
+                            <span className='dialog-title'>Grade </span>
+                            <span className='dialog-text'>{ticket.grade}</span>
+                        </div>
+                    </div>
+                    <div className='dialog-col'>
+                        <div>
+                            <span className='dialog-title'>Day </span>
+                            <span className='dialog-text'>{ticket.day}</span>
+                        </div>
+                        <div>
+                            <span className='dialog-title'>Time </span>
+                            <span className='dialog-text'>{ticket.time}</span>
+                        </div>
+                    </div>
                 </div>
-            ))}
+                <h2>Responses:</h2>
+                <Divider />
+                {ticket.response.map((res, idx) => (
+                    <div key={idx}>
+                        <h2>Question:</h2>
+                        <span>{res.question}</span>
+                        <h2>Answer:</h2>
+                        <span>{res.answer}</span>
+                    </div>
+                ))}
+            </div>
             </DialogContainer>
         )
     }

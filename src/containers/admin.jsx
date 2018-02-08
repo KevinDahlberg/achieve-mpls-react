@@ -27,12 +27,11 @@ class Admin extends Component {
             <div>
                 <header className='admin-header'>
                     <img src={logo} className='admin-logo' alt='achieve mpls logo' />
-                    <Button flat onClick={this.logout}>Logout</Button>
+                    <Button flat onClick={this.logout} className='logout-button'>Logout</Button>
                 </header>
                 <TabsContainer panelClassName='md-grid' colored>
                     <Tabs 
                         tabId='admin-tabs'
-                        centered
                     >
                         <Tab label='View Tickets'>
                             <Tickets />

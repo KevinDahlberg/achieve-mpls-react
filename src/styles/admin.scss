@@ -2,11 +2,13 @@
     background-color: $achieve-red;
     max-height: 100px;
     display: flex;
+    justify-content: space-between;
 }
 
 .admin-logo {
     max-height: 100px;
-    justify-content: flex-end;
+    padding-left: 20px;
+    padding-top: 5px;
 }
 
 .md-tabs {

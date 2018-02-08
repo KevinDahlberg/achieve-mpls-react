@@ -6,7 +6,7 @@ import {
     TextField,
 } from 'react-md';
 
-import { getTickets } from '../../data/ticketStore';
+import { getTickets, getYears } from '../../data/ticketStore';
 import { ticketOptions } from '../../constants';
 
 import TicketsTable from './TicketsTable';
@@ -25,11 +25,11 @@ class Tickets extends Component {
     }
 
     componentDidMount() {
-        const { currentYear, getTickets } = this.props;
+        const { currentYear, getTickets, getYears } = this.props;
+        getYears()
         getTickets(currentYear)
         .then((res) => {
             this.fuse = new Fuse(res, ticketOptions);
-            console.log(res)
         });
     }
 
@@ -47,23 +47,28 @@ class Tickets extends Component {
     }
 
     render () {
-        const { tickets } = this.props;
-        console.log('tickets ', tickets);
+        const { tickets, years, currentYear } = this.props;
         const { search, searchResults, singleTicket, visible } = this.state;
         return (
-            <div className='tickets-table-wrapper'>
-                <h2>Completed Exit Tickets</h2>
-                <div>
-                    <YearMenu />
+            <div className='tab-wrapper'>
+                <div className='tab-title'>
+                    <h2>Completed Exit Tickets</h2>
+                    <YearMenu
+                        years={years}
+                        currentYear={currentYear}
+                    />
+                </div>
+                <div className='tab-items'>
                     <TextField
                         id='search-field'
                         label='Search...'
                         value={search}
                         onChange={this.onSearchChange}
-                        className="md-cell md-cell--bottom"
+                        size={20}
+                        fullWidth={false}
                     />
                 </div>
-                <div className='tickets-table'>
+                <div className='table-container'>
                     {tickets.length === 0 ? null
                     : <TicketsTable 
                         tickets={search ? searchResults : tickets}
@@ -85,12 +90,13 @@ class Tickets extends Component {
 
 const mapStateToProps = state => ({
     tickets: state.ticketReducer.tickets,
-    currentYear: state.ticketReducer.currentYear
+    currentYear: state.ticketReducer.currentYear,
+    years: state.ticketReducer.years
 })
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators(
-        { getTickets }, dispatch
+        { getTickets, getYears }, dispatch
     );
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Tickets);
