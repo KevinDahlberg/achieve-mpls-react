@@ -36,10 +36,6 @@ export default class UsersTable extends Component {
         this.setState({ deleteVisible: false });
     }
 
-    usersClick = (user, e) => {
-        this.props.usersClick(user);
-    }
-
     resetPWClick = (user) => {
         console.log('reset pw clicked ', user);
         this.setState({ user: user, resetVisible: true });
