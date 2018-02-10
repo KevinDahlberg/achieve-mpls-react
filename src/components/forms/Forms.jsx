@@ -9,15 +9,21 @@ import {
 import { getForms } from '../../data/formStore';
 
 import FormsTable from './FormsTable';
+import SingleForm from './SingleForm';
+
+const newForm = {
+    form_name: '',
+    questions: [
+        {question: 'On a scale of 1-10 (with 10 highest) how would you rate your session today?'}
+    ],
+}
 
 class Forms extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            editVisible: false,
-            singleForm: {
-                form: '',
-            }
+            form: newForm,
+            addVisible: false,
         }
     }
 
@@ -29,13 +35,21 @@ class Forms extends Component {
         })
     }
 
-    onFormClick = (form) => {
-        this.setState({ singleForm: form, editVisible: true });
+    addFormHide = () => {
+        this.setState({ form: newForm, addVisible: false })
+    }
+
+    addFormClick = () => {
+        this.setState({ addVisible: true });
+    }
+
+    submitAddForm = (form) => {
+        console.log(form)
     }
 
     render() {
         const { forms } = this.props;
-        const { singleForm, editVisible } = this.state;
+        const { form, addVisible } = this.state;
         return(
             <div className='tab-wrapper'>
                 <div className='tab-title'>
@@ -47,7 +61,7 @@ class Forms extends Component {
                         className='add-wrapper'
                     >
                         <span className='add-text'>Add Form</span>
-                        <Button floating primary className='add-button'>add</Button>
+                        <Button floating primary className='add-button' onClick={this.addFormClick}>add</Button>
                     </Paper>
                 </div>
                 <div className="table-container">
@@ -57,6 +71,13 @@ class Forms extends Component {
                         formClick={this.onFormClick}
                     />}
                 </div>
+                <SingleForm
+                    hide={this.addFormHide}
+                    form={form}
+                    visible={addVisible}
+                    submitForm={this.submitAddForm}
+                    type='Add'
+                />
             </div>
         )
     }

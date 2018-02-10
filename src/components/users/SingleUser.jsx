@@ -11,14 +11,7 @@ export default class SingleUser extends Component {
     constructor(props){
         super(props);
         this.state = {
-            user: {
-                fname: this.props.user.fname,
-                lname: this.props.user.lname,
-                email: this.props.user.email,
-                role: this.props.user.role,
-                session_count: this.props.user.session_count,
-                year: this.props.user.year,
-            }
+            user: this.props.user
         }
     }
 
