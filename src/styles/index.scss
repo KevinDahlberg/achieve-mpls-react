@@ -49,6 +49,18 @@ body {
   width: 50%;
 }
 
+.dialog-done {
+  position: absolute !important;
+  bottom: 15px;
+  right: 15px;
+}
+
+.dialog-close {
+  position: absolute !important;
+  top: 15px;
+  right: 15px;
+}
+
 .dialog-title {
   font-size: 18px;
   font-weight: bold;

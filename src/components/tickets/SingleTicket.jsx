@@ -37,18 +37,18 @@ export default class SingleTicket extends Component {
                             <span className='dialog-text'>{ticket.school}</span>
                         </div>
                         <div>
-                            <span className='dialog-title'>Grade </span>
+                            <span className='dialog-title'>Grade: </span>
                             <span className='dialog-text'>{ticket.grade}</span>
                         </div>
                     </div>
                     <div className='dialog-col'>
                         <div>
-                            <span className='dialog-title'>Day </span>
+                            <span className='dialog-title'>Day: </span>
                             <span className='dialog-text'>{ticket.day}</span>
                         </div>
                         <div>
-                            <span className='dialog-title'>Time </span>
-                            <span className='dialog-text'>{ticket.time}</span>
+                            <span className='dialog-title'>Time: </span>
+                            <span className='dialog-text'>{ticket.start_time}</span>
                         </div>
                     </div>
                 </div>

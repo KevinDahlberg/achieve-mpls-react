@@ -8,9 +8,11 @@ import {
     TableColumn,
 } from 'react-md';
 
+import TicketsTableRow from './TicketsTableRow'
+
 export default class TicketsTable extends Component {
 
-    onTicketClick = (ticket, e) => {
+    viewTicket = (ticket, e) => {
         this.props.onTicketClick(ticket);
     }
     
@@ -37,17 +39,12 @@ export default class TicketsTable extends Component {
                     </TableHeader>
                     <TableBody>
                         {tickets.map((ticket, idx) => (
-                            <TableRow key={idx} onClick={(e) => this.onTicketClick(ticket, e)}>
-                                <TableColumn>{ticket.session_count}</TableColumn>
-                                <TableColumn>{ticket.meeting_count}</TableColumn>
-                                <TableColumn>{ticket.fname} {ticket.lname}</TableColumn>
-                                <TableColumn>{ticket.response[0].answer}</TableColumn>
-                                <TableColumn>{ticket.facilitator}</TableColumn>
-                                <TableColumn>{ticket.day}</TableColumn>
-                                <TableColumn>{ticket.start_time}</TableColumn>
-                                <TableColumn>{ticket.school}</TableColumn>
-                                <TableColumn>{ticket.date_form_completed}</TableColumn>
-                            </TableRow>
+                            <TicketsTableRow
+                                key={idx}
+                                idx={idx}
+                                ticket={ticket}
+                                viewTicket={this.viewTicket}
+                            />
                         ))}
                     </TableBody>
                 </DataTable>

@@ -54,6 +54,10 @@ export default class UsersTable extends Component {
         this.setState({ user: user, deleteVisible: true });
     }
 
+    submitUser = (user) => {
+        console.log(user);
+    }
+
     render() {
         const { users } = this.props;
         const { user, resetVisible, editVisible, deleteVisible } = this.state;
@@ -112,6 +116,8 @@ export default class UsersTable extends Component {
                         user={user}
                         visible={editVisible}
                         hide={this.editHide}
+                        submitUser={this.submitUser}
+                        type='Edit'
                     /> :
                     null
                 }

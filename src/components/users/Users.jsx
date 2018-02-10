@@ -21,7 +21,7 @@ class Users extends Component {
         this.state = {
             search: '',
             searchResults: [],
-            singleUser: {
+            user: {
                 fname: '',
                 lname: '',
                 email: '',
@@ -29,7 +29,7 @@ class Users extends Component {
                 session_count: '',
                 year: '',
             },
-            editVisible: false
+            addVisible: false
         }
     }
 
@@ -46,19 +46,21 @@ class Users extends Component {
         this.setState({ searchResults: this.fuse.search(e), search: e });
     }
 
-    onEditDialogHide = () => {
-        this.setState({ editVisible: false });
+    addUserHide = () => {
+        this.setState({ addVisible: false });
     }
 
-    onUsersClick = (user) => {
+    addUserClick = () => {
+        this.setState({ addVisible: true });
+    }
+
+    submitAddUser = (user) => {
         console.log(user);
-        this.setState({ singleUser: user, editVisible: true });
     }
 
     render() {
         const { users, years, currentYear } = this.props;
-        const { search, searchResults, singleUser, editVisible } = this.state;
-        console.log(singleUser);
+        const { search, searchResults, addVisible, user } = this.state;
         return(
             <div className='tab-wrapper'>
                 <div className='tab-title'>
@@ -82,7 +84,7 @@ class Users extends Component {
                         className='add-wrapper'
                     >
                         <span className='add-text'>Add User</span>
-                        <Button floating primary className='add-button'>add</Button>
+                        <Button floating primary className='add-button' onClick={this.addUserClick}>add</Button>
                     </Paper>
                 </div>
                 <div className='table-container'>
@@ -93,9 +95,11 @@ class Users extends Component {
                     />}
                 </div>
                     <SingleUser
-                        user={singleUser}
-                        visible={editVisible}
-                        onDialogHide={this.onEditDialogHide}
+                        hide={this.addUserHide}
+                        user={user}
+                        visible={addVisible}
+                        submitUser={this.submitAddUser}
+                        type='Add'
                     />
             </div>
         )
