@@ -32,9 +32,21 @@ export default class SingleForm extends Component {
 
     onQuestionChange = (value, index) => {
         const { form } = this.state;
-        const changedForm = form;
-        changedForm.questions[index].question = value;
-        this.setState({ form: changedForm });
+        form.questions[index].question = value;
+        this.setState({ form: form });
+    }
+
+    addQuestion = () => {
+        const { form } = this.state;
+        const newQuestion = '';
+        form.questions.push(newQuestion);
+        this.setState({ form: form });
+    }
+    
+    removeQuestion = (index) => {
+        const { form } = this.state;
+        form.questions.splice(index, 1);
+        this.setState({ form: form});
     }
 
     onSubmit = () => {
@@ -75,20 +87,21 @@ export default class SingleForm extends Component {
                 {form.questions.map((question, idx) => {
                     const id = 'form-question' + idx;
                     return (
-                    <div key={idx}>
-                    <TextField
-                        id={id}
-                        label='Question'
-                        value={question.question}
-                        onChange={(val) => this.onQuestionChange(val,idx)}
-                        className='md-cell md-cell--bottom'
-                        resize={{ min: 200, max: 350 }}
-                        rows={1}
-                    />
-                    <Button icon>clear</Button>
+                    <div className='dialog-row' key={idx}>
+                        <TextField
+                            id={id}
+                            label='Question'
+                            value={question.question}
+                            onChange={(val) => this.onQuestionChange(val,idx)}
+                            className='md-cell md-cell--bottom'
+                            resize={{ min: 350, max: 350 }}
+                            rows={1}
+                        />
+                        <Button icon className='dialog-clear' onClick={(e) => this.removeQuestion(idx)}>clear</Button>
                     </div>
                     )
                 })}
+                <Button floating secondary onClick={this.addQuestion}>add</Button>
                 <Button floating primary className='dialog-done' onClick={this.onSubmit}>done</Button>
                 <Button floating className='dialog-close' onClick={this.hide}>clear</Button>
             </DialogContainer>

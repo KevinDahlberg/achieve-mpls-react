@@ -29,3 +29,23 @@ export const usersOptions = {
     shouldSort: true,
     threshold: 0.6,
 }
+
+//blank items
+export const newForm = {
+    form_name: '',
+    questions: [
+        {question: 'On a scale of 1-10 (with 10 highest) how would you rate your session today?'}
+    ],
+}
+
+export const newSession = {
+    day: '',
+    facilitator: '',
+    grade: '',
+    school: '',
+    session_count: '',
+    start_time: '',
+    year: '',
+}
+
+export const envUrl = 'http://localhost:5000'

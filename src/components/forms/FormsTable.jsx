@@ -10,6 +10,8 @@ import {
     TableColumn,
 } from 'react-md';
 
+import { newForm } from '../../constants';
+
 import FormsTableRow from './FormsTableRow';
 import AssignForm from './AssignForm';
 import SingleForm from './SingleForm';
@@ -30,11 +32,11 @@ export default class FormsTable extends Component {
     }
 
     editHide = () => {
-        this.setState({ editVisible: false });
+        this.setState({ editVisible: false, form: newForm });
     }
 
     deleteHide = () => {
-        this.setState({ deleteVisible: false });
+        this.setState({ deleteVisible: false, form: newForm });
     }
 
     assignClick = (form) => {

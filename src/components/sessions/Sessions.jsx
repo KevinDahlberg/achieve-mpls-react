@@ -6,16 +6,17 @@ import {
     Paper,
 } from 'react-md';
 import { getSessions } from '../../data/sessionStore';
+import { newSession } from '../../constants';
 
 import SessionsTable from './SessionsTable';
-
+import SingleSession from './SingleSession';
 
 class ViewSessions extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            singleSession: '',
-            visible: false,
+            singleSession: newSession,
+            addVisible: false,
         }
     }
 
@@ -27,8 +28,22 @@ class ViewSessions extends Component {
         })
     }
 
+    addSessionHide = () => {
+        this.setState({ addVisible: false });
+    }
+
+    addSessionClick = () => {
+        this.setState({ addVisible: true });
+    }
+
+    submitSession = (session) => {
+        this.setState({ addVisible: false });
+        console.log(session);
+    }
+
     render() {
         const { sessions } = this.props;
+        const { addVisible, singleSession } = this.props;
         return (
             <div className='tab-wrapper'>
                 <div className='tab-title'>
@@ -40,7 +55,7 @@ class ViewSessions extends Component {
                         className='add-wrapper'
                     >
                         <span className='add-text'>Add Session</span>
-                        <Button floating primary className='add-button'>add</Button>
+                        <Button floating primary className='add-button' onClick={this.addSessionClick}>add</Button>
                     </Paper>
                 </div>
                 <div className="table-container">
@@ -50,6 +65,13 @@ class ViewSessions extends Component {
                     />
                     }
                 </div>
+                <SingleSession
+                    hide={this.addSessionHide}
+                    session={singleSession}
+                    visible={addVisible}
+                    submitSession={this.submitSession}
+                    type='Add'
+                />
             </div>
         );
     }

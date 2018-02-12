@@ -1,5 +1,5 @@
 import fetch from 'isomorphic-fetch';
-
+import { envUrl } from '../constants';
 const AUTHENTICATE_USER = 'AUTHENTICATE_USER';
 const USER_AUTHENTICATED = 'USER_AUTHENTICATED';
 const LOGGED_OUT = 'LOGGED_OUT';
@@ -64,8 +64,9 @@ export const login = (creds) => (dispatch) => {
         credentials: 'include',
         body: JSON.stringify(objToSend),
     }
+    const url = envUrl
     return new Promise(function(resolve, reject) {
-        fetch('http://localhost:5000', init)
+        fetch(envUrl, init)
         .then(response => response.json())
         .then((data) => {
             dispatch(setUser(data.username, data.role))
@@ -85,8 +86,10 @@ export const checkSession = () => (dispatch) => {
         headers: {'Content-Type': 'application/json'},
         credentials: 'include',
     }
+    const url = envUrl + '/users/clearance'
     return new Promise((resolve, reject) => {
-        fetch('http://localhost:5000/users/clearance', init)
+        console.log('in check session');
+        fetch(url, init)
         .then(response => response.json())
         .then((data) => {
             dispatch(setUser(data.username, data.role))
@@ -108,7 +111,7 @@ export const logout = () => (dispatch) => {
         headers: {'Content-Type': 'application/json'},
         credentials: 'include',
     }
-    const url = 'http://localhost:5000/logout'
+    const url = envUrl + '/logout'
     return new Promise ((resolve, reject) => {
         fetch(url, init)
         .then((response) => {

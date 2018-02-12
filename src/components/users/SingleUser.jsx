@@ -32,17 +32,14 @@ export default class SingleUser extends Component {
     }
 
     onRoleChange = (e) => {
-        console.log('role', e)
         this.setState({ user: { ...this.state.user, role: e } });
     }
 
     onSessionChange = (e) => {
-        console.log('session', e)
         this.setState({ user: { ...this.state.user, session_count: e } });
     }
 
     onYearChange = (e) => {
-        console.log('year', e)
         this.setState({ user: { ...this.state.user, year: e } });
     }
 
@@ -73,7 +70,7 @@ export default class SingleUser extends Component {
                 renderNode={document.body}
                 width={400}
             >
-                <h1>{type} Session</h1>
+                <h1>{type} User</h1>
                 <SelectField
                     label='Session'
                     id='user-session'
