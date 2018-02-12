@@ -16,13 +16,17 @@ import Tickets from '../components/tickets/Tickets';
 import Users from '../components/users/Users';
 import Sessions from '../components/sessions/Sessions';
 import Forms from '../components/forms/Forms';
+import { ProgressCircle } from '../components/ProgressCircle'
 
 class Admin extends Component {
-
+    
     logout = () => {
         this.props.logout();
     }
+
     render() {
+        const { formsReceived, ticketsReceived, usersReceived } = this.props;
+        console.log('tickets received ', ticketsReceived);
         return (
             <div>
                 <header className='admin-header'>
@@ -37,13 +41,13 @@ class Admin extends Component {
                             <Tickets />
                         </Tab>
                         <Tab label='Manage Users'>
-                            <Users />
+                            {ticketsReceived ? <Users /> : <ProgressCircle />}
                         </Tab>
                         <Tab label='Ticket Forms'>
-                            <Forms />
+                            {usersReceived ? <Forms /> : <ProgressCircle />}
                         </Tab>
                         <Tab label='Manage Sessions'>
-                            <Sessions />
+                            {formsReceived ? <Sessions /> : <ProgressCircle />}
                         </Tab>
                     </Tabs>
                 </TabsContainer>
@@ -52,10 +56,16 @@ class Admin extends Component {
     }
 }
 
+const stateToProps = state => ({
+    ticketsReceived: state.ticketReducer.ticketsReceived,
+    usersReceived: state.usersReducer.usersReceived,
+    formsReceived: state.formReducer.formsReceived,
+})
+
 const dispatchToProps = dispatch => {
     return bindActionCreators(
         { logout }, dispatch
     );
 }
 
-export default connect(null, dispatchToProps)(Admin);
+export default connect(stateToProps, dispatchToProps)(Admin);

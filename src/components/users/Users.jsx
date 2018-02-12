@@ -33,7 +33,7 @@ class Users extends Component {
         }
     }
 
-    componentDidMount() {
+    componentWillMount() {
         const { getUsers } = this.props;
         getUsers()
         .then((res) => {

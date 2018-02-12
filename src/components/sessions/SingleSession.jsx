@@ -26,6 +26,7 @@ export default class SingleSession extends Component {
     render() {
         const { visible, type } = this.props;
         const { session } = this.state;
+        console.log(session);
         return (
             <DialogContainer
                 aria-describedby='single-session-container'
@@ -37,6 +38,7 @@ export default class SingleSession extends Component {
                 lastChild={true}
                 disableScrollLocking={true}
                 renderNode={document.body}
+                width={400}
             >
                 <h1>{type} Session</h1>
                 <TextField
@@ -85,7 +87,7 @@ export default class SingleSession extends Component {
                     value={session.day}
                     onChange={this.onDayChange}
                     className='md-cell md-cell--bottom'
-                    menuItems={['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']}
+                    menuItems={['Mondays', 'Tuesdays', 'Wednesdays', 'Thursdays', 'Fridays']}
                 />
             </DialogContainer>
         )

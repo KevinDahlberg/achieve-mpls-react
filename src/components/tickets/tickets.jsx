@@ -91,7 +91,7 @@ class Tickets extends Component {
 const mapStateToProps = state => ({
     tickets: state.ticketReducer.tickets,
     currentYear: state.ticketReducer.currentYear,
-    years: state.ticketReducer.years
+    years: state.ticketReducer.years,
 })
 
 const mapDispatchToProps = dispatch => {

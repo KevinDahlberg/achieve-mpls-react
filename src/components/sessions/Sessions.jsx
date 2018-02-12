@@ -34,6 +34,7 @@ class ViewSessions extends Component {
 
     addSessionClick = () => {
         this.setState({ addVisible: true });
+        console.log('add session clicked');
     }
 
     submitSession = (session) => {
@@ -42,8 +43,8 @@ class ViewSessions extends Component {
     }
 
     render() {
-        const { sessions } = this.props;
-        const { addVisible, singleSession } = this.props;
+        const { sessions, formArray } = this.props;
+        const { addVisible, singleSession } = this.state;
         return (
             <div className='tab-wrapper'>
                 <div className='tab-title'>
@@ -65,13 +66,13 @@ class ViewSessions extends Component {
                     />
                     }
                 </div>
-                <SingleSession
-                    hide={this.addSessionHide}
-                    session={singleSession}
-                    visible={addVisible}
-                    submitSession={this.submitSession}
-                    type='Add'
-                />
+                    <SingleSession
+                        hide={this.addSessionHide}
+                        session={singleSession}
+                        visible={addVisible}
+                        submitSession={this.submitSession}
+                        type='Add'
+                    />
             </div>
         );
     }
@@ -80,6 +81,7 @@ class ViewSessions extends Component {
 const mapStateToProps = state => ({
     sessions: state.sessionReducer.sessions,
     currentYear: state.ticketReducer.currentYear,
+    formArray: state.formReducer.forms,
 })
 
 const mapDispatchToProps = dispatch => {

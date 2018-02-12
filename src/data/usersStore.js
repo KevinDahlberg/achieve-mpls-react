@@ -7,6 +7,7 @@ const USERS_RECEIVED = 'USERS_RECEIVED';
 const initialState = {
     fetchingUsers: false,
     users: [],
+    usersReceived: false,
 }
 
 const fetchingUsers = (bool) => {
@@ -17,6 +18,7 @@ const usersReceived = (userArray) => {
     return {
         type: USERS_RECEIVED,
         fetchingUsers: false,
+        usersReceived: true,
         users: userArray,
     }
 }
@@ -80,6 +82,7 @@ function usersReducer(state = initialState, action) {
             ...state,
             fetchingUsers: action.fetchingUsers,
             users: action.users,
+            usersReceived: action.usersReceived,
         }
         default:
             return state;

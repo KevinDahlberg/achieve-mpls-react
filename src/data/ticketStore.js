@@ -11,6 +11,7 @@ const initialState = {
     tickets: [],
     currentYear: calculateCurrentYear(moment().format('YYYY')),
     fetchingTickets: false,
+    ticketsReceived: false,
     years: [],
 }
 
@@ -22,6 +23,7 @@ const ticketsReceived = (ticketArray) => {
     return {
         type: TICKETS_RECEIVED,
         fetchingTickets: false,
+        ticketsReceived: true,
         tickets: ticketArray,
     }
 }
@@ -94,6 +96,7 @@ function ticketReducer(state = initialState, action) {
         return {
             ...state,
             fetchingTickets: action.fetchingTickets,
+            ticketsReceived: action.ticketsReceived,
             tickets: action.tickets,
         }
         case YEARS_RECEIVED:

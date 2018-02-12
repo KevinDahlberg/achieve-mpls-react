@@ -6,6 +6,7 @@ const FORMS_RECEIVED = 'FORMS_RECEIVED';
 const initialState = {
     fetchingForms: false,
     forms: [],
+    formsReceived: false,
 }
 
 const fetchingForms = (bool) => {
@@ -17,6 +18,7 @@ const formsReceived = (formArray) => {
         type: FORMS_RECEIVED,
         fetchingForms: false,
         forms: formArray,
+        formsReceived: true,
     }
 }
 
@@ -55,6 +57,7 @@ function formReducer(state = initialState, action) {
             ...state,
             fetchingForms: action.fetchingForms,
             forms: action.forms,
+            formsReceived: action.formsReceived,
         }
         default:
             return state;
