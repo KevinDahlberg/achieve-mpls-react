@@ -8,7 +8,7 @@ import {
     TextField,
 } from 'react-md';
 
-import { getUsers } from '../../data/usersStore';
+import { fetchUsersIfNeeded } from '../../data/usersStore';
 import { usersOptions } from '../../constants';
 
 import SingleUser from './SingleUser';
@@ -33,13 +33,15 @@ class Users extends Component {
         }
     }
 
-    componentWillMount() {
-        const { getUsers } = this.props;
-        getUsers()
+    componentDidMount() {
+        const { currentYear, fetchUsersIfNeeded } = this.props;
+        fetchUsersIfNeeded(currentYear)
         .then((res) => {
+            if (res) {
             this.fuse = new Fuse(res, usersOptions);
             console.log(res)
-        })
+            }
+        });
     }
 
     onSearchChange = (e) => {
@@ -115,7 +117,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators(
-        { getUsers }, dispatch
+        { fetchUsersIfNeeded }, dispatch
     );
 }
 

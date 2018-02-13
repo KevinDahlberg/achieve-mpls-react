@@ -5,7 +5,7 @@ import {
     Button,
     Paper,
 } from 'react-md';
-import { getSessions } from '../../data/sessionStore';
+import { fetchSessionsIfNeeded, getEvents } from '../../data/sessionStore';
 import { newSession } from '../../constants';
 
 import SessionsTable from './SessionsTable';
@@ -21,8 +21,16 @@ class ViewSessions extends Component {
     }
 
     componentDidMount() {
-        const { currentYear, getSessions } = this.props;
-        getSessions(currentYear)
+        const { currentYear, fetchSessionsIfNeeded } = this.props;
+        fetchSessionsIfNeeded(currentYear)
+        .then((res) => {
+            console.log(res);
+        })
+    }
+
+    getEvents = (session) => {
+        const { getEvents } = this.props;
+        getEvents(session)
         .then((res) => {
             console.log(res);
         })
@@ -63,6 +71,8 @@ class ViewSessions extends Component {
                     {sessions.length === 0 ? null :
                     <SessionsTable
                         sessions={sessions}
+                        getEvent={this.getEvents}
+                        formArray={formArray}
                     />
                     }
                 </div>
@@ -86,7 +96,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators(
-        { getSessions }, dispatch
+        { fetchSessionsIfNeeded, getEvents }, dispatch
     );
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ViewSessions);

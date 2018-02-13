@@ -36,7 +36,27 @@ const yearsReceived = (years) => {
     }
 }
 
-export const getTickets = (year) => (dispatch) => {
+export const fetchTicketsIfNeeded = (year) => (dispatch, getState) => {
+    if (shouldFetchTickets(getState())) {
+        dispatch(gettingTickets(true));
+        return dispatch(getTickets(year))
+    } else {
+        return new Promise((resolve, reject) => {
+            resolve(false);
+        })
+    }
+}
+
+const shouldFetchTickets = (state) => {
+    const { tickets } = state.ticketReducer;
+    if (tickets.length === 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+const getTickets = (year) => (dispatch) => {
     console.log('getTickets called');
     dispatch(gettingTickets(true))
     const init = {

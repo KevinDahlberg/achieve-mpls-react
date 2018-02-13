@@ -6,7 +6,7 @@ import {
     Paper,
 } from 'react-md';
 
-import { getForms } from '../../data/formStore';
+import { fetchFormsIfNeeded } from '../../data/formStore';
 
 import FormsTable from './FormsTable';
 import SingleForm from './SingleForm';
@@ -28,8 +28,8 @@ class Forms extends Component {
     }
 
     componentDidMount() {
-        const { getForms } = this.props;
-        getForms()
+        const { fetchFormsIfNeeded } = this.props;
+        fetchFormsIfNeeded()
         .then((res) => {
             console.log(res)
         })
@@ -90,7 +90,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators(
-        { getForms }, dispatch
+        { fetchFormsIfNeeded }, dispatch
     );
 }
 

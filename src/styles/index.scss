@@ -78,6 +78,17 @@ body {
   color: $achieve-white !important;
 }
 
+.nav-item {
+  color: $achieve-white;
+  text-decoration: none;
+  font-size: 18px;
+  padding-bottom: 10px;
+  align-self: center;
+  &.active {
+    border-bottom: 2px $achieve-blue solid;
+  }
+}
+
 .tab-items {
   display: flex;
   flex-direction: row;

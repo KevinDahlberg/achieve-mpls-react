@@ -22,7 +22,27 @@ const formsReceived = (formArray) => {
     }
 }
 
-export const getForms = () => (dispatch) => {
+export const fetchFormsIfNeeded = () => (dispatch, getState) => {
+    if (shouldFetchForms(getState())) {
+        dispatch(fetchingForms(true));
+        return dispatch(getForms());
+    } else {
+        return new Promise((resolve, reject) => {
+            resolve(false);
+        })
+    }
+}
+
+const shouldFetchForms = (state) => {
+    const { forms } = state.formReducer;
+    if (forms.length === 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+const getForms = () => (dispatch) => {
     dispatch(fetchingForms(true))
     const init = {
         method: 'GET',

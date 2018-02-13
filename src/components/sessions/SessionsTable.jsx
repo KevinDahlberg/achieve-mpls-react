@@ -1,4 +1,6 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom'
+import PropTypes from 'prop-types';
 import {
     Button,
     DataTable,
@@ -12,9 +14,9 @@ import {
 
 import SessionsTableRow from './SessionsTableRow';
 import SingleSession from './SingleSession';
-import Events from './events/Events';
+import Events from '../events/Events';
 
-export default class SessionsTable extends Component {
+class SessionsTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -45,12 +47,15 @@ export default class SessionsTable extends Component {
         this.setState({ deleteVisible: true, session: session });
     }
 
-    showEvents = (session) => {
-        this.setState({ eventsVisible: true, session: session });
+    viewEvents = (session) => {
+        const { getEvent, history } = this.props;
+        getEvent(session.session_count);
+        const id = session.session_count;
+        history.push('/admin/event/' + id);
     }
 
     render() {
-        const { sessions } = this.props;
+        const { sessions, formArray } = this.props;
         const { editVisible, eventsVisible, deleteVisible, session } = this.state;
         return (
             <div>
@@ -86,10 +91,6 @@ export default class SessionsTable extends Component {
                         </TableBody>
                     </DataTable>
                 </Paper>
-                {eventsVisible ?
-                    <Events /> :
-                    null
-                }
                 {editVisible ?
                     <SingleSession
                         session={session}
@@ -121,3 +122,11 @@ export default class SessionsTable extends Component {
         )
     }
 }
+
+SessionsTable.propTypes = {
+    formArray: PropTypes.array,
+    getEvent: PropTypes.function,
+    sessions: PropTypes.array,
+}
+
+export default withRouter(SessionsTable);

@@ -10,6 +10,7 @@ const initialState = {
     fetchingSessions: false,
     sessions: [],
     fetchingEvents: false,
+    sessionsReceived: false,
 }
 
 const fetchingSessions = (bool) => {
@@ -21,6 +22,7 @@ const sessionsReceived = (sessionArray) => {
         type: SESSIONS_RECEIVED,
         fethingSessions: false,
         sessions: sessionArray,
+        sessionsReceived: true,
     }
 }
 
@@ -32,7 +34,27 @@ const eventsReceived = (sessionArray) => {
     return {type: EVENTS_RECEIVED, sessions: sessionArray, fetchingEvents: false}
 }
 
-export const getSessions = (year) => (dispatch) => {
+export const fetchSessionsIfNeeded = (year) => (dispatch, getState) => {
+    if(shouldFetchSessions(getState())) {
+        dispatch(fetchingSessions(true));
+        return dispatch(getSessions(year));
+    } else {
+        return new Promise((resolve, reject) => {
+            resolve(false);
+        })
+    }
+}
+
+const shouldFetchSessions = (state) => {
+    const { sessions } = state.sessionReducer;
+    if (sessions.length === 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+const getSessions = (year) => (dispatch) => {
     dispatch(fetchingSessions(true))
     const init = {
         method: 'GET',
@@ -55,22 +77,8 @@ export const getSessions = (year) => (dispatch) => {
     });
 }
 
-export const getAllEvents = (sessionArray) => (dispatch) => {
-    const newSessionArray = sessionArray;
-    let i = 0
-    while (i < sessionArray.length) {
-        getEvents(sessionArray[i].session_count)
-        .then((res) => {
-            newSessionArray[i].events = res;
-            i++
-        });
-    }
-    if (i === sessionArray.length) {
-        dispatch(eventsReceived(newSessionArray));
-    }
-}
-
-const getEvents = (session) => (dispatch) => {
+export const getEvents = (session) => (dispatch) => {
+    console.log('get events called', session);
     dispatch(fetchingEvents(true));
     const init = {
         method: 'GET',
@@ -108,6 +116,12 @@ function sessionReducer(state = initialState, action) {
         return {
             ...state,
             fetchingEvents: action.fetchingEvents,
+        }
+        case EVENTS_RECEIVED:
+        return {
+            ...state,
+            fetchingEvents: action.fetchingEvents,
+            sessions: action.sessions,
         }
         default:
         return state;

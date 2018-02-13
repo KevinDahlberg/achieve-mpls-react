@@ -23,7 +23,26 @@ const usersReceived = (userArray) => {
     }
 }
 
-export const getUsers = (year) => (dispatch) => {
+export const fetchUsersIfNeeded = (year) => (dispatch, getState) => {
+    if (shouldFetchUsers(getState())) {
+        dispatch(fetchingUsers(true));
+        return dispatch(getUsers(year))
+    } else {
+        return new Promise((resolve, reject) => {
+            resolve(false);
+        })
+    }
+}
+const shouldFetchUsers = (state) => {
+    const { users } = state.usersReducer;
+    if (users.length === 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+const getUsers = (year) => (dispatch) => {
     //todo set up backend to filter out users based on year
     dispatch(fetchingUsers(true))
     const init = {

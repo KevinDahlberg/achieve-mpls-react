@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { NavLink, Route } from 'react-router-dom'
 import { bindActionCreators } from 'redux'; 
 import {
     Button,
@@ -12,10 +13,12 @@ import * as logo from '../assets/achievempls-logo-white.png';
 
 import { logout } from '../data/authStore';
 
+
 import Tickets from '../components/tickets/Tickets';
 import Users from '../components/users/Users';
 import Sessions from '../components/sessions/Sessions';
 import Forms from '../components/forms/Forms';
+import Events from '../components/events/Events';
 import { ProgressCircle } from '../components/ProgressCircle'
 
 class Admin extends Component {
@@ -31,26 +34,35 @@ class Admin extends Component {
             <div>
                 <header className='admin-header'>
                     <img src={logo} className='admin-logo' alt='achieve mpls logo' />
+                    <NavLink 
+                        className='nav-item'
+                        exact
+                        to='/admin'>
+                            View Tickets
+                        </NavLink>
+                    <NavLink 
+                        className='nav-item' 
+                        to='/admin/users'>
+                            Manage Users
+                        </NavLink>
+                    <NavLink 
+                        className='nav-item' 
+                        to='/admin/forms'>
+                            Ticket Forms
+                        </NavLink>
+                    <NavLink 
+                        className='nav-item' 
+                        to='/admin/sessions'>
+                            Manage Sessions
+                        </NavLink>
                     <Button flat onClick={this.logout} className='logout-button'>Logout</Button>
                 </header>
-                <TabsContainer panelClassName='md-grid' colored>
-                    <Tabs 
-                        tabId='admin-tabs'
-                    >
-                        <Tab label='View Tickets'>
-                            <Tickets />
-                        </Tab>
-                        <Tab label='Manage Users'>
-                            {ticketsReceived ? <Users /> : <ProgressCircle />}
-                        </Tab>
-                        <Tab label='Ticket Forms'>
-                            {usersReceived ? <Forms /> : <ProgressCircle />}
-                        </Tab>
-                        <Tab label='Manage Sessions'>
-                            {formsReceived ? <Sessions /> : <ProgressCircle />}
-                        </Tab>
-                    </Tabs>
-                </TabsContainer>
+
+                <Route path='/admin/sessions' component={Sessions} />
+                <Route path='admin/sessions/events/:id' component={Events} />
+                <Route path='/admin/users' component={Users} />
+                <Route path='/admin/forms' component={Forms} />
+                <Route exact path='/admin' component={Tickets} />
             </div>
         )
     }
