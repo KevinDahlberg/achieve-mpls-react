@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { NavLink, Route } from 'react-router-dom'
+import { NavLink, Route, Switch, withRouter } from 'react-router-dom'
 import { bindActionCreators } from 'redux'; 
 import {
     Button,
@@ -58,11 +58,11 @@ class Admin extends Component {
                     <Button flat onClick={this.logout} className='logout-button'>Logout</Button>
                 </header>
 
-                <Route path='/admin/sessions' component={Sessions} />
-                <Route path='admin/sessions/events/:id' component={Events} />
-                <Route path='/admin/users' component={Users} />
-                <Route path='/admin/forms' component={Forms} />
-                <Route exact path='/admin' component={Tickets} />
+                    <Route path='/admin/events/:id' component={Events} />
+                    <Route exact path='/admin/sessions' component={Sessions} />
+                    <Route path='/admin/users' component={Users} />
+                    <Route path='/admin/forms' component={Forms} />
+                    <Route exact path='/admin' component={Tickets} />
             </div>
         )
     }
@@ -80,4 +80,4 @@ const dispatchToProps = dispatch => {
     );
 }
 
-export default connect(stateToProps, dispatchToProps)(Admin);
+export default withRouter(connect(stateToProps, dispatchToProps)(Admin));

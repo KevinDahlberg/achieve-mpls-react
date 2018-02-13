@@ -14,7 +14,6 @@ import {
 
 import SessionsTableRow from './SessionsTableRow';
 import SingleSession from './SingleSession';
-import Events from '../events/Events';
 
 class SessionsTable extends Component {
     constructor(props) {
@@ -48,10 +47,9 @@ class SessionsTable extends Component {
     }
 
     viewEvents = (session) => {
-        const { getEvent, history } = this.props;
-        getEvent(session.session_count);
+        const { history } = this.props;
         const id = session.session_count;
-        history.push('/admin/event/' + id);
+        history.push('/admin/events/' + id);
     }
 
     render() {
@@ -125,7 +123,6 @@ class SessionsTable extends Component {
 
 SessionsTable.propTypes = {
     formArray: PropTypes.array,
-    getEvent: PropTypes.function,
     sessions: PropTypes.array,
 }
 

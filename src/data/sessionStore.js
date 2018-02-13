@@ -9,7 +9,7 @@ const EVENTS_RECEIVED = 'EVENTS_RECEIVED';
 const initialState = {
     fetchingSessions: false,
     sessions: [],
-    fetchingEvents: false,
+    fetchingEvents: true,
     sessionsReceived: false,
 }
 
@@ -78,7 +78,6 @@ const getSessions = (year) => (dispatch) => {
 }
 
 export const getEvents = (session) => (dispatch) => {
-    console.log('get events called', session);
     dispatch(fetchingEvents(true));
     const init = {
         method: 'GET',
