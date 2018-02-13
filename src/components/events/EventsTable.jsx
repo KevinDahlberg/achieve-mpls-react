@@ -19,8 +19,27 @@ export default class EventsTable extends Component {
         super(props)
         this.state = {
             event: '',
+            editVisible: false,
+            deleteVisible: false,
         }
     }
+
+    editHide = () => {
+        this.setState({ editVisible: false });
+    }
+
+    deleteHide = () => {
+        this.setState({ deleteVisible: false });
+    }
+
+    editEvent = (event) => {
+        this.setState({ event: event, editVisible: true });
+    }
+
+    deleteEvent = (event) => {
+        this.setState({ event: event, deleteVisible: true });
+    }
+
     render() {
         const { events, formArray } = this.props;
         const { editVisible, event, deleteVisible } = this.state;
@@ -59,6 +78,7 @@ export default class EventsTable extends Component {
                         visible={editVisible}
                         hide={this.editHide}
                         submitEvent={this.submitEvent}
+                        forms={formArray}
                         type='Edit'
                     /> :
                     null
