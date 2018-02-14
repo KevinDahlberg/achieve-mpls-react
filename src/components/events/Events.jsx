@@ -1,11 +1,18 @@
 import React, { Component } from 'react';
+import {
+    Button,
+    Paper,
+} from 'react-md';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { getEvents, fetchSessionsIfNeeded } from '../../data/sessionStore';
 import { fetchFormsIfNeeded } from '../../data/formStore';
 
+import { newEvent } from '../../constants';
+
 import EventsTable from './EventsTable';
+import SingleEvent from './SingleEvent';
 
 class Events extends Component {
     constructor(props) {
@@ -13,6 +20,8 @@ class Events extends Component {
         this.state = {
             events: [],
             fetching: false,
+            singleEvent: newEvent,
+            addVisible: false,
         }
     }
 
@@ -54,23 +63,57 @@ class Events extends Component {
         });
     }
 
+    addEventHide = () => {
+        this.setState({ addVisible: false });
+    }
+
+    addEventClick = () => {
+        this.setState({ addVisible: true });
+    }
+
+    submitEvent = (event) => {
+        this.setState({ addVisible: false, singleEvent: newEvent });
+    }
+
     render() {
-        const { formArray } = this.props
-        const { fetching, events } = this.state;
+        const { formArray } = this.props;
+        console.log(formArray);
+        const { fetching, events, singleEvent, addVisible } = this.state;
         return(
             <div className="tab-wrapper">
                 <div className="tab-title">
                     <h1>Events for Session {this.props.match.params.id}</h1>
                 </div>
-                <div className="table-container">
+                <div className='tab-items'>
+                    <Paper
+                        zDepth={2}
+                        className='add-wrapper'
+                    >
+                        <span className='add-text'>Add Event</span>
+                        <Button floating primary className='add-button' onClick={this.addEventClick}>add</Button>
+                    </Paper>
+                </div>
                     {fetching ? null :
-                        <EventsTable 
-                            events={events}
-                            formArray={formArray}
-                        />
+                        <div className="table-container">
+                            <div>
+                                <EventsTable 
+                                    events={events}
+                                    formArray={formArray}
+                                />
+                            </div>
+                            <div>
+                                <SingleEvent
+                                    event={singleEvent}
+                                    formArray={formArray}
+                                    hide={this.addEventHide}
+                                    submitEvent={this.submitEvent}
+                                    type='Add'
+                                    visible={addVisible}
+                                />
+                            </div>
+                        </div>
                     }
                 </div>
-            </div>
         )
     }
 }

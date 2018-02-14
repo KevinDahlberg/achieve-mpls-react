@@ -45,7 +45,14 @@ export const newSession = {
     school: '',
     session_count: '',
     start_time: '',
-    year: '',
+    year: '', 
+}
+
+export const newEvent = {
+    form_name: 'General Exit Ticket',
+    date_form_open: new Date(),
+    date_form_close: new Date(),
+    meeting_count: '',
 }
 
 export const envUrl = 'http://localhost:5000'

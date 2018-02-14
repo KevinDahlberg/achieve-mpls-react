@@ -14,11 +14,13 @@ import {
 import SingleEvent from './SingleEvent';
 import EventsTableRow from './EventsTableRow';
 
+import { newEvent } from '../../constants';
+
 export default class EventsTable extends Component {
     constructor(props){
         super(props)
         this.state = {
-            event: '',
+            event: newEvent,
             editVisible: false,
             deleteVisible: false,
         }
@@ -32,16 +34,22 @@ export default class EventsTable extends Component {
         this.setState({ deleteVisible: false });
     }
 
-    editEvent = (event) => {
+    editEventClick = (event) => {
         this.setState({ event: event, editVisible: true });
     }
 
-    deleteEvent = (event) => {
+    deleteEventClick = (event) => {
         this.setState({ event: event, deleteVisible: true });
+    }
+
+    submitEvent = (event) => {
+        this.setState({ editVisible: false });
+        console.log(event);
     }
 
     render() {
         const { events, formArray } = this.props;
+        console.log(formArray);
         const { editVisible, event, deleteVisible } = this.state;
         return(
             <div>
@@ -65,8 +73,9 @@ export default class EventsTable extends Component {
                                 <EventsTableRow
                                     event={event}
                                     key={idx}
-                                    deleteEdit={this.deleteEditClick}
+                                    deleteEvent={this.deleteEventClick}
                                     editEvent={this.editEventClick}
+                                    formArray={formArray}
                                 />
                             ))}
                         </TableBody>
@@ -78,7 +87,7 @@ export default class EventsTable extends Component {
                         visible={editVisible}
                         hide={this.editHide}
                         submitEvent={this.submitEvent}
-                        forms={formArray}
+                        formArray={formArray}
                         type='Edit'
                     /> :
                     null

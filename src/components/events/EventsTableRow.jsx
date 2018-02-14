@@ -36,6 +36,6 @@ export default class EventsTableRow extends Component {
 
 EventsTableRow.propTypes = {
     deleteEvent: PropTypes.func,
-    editEvent: PropTypes.string,
+    editEvent: PropTypes.func,
     event: PropTypes.object,
 }

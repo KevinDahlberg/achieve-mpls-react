@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import moment from 'moment';
 import PropTypes from 'prop-types';
 import {
     Button,
@@ -21,19 +22,19 @@ export default class SingleEvent extends Component {
     }
 
     onEventNumberChange = (e) => {
-        this.setState({ event: { ...this.state.event, event_number: e } });
+        this.setState({ event: { ...this.state.event, meeting_count: e } });
     }
 
     onFormChange = (e) => {
-        this.setState({ event: { ...this.state.event, form: e } });
+        this.setState({ event: { ...this.state.event, form_name: e } });
     }
 
     onOpenDateChange = (e) => {
-        this.setState({ event: { ...this.state.event, openDate: e } });
+        this.setState({ event: { ...this.state.event, date_form_open: e } });
     }
 
     onCloseDateChange = (e) => {
-        this.setState({ event: { ...this.state.event, closeDate: e } });
+        this.setState({ event: { ...this.state.event, date_form_close: e } });
     }
 
     onSubmit = () => {
@@ -44,9 +45,19 @@ export default class SingleEvent extends Component {
         this.setState({ event: {} });
     }
 
+    prepareFormArray = (formArray) => {
+        const newArray = formArray.map((form) => {
+            return form.form_name;
+        });
+        console.log(newArray);
+        return newArray;
+    }
+
     render() {
         const { visible, type, formArray } = this.props;
+        console.log(formArray);
         const { event } = this.state;
+        const preppedForms = this.prepareFormArray(formArray);
         return(
             <DialogContainer
                 id='single-event-container'
@@ -58,39 +69,48 @@ export default class SingleEvent extends Component {
                 lastChild={true}
                 disableScrollLocking={true}
                 renderNode={document.body}
-                width={400}
+                width={600}
+                height={400}
             >
                 <h1>{type} Event</h1>
                 <TextField
                     id='event-number'
                     label='Event Number'
                     floating={true}
-                    value={event.number}
+                    value={event.meeting_count}
                     onChange={this.onEventNumberChange}
-                    className='md-cell md-cell--bottom'
+                    resize={{ min: 100, max: 200 }}
                 />
                 <SelectField
                     label='Form'
                     id='event-form'
-                    value={event.form}
+                    value={event.form_name}
                     onChange={this.onFormChange}
-                    className='md-cell md-cell--bottom'
-                    menuItems={formArray}
+                    menuItems={preppedForms}
+                    simplifiedMenu={false}
                 />
-                <DatePicker
-                    id='event-date-open'
-                    label='Date Open'
-                    className='md-cell'
-                    value={event.date_open}
-                    onChange={this.onOpenDateChange}
-                />
-                <DatePicker
-                    id='event-date-closed'
-                    label='Date Closed'
-                    className='md-cell'
-                    value={event.date_closed}
-                    onChange={this.onCloseDateChange}
-                />
+                <div className="dialog-row">
+                    <DatePicker
+                        id='event-date-open'
+                        label='Date Open'
+                        className='md-cell'
+                        value={moment(event.date_form_open).format('MMM D, YYYY')}
+                        onChange={this.onOpenDateChange}
+                        lastChild={true}
+                        disableScrollLocking={true}
+                        renderNode={document.body}
+                    />
+                    <DatePicker
+                        id='event-date-closed'
+                        label='Date Closed'
+                        className='md-cell'
+                        value={moment(event.date_form_close).format('MMM D, YYYY')}
+                        onChange={this.onCloseDateChange}
+                        lastChild={true}
+                        disableScrollLocking={true}
+                        renderNode={document.body}
+                    />
+                </div>
                 <Button floating primary className='dialog-done' onClick={this.onSubmit}>done</Button>
                 <Button floating className='dialog-close' onClick={this.hide}>clear</Button>
             </DialogContainer>
