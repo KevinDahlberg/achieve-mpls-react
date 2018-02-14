@@ -8,7 +8,9 @@ import {
     TextField,
 } from 'react-md';
 
-import { fetchUsersIfNeeded } from '../../data/usersStore';
+import { fetchUsersIfNeeded, addNewUser, fetchUsers } from '../../data/usersStore';
+import { fetchYearsIfNeeded } from '../../data/ticketStore';
+import { fetchSessionsIfNeeded } from '../../data/sessionStore';
 import { usersOptions } from '../../constants';
 
 import SingleUser from './SingleUser';
@@ -34,14 +36,24 @@ class Users extends Component {
     }
 
     componentDidMount() {
-        const { currentYear, fetchUsersIfNeeded } = this.props;
+        const { currentYear, 
+                fetchUsersIfNeeded, 
+                fetchSessionsIfNeeded, 
+                fetchYearsIfNeeded, 
+                users } = this.props;
         fetchUsersIfNeeded(currentYear)
         .then((res) => {
             if (res) {
             this.fuse = new Fuse(res, usersOptions);
             console.log(res)
+            } else {
+                this.fuse = new Fuse (users, usersOptions);
             }
-        });
+        })
+        .then(() => {
+            fetchSessionsIfNeeded(currentYear);
+            fetchYearsIfNeeded();
+        })
     }
 
     onSearchChange = (e) => {
@@ -56,12 +68,30 @@ class Users extends Component {
         this.setState({ addVisible: true });
     }
 
+    prepareUserToSubmit = (user, sessions) => {
+        const userSession = sessions.filter((session) => session.session_count === user.session_count)
+        console.log('userSession ', userSession);
+        user.session_id = userSession[0].id;
+        const userYear = user.year.split(' ').slice(0,1);
+        user.year = userYear[0];
+        return user;
+    }
+
     submitAddUser = (user) => {
-        console.log(user);
+        const { addNewUser, sessions, fetchUsers, currentYear } = this.props;
+        const userToSend = this.prepareUserToSubmit(user, sessions);
+        console.log(userToSend);
+        addNewUser(userToSend)
+        .then((res) => {
+            fetchUsers(currentYear)
+            .then((res) => {
+                this.fuse = new Fuse(res, usersOptions);
+            })
+        })
     }
 
     render() {
-        const { users, years, currentYear } = this.props;
+        const { users, years, currentYear, sessions } = this.props;
         const { search, searchResults, addVisible, user } = this.state;
         return(
             <div className='tab-wrapper'>
@@ -101,6 +131,8 @@ class Users extends Component {
                         user={user}
                         visible={addVisible}
                         submitUser={this.submitAddUser}
+                        sessions={sessions}
+                        years={years}
                         type='Add'
                     />
             </div>
@@ -113,11 +145,18 @@ const mapStateToProps = state => ({
     fetchingUsers: state.usersReducer.fetchingUsers,
     years: state.ticketReducer.years,
     currentYear: state.ticketReducer.currentYear,
+    sessions: state.sessionReducer.sessions
 })
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators(
-        { fetchUsersIfNeeded }, dispatch
+        {
+            fetchUsersIfNeeded, 
+            addNewUser, 
+            fetchSessionsIfNeeded,
+            fetchUsers,
+            fetchYearsIfNeeded,
+        }, dispatch
     );
 }
 

@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { sortBy } from 'lodash';
 import {
     Button,
     DataTable,
@@ -8,6 +9,7 @@ import {
     TableBody,
     TableRow,
     TableColumn,
+    TablePagination,
 } from 'react-md';
 
 import SingleUser from './SingleUser';
@@ -20,8 +22,120 @@ export default class UsersTable extends Component {
             resetVisible: false,
             editVisible: false,
             deleteVisible: false,
-            user: {}
+            user: {},
+            users: this.props.users,
+            slicedUsers: this.props.users.slice(0,10),
+            ascendingName: true,
+            ascendingEmail: true,
+            ascendingRole: true,
+            ascendingSession: true,
+            ascendingStatus: true,
+            rows: 10,
         }
+    }
+
+    componentWillMount() {
+        const { ascendingName } = this.state;
+        const sortedUsersByName = this.sortUsers('fname', ascendingName);
+        console.log(sortedUsersByName);
+        this.setState({ users: sortedUsersByName, slicedUsers: sortedUsersByName.slice(0,10) })
+    }
+
+    sortUsers = (key, ascending) => {
+        const { users } = this.state;
+        let sortedUsers = sortBy(users, key)
+        if (!ascending) {
+            sortedUsers.reverse();
+        }
+        return sortedUsers
+    }
+
+    sortByName = () => {
+        const { rows } = this.state;
+        const ascendingName = !this.state.ascendingName;
+        const sorted = this.sortUsers('fname', ascendingName);
+        this.setState({ 
+            ascendingName,
+            ascendingEmail: true,
+            ascendingRole: true,
+            ascendingSession: true,
+            ascendingStatus: true,
+            users: sorted,
+            slicedUsers: sorted.slice(0,rows)
+        });
+    }
+
+    sortByEmail = () => {
+        const { rows } = this.state;
+        const ascendingEmail = !this.state.ascendingEmail;
+        const sorted = this.sortUsers('email', ascendingEmail);
+        this.setState({ 
+            ascendingEmail, 
+            ascendingName: true,
+            ascendingRole: true,
+            ascendingSession: true,
+            ascendingStatus: true,
+            users: sorted, 
+            slicedUsers: sorted.slice(0,rows)
+        });
+    }
+
+    sortByRole = () => {
+        const { rows } = this.state;
+        const ascendingRole = !this.state.ascendingRole;
+        const sorted = this.sortUsers('role', ascendingRole);
+        this.setState({
+            ascendingRole,
+            ascendingEmail: true,
+            ascendingName: true,
+            ascendingSession: true,
+            ascendingStatus: true,
+            users: sorted,
+            slicedUsers: sorted.slice(0,rows),
+        });
+    }
+
+    sortUsers = (key, ascending) => {
+        const { users } = this.state;
+        let sortedUsers = sortBy(users, key)
+        if (!ascending) {
+            sortedUsers.reverse();
+        }
+        return sortedUsers
+    }
+    sortBySession = () => {
+        const { rows, users } = this.state;
+        const ascendingSession = !this.state.ascendingSession;
+        let sorted = sortBy(users, function(o) {
+            return Number(o.session_count);
+        });
+        if (!ascendingSession) {
+            sorted.reverse();
+        }
+        this.setState({
+            ascendingSession,
+            ascendingEmail: true,
+            ascendingName: true,
+            ascendingRole: true,
+            ascendingStatus: true,
+            users: sorted,
+            slicedUsers: sorted.slice(0,rows),
+        })
+    }
+
+    sortByStatus = () => {
+        const {rows} = this.state;
+        const ascendingStatus = !this.state.ascendingStatus;
+        const sorted = this.sortUsers('status', ascendingStatus);
+        this.setState({
+            ascendingStatus,
+            ascendingEmail: true,
+            ascendingName: true,
+            ascendingRole: true,
+            ascendingSession: true,
+            users: sorted,
+            slicedUsers: sorted.slice(0,rows),
+        })
     }
 
     resetHide = () => {
@@ -58,9 +172,25 @@ export default class UsersTable extends Component {
         console.log(user);
     }
 
+    handlePagination = (start, rowsPerPage) => {
+        const { users } = this.state;
+        this.setState({ slicedUsers: users.slice(start, start + rowsPerPage), rows: rowsPerPage });
+    }
+
     render() {
         const { users } = this.props;
-        const { user, resetVisible, editVisible, deleteVisible } = this.state;
+        const { 
+                user, 
+                resetVisible, 
+                editVisible, 
+                deleteVisible, 
+                slicedUsers, 
+                ascendingName, 
+                ascendingEmail,
+                ascendingRole,
+                ascendingSession,
+                ascendingStatus, 
+            } = this.state;
         return (
             <div>
                 <Paper
@@ -71,17 +201,47 @@ export default class UsersTable extends Component {
                         <TableHeader>
                             <TableRow>
                                 <TableColumn>Registration</TableColumn>
-                                <TableColumn>Name</TableColumn>
-                                <TableColumn>Email</TableColumn>
-                                <TableColumn>Role</TableColumn>
-                                <TableColumn>Session</TableColumn>
-                                <TableColumn>Status</TableColumn>
+                                <TableColumn 
+                                    sorted={ascendingName} 
+                                    onClick={this.sortByName}
+                                    role="button"
+                                >
+                                    Name
+                                </TableColumn>
+                                <TableColumn
+                                    sorted={ascendingEmail}
+                                    onClick={this.sortByEmail}
+                                    role="button"
+                                >
+                                    Email
+                                </TableColumn>
+                                <TableColumn
+                                    sorted={ascendingRole}
+                                    onClick={this.sortByRole}
+                                    role="button"
+                                >
+                                    Role
+                                </TableColumn>
+                                <TableColumn
+                                    sorted={ascendingSession}
+                                    onClick={this.sortBySession}
+                                    role="button"
+                                >
+                                    Session
+                                </TableColumn>
+                                <TableColumn
+                                    sorted={ascendingStatus}
+                                    onClick={this.sortByStatus}
+                                    role="button"
+                                >
+                                    Status
+                                </TableColumn>
                                 <TableColumn>Edit</TableColumn>
                                 <TableColumn>Delete</TableColumn>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {users.map((user, idx) => (
+                            {slicedUsers.map((user, idx) => (
                                 <UsersTableRow
                                     user={user}
                                     key={idx}
@@ -91,6 +251,11 @@ export default class UsersTable extends Component {
                                 />
                             ))}
                         </TableBody>
+                        <TablePagination
+                            rows={users.length}
+                            rowsPerPageLabel={'Items Per Page'}
+                            onPagination={this.handlePagination}
+                        />
                     </DataTable>
                 </Paper>
                 {resetVisible ? 

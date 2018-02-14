@@ -4,6 +4,7 @@ export const ticketOptions = {
     keys: [
         'day',
         'meeting_count',
+        'email',
         'fname',
         'lname',
         'grade',

@@ -6,7 +6,7 @@ import {
     TextField,
 } from 'react-md';
 
-import { fetchTicketsIfNeeded, getYears } from '../../data/ticketStore';
+import { fetchTicketsIfNeeded, fetchYearsIfNeeded } from '../../data/ticketStore';
 import { ticketOptions } from '../../constants';
 
 import TicketsTable from './TicketsTable';
@@ -25,8 +25,8 @@ class Tickets extends Component {
     }
 
     componentDidMount() {
-        const { currentYear, fetchTicketsIfNeeded, getYears } = this.props;
-        getYears()
+        const { currentYear, fetchTicketsIfNeeded, fetchYearsIfNeeded } = this.props;
+        fetchYearsIfNeeded();
         fetchTicketsIfNeeded(currentYear)
         .then((res) => {
             if (res) {
@@ -99,7 +99,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators(
-        { fetchTicketsIfNeeded, getYears }, dispatch
+        { fetchTicketsIfNeeded, fetchYearsIfNeeded }, dispatch
     );
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Tickets);

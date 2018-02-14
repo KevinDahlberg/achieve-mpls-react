@@ -66,7 +66,7 @@ export const login = (creds) => (dispatch) => {
     }
     const url = envUrl
     return new Promise(function(resolve, reject) {
-        fetch(envUrl, init)
+        fetch(url, init)
         .then(response => response.json())
         .then((data) => {
             dispatch(setUser(data.username, data.role))

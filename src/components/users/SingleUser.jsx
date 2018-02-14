@@ -51,12 +51,14 @@ export default class SingleUser extends Component {
         this.setState({ user: {} });
     }
 
+    prepareSessionsForSelect = (sessions) => {
+        return sessions.map((session) => session.session_count);
+    }
+
     render() {
-        const { visible, type } = this.props;
+        const { sessions, visible, type, years } = this.props;
         const { user } = this.state;
-        const sessionArray = [1,2,3,4,5,6,7,8]
-        const yearArray = [2017, 2018]
-        console.log(visible);
+        const sessionArray = this.prepareSessionsForSelect(sessions);
         return (
             <DialogContainer
                 aria-describedby='single-user-container'
@@ -76,6 +78,7 @@ export default class SingleUser extends Component {
                     id='user-session'
                     value={user.session_count}
                     onChange={this.onSessionChange}
+                    simplifiedMenu={false}
                     className='md-cell md-cell--bottom'
                     menuItems={sessionArray}
                 />
@@ -84,14 +87,16 @@ export default class SingleUser extends Component {
                     id='user-year'
                     value={user.year}
                     onChange={this.onYearChange}
+                    simplifiedMenu={false}
                     className='md-cell md-cell--bottom'
-                    menuItems={yearArray}
+                    menuItems={years}
                 />
                 <SelectField
                     label='Role'
                     id='user-role'
                     controlled='true'
                     value={user.role}
+                    simplifiedMenu={false}
                     onChange={this.onRoleChange}
                     className='md-cell md-cell--bottom'
                     menuItems={['coach', 'admin']}
@@ -138,6 +143,7 @@ export default class SingleUser extends Component {
 
 SingleUser.propTypes = {
     hide: PropTypes.func,
+    sessions: PropTypes.array,
     submitUser: PropTypes.func,
     type: PropTypes.string,
     user: PropTypes.object,

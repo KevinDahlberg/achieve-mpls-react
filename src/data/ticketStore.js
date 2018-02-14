@@ -80,7 +80,26 @@ const getTickets = (year) => (dispatch) => {
     })
 }
 
-export const getYears = () => (dispatch) => {
+export const fetchYearsIfNeeded = () => (dispatch, getState) => {
+    if (shouldFetchYears(getState())) {
+        return dispatch(getYears())
+    } else {
+        return new Promise((resolve, reject) => {
+            resolve(false);
+        })
+    }
+}
+
+const shouldFetchYears = (state) => {
+    const { years } = state.ticketReducer;
+    if (years.length === 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+const getYears = () => (dispatch) => {
     const init = {
         method: 'GET',
         headers: {'Content-Type': 'application/json'},

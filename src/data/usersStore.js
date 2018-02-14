@@ -1,6 +1,9 @@
 import fetch from 'isomorphic-fetch';
 import moment from 'moment';
 
+import { generateId } from '../utils';
+import { envUrl } from '../constants';
+
 const FETCHING_USERS = 'FETCHING_USERS';
 const USERS_RECEIVED = 'USERS_RECEIVED';
 
@@ -26,7 +29,7 @@ const usersReceived = (userArray) => {
 export const fetchUsersIfNeeded = (year) => (dispatch, getState) => {
     if (shouldFetchUsers(getState())) {
         dispatch(fetchingUsers(true));
-        return dispatch(getUsers(year))
+        return dispatch(fetchUsers(year))
     } else {
         return new Promise((resolve, reject) => {
             resolve(false);
@@ -42,7 +45,7 @@ const shouldFetchUsers = (state) => {
     }
 }
 
-const getUsers = (year) => (dispatch) => {
+export const fetchUsers = (year) => (dispatch) => {
     //todo set up backend to filter out users based on year
     dispatch(fetchingUsers(true))
     const init = {
@@ -61,6 +64,26 @@ const getUsers = (year) => (dispatch) => {
         .then((data) => resolve(data))
         .catch((error) => {
             dispatch(fetchingUsers(false));
+            reject(error);
+        })
+    })
+}
+
+export const addNewUser = (user) => (dispatch) => {
+    user.password = generateId(10);
+    const init = {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include',
+        body: JSON.stringify(user),
+    }
+    const url = envUrl + '/users/postUser';
+    return new Promise((resolve, reject) => {
+        fetch(url, init)
+        .then((response) => {
+            resolve(response);
+        })
+        .catch((error) => {
             reject(error);
         })
     })
