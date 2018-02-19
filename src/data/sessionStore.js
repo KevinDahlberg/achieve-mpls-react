@@ -98,6 +98,130 @@ export const getEvents = (session) => (dispatch) => {
     })
 }
 
+export const addSession = (session) => (dispatch) => {
+    const init = {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include',
+        body: JSON.stringify(session),
+    }
+    const url = envUrl + '/sessions/add'
+    return new Promise((resolve, reject) => {
+        fetch(url, init)
+        .then(response => response.json())
+        .then((data) => {
+            resolve(data)
+        })
+        .catch((error) => {
+            dispatch(fetchingEvents(false));
+            reject(error);
+        })
+    })
+}
+
+export const updateSession = (session) => (dispatch) => {
+    const init = {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include',
+        body: JSON.stringify(session),
+    }
+    const url = envUrl + '/sessions/update';
+    return new Promise((resolve, reject) => {
+        fetch(url, init)
+        .then(response => response.json())
+        .then((data) => {
+            resolve(data)
+        })
+        .catch((error) => {
+            dispatch(fetchingEvents(false));
+            reject(error);
+        })
+    })
+}
+
+export const deleteSession = (session) => (dispatch) => {
+    const init = {
+        method: 'DELETE',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include',
+    }
+    const url = envUrl + '/sessions/delete/' + session.id;
+    return new Promise((resolve, reject) => {
+        fetch(url, init)
+        .then(response => response.json())
+        .then((data) => {
+            resolve(data)
+        })
+        .catch((error) => {
+            dispatch(fetchingEvents(false));
+            reject(error);
+        })
+    })
+}
+
+export const addEvent = (event) => (dispatch) => {
+    const init = {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include',
+        body: JSON.stringify(event),
+    }
+    const url = envUrl + '/events/add'
+    return new Promise((resolve, reject) => {
+        fetch(url, init)
+        .then(response => response.json())
+        .then((data) => {
+            resolve(data)
+        })
+        .catch((error) => {
+            dispatch(fetchingEvents(false));
+            reject(error);
+        })
+    })
+}
+
+export const updateEvent = (event) => (dispatch) => {
+    const init = {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include',
+        body: JSON.stringify(event),
+    }
+    const url = envUrl + '/events/update'
+    return new Promise((resolve, reject) => {
+        fetch(url, init)
+        .then(response => response.json())
+        .then((data) => {
+            resolve(data)
+        })
+        .catch((error) => {
+            dispatch(fetchingEvents(false));
+            reject(error);
+        })
+    })
+}
+
+export const deleteEvent = (event) => (dispatch) => {
+    const init = {
+        method: 'DELETE',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include',
+    }
+    const url = envUrl + '/events/delete/' + event.id
+    return new Promise((resolve, reject) => {
+        fetch(url, init)
+        .then(response => response.json())
+        .then((data) => {
+            resolve(data)
+        })
+        .catch((error) => {
+            dispatch(fetchingEvents(false));
+            reject(error);
+        })
+    })
+}
+
 function sessionReducer(state = initialState, action) {
     switch (action.type) {
         case FETCHING_SESSIONS:
