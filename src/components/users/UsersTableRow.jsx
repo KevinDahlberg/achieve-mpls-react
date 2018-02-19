@@ -33,7 +33,12 @@ export default class UsersTableRow extends Component {
                 <TableColumn>{user.session_count}</TableColumn>
                 <TableColumn>{user.status}</TableColumn>
                 <TableColumn><Button icon onClick={this.editUser}>create</Button></TableColumn>
-                <TableColumn><Button icon onClick={this.deleteUser}>delete</Button></TableColumn>
+                <TableColumn>
+                    {user.role === 'admin' ? 
+                        <Button raised onClick={this.deleteUser}>delete</Button> :
+                        <Button raised onClick={this.deleteUser}>Deactivate</Button>
+                    }
+                </TableColumn>
             </TableRow>
         )
     }

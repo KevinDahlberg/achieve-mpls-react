@@ -52,13 +52,23 @@ export default class SingleUser extends Component {
     }
 
     prepareSessionsForSelect = (sessions) => {
+        console.log(sessions);
         return sessions.map((session) => session.session_count);
+    }
+
+    prepareYearsForSelect = (years) => {
+        const changedYears = years.map((year) => {
+            const newYear = year.split(' ').slice(0,1);
+            return newYear[0];
+        })
+        return changedYears
     }
 
     render() {
         const { sessions, visible, type, years } = this.props;
         const { user } = this.state;
         const sessionArray = this.prepareSessionsForSelect(sessions);
+        const yearArray = this.prepareYearsForSelect(years);
         return (
             <DialogContainer
                 aria-describedby='single-user-container'
@@ -89,7 +99,7 @@ export default class SingleUser extends Component {
                     onChange={this.onYearChange}
                     simplifiedMenu={false}
                     className='md-cell md-cell--bottom'
-                    menuItems={years}
+                    menuItems={yearArray}
                 />
                 <SelectField
                     label='Role'

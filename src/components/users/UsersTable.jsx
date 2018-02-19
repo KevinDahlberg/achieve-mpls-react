@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types';
 import { sortBy } from 'lodash';
 import {
     Button,
@@ -95,14 +96,6 @@ export default class UsersTable extends Component {
         });
     }
 
-    sortUsers = (key, ascending) => {
-        const { users } = this.state;
-        let sortedUsers = sortBy(users, key)
-        if (!ascending) {
-            sortedUsers.reverse();
-        }
-        return sortedUsers
-    }
     sortBySession = () => {
         const { rows, users } = this.state;
         const ascendingSession = !this.state.ascendingSession;
@@ -124,7 +117,7 @@ export default class UsersTable extends Component {
     }
 
     sortByStatus = () => {
-        const {rows} = this.state;
+        const { rows } = this.state;
         const ascendingStatus = !this.state.ascendingStatus;
         const sorted = this.sortUsers('status', ascendingStatus);
         this.setState({
@@ -155,8 +148,12 @@ export default class UsersTable extends Component {
         this.setState({ user: user, resetVisible: true });
     }
     
-    deleteUser = (user) => {
-        console.log('delete user clicked');
+    deleteUser = () => {
+        const { deleteUser } = this.props;
+        const { user } = this.state;
+        deleteUser(user);
+        this.setState({ user: {} })
+        console.log('delete user clicked,', this.state.user);
         this.deleteHide();
     }
 
@@ -169,7 +166,8 @@ export default class UsersTable extends Component {
     }
 
     submitUser = (user) => {
-        console.log(user);
+        const { submitEditUser } = this.props;
+        submitEditUser(user);
     }
 
     handlePagination = (start, rowsPerPage) => {
@@ -178,7 +176,7 @@ export default class UsersTable extends Component {
     }
 
     render() {
-        const { users } = this.props;
+        const { users, sessions, years } = this.props;
         const { 
                 user, 
                 resetVisible, 
@@ -237,7 +235,7 @@ export default class UsersTable extends Component {
                                     Status
                                 </TableColumn>
                                 <TableColumn>Edit</TableColumn>
-                                <TableColumn>Delete</TableColumn>
+                                <TableColumn>Remove</TableColumn>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -281,7 +279,9 @@ export default class UsersTable extends Component {
                         user={user}
                         visible={editVisible}
                         hide={this.editHide}
+                        sessions={sessions}
                         submitUser={this.submitUser}
+                        years={years}
                         type='Edit'
                     /> :
                     null
@@ -307,4 +307,12 @@ export default class UsersTable extends Component {
             </div>
         )
     }
+}
+
+UsersTable.propTypes = {
+    deleteUser: PropTypes.function,
+    sessions: PropTypes.array,
+    submitEditUser: PropTypes.function,
+    users: PropTypes.array,
+    years: PropTypes.array,
 }

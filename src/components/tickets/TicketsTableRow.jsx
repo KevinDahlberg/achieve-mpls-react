@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import moment from 'moment';
 import {
     TableRow,
     TableColumn,
@@ -22,7 +23,7 @@ export default class TicketsTableRow extends Component {
             <TableColumn>{ticket.day}</TableColumn>
             <TableColumn>{ticket.start_time}</TableColumn>
             <TableColumn>{ticket.school}</TableColumn>
-            <TableColumn>{ticket.date_form_completed}</TableColumn>
+            <TableColumn>{moment(ticket.date_form_completed).format('MMM D, YYYY')}</TableColumn>
         </TableRow>
         )
     }

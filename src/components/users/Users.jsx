@@ -8,7 +8,12 @@ import {
     TextField,
 } from 'react-md';
 
-import { fetchUsersIfNeeded, addNewUser, fetchUsers } from '../../data/usersStore';
+import { 
+    fetchUsersIfNeeded, 
+    addNewUser, 
+    deleteUser,
+    fetchUsers, 
+    updateUser } from '../../data/usersStore';
 import { fetchYearsIfNeeded } from '../../data/ticketStore';
 import { fetchSessionsIfNeeded } from '../../data/sessionStore';
 import { usersOptions } from '../../constants';
@@ -70,8 +75,8 @@ class Users extends Component {
 
     prepareUserToSubmit = (user, sessions) => {
         const userSession = sessions.filter((session) => session.session_count === user.session_count)
-        console.log('userSession ', userSession);
-        user.session_id = userSession[0].id;
+        if (user.session_id) { 
+            user.session_id = userSession[0].id}
         const userYear = user.year.split(' ').slice(0,1);
         user.year = userYear[0];
         return user;
@@ -80,8 +85,32 @@ class Users extends Component {
     submitAddUser = (user) => {
         const { addNewUser, sessions, fetchUsers, currentYear } = this.props;
         const userToSend = this.prepareUserToSubmit(user, sessions);
-        console.log(userToSend);
         addNewUser(userToSend)
+        .then((res) => {
+            fetchUsers(currentYear)
+            .then((res) => {
+                this.fuse = new Fuse(res, usersOptions);
+            })
+        })
+    }
+
+    submitEditUser = (user) => {
+        const { updateUser, fetchUsers, currentYear, sessions, users } = this.props;
+        const userToSend = this.prepareUserToSubmit(user, sessions)
+        const userId = users.filter((singleUser) => singleUser.email === user.email);
+        userToSend.id = userId[0].id;
+        updateUser(userToSend)
+        .then((res) => {
+            fetchUsers(currentYear)
+            .then((res) => {
+                this.fuse = new Fuse(res, usersOptions);
+            })
+        })
+    }
+
+    deleteUser = (user) => {
+        const { deleteUser, fetchUsers, currentYear } = this.props;
+        deleteUser(user)
         .then((res) => {
             fetchUsers(currentYear)
             .then((res) => {
@@ -122,8 +151,12 @@ class Users extends Component {
                 <div className='table-container'>
                     {users.length === 0 ? null :
                     <UsersTable 
+                        deleteUser = {this.deleteUser}
+                        sessions = {sessions}
                         users={search ? searchResults : users} 
                         usersClick={this.onUsersClick} 
+                        submitEditUser={this.submitEditUser}
+                        years={years}
                     />}
                 </div>
                     <SingleUser
@@ -153,10 +186,13 @@ const mapDispatchToProps = dispatch => {
         {
             fetchUsersIfNeeded, 
             addNewUser, 
+            deleteUser,
             fetchSessionsIfNeeded,
             fetchUsers,
             fetchYearsIfNeeded,
-        }, dispatch
+            updateUser,
+        }, 
+        dispatch
     );
 }
 

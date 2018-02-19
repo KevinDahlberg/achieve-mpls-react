@@ -53,7 +53,7 @@ export const fetchUsers = (year) => (dispatch) => {
         headers: {'Content-Type': 'application/json'},
         credentials: 'include',
     }
-    const url = 'http://localhost:5000/users'
+    const url = envUrl + '/users';
     return new Promise((resolve, reject) => {
         fetch(url, init)
         .then(response => response.json())
@@ -89,6 +89,25 @@ export const addNewUser = (user) => (dispatch) => {
     })
 }
 
+export const updateUser = (user) => (dispatch) => {
+    const init = {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include',
+        body: JSON.stringify(user),
+    }
+    const url = envUrl + '/users/updateUser';
+    return new Promise((resolve, reject) => {
+        fetch(url, init)
+        .then((response) => {
+            resolve(response);
+        })
+        .catch((error) => {
+            reject(error);
+        })
+    })
+}
+
 export const resetPW = (user) => (dispatch) => {
     const chanceExpiration = new Date();
     chanceExpiration.setDate(chanceExpiration.getDate() + 30);
@@ -110,6 +129,42 @@ export const resetPW = (user) => (dispatch) => {
             reject(error);
         })
     })
+}
+
+export const deleteUser = (user) => (dispatch) => {
+    const userId = user.id;
+    const adminUrl = envUrl + '/users/delete/' + userId
+    const coachUrl = envUrl + '/users/deactivateUser'
+    return new Promise((resolve, reject) => {
+        if (user.role === 'admin') {
+            const init = {
+                method: 'DELETE',
+                headers: {'Content-Type': 'application/json'},
+                credentials: 'include',
+            }
+            fetch(adminUrl, init)
+            .then((res) => {
+                resolve(res);
+            })
+            .catch((error) => {
+                reject(error);
+            })
+        } else {
+            const init = {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                credentials: 'include',
+                body: JSON.stringify(user),
+            }
+            fetch(coachUrl, init)
+            .then((res) => {
+                resolve(res);
+            })
+            .catch((error) => {
+                reject(error);
+            })
+        }
+    })   
 }
 
 function usersReducer(state = initialState, action) {
