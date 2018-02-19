@@ -45,7 +45,7 @@ export const newSession = {
     grade: '',
     school: '',
     session_count: '',
-    start_time: '',
+    start_time: new Date(),
     year: '', 
 }
 

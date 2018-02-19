@@ -27,7 +27,7 @@ export default class SingleForm extends Component {
     }
 
     onFormNameChange = (e) => {
-        this.setState({ form: { ...this.state, form_name: e }})
+        this.setState({ form: { ...this.state.form, form_name: e }})
     }
 
     onQuestionChange = (value, index) => {
@@ -37,8 +37,9 @@ export default class SingleForm extends Component {
     }
 
     addQuestion = () => {
+        console.log(this.state);
         const { form } = this.state;
-        const newQuestion = '';
+        const newQuestion = { question: '' };
         form.questions.push(newQuestion);
         this.setState({ form: form });
     }

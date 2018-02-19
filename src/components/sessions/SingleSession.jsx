@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import {
+    Button,
     DialogContainer,
     SelectField,
     TextField,
+    TimePicker,
 } from 'react-md';
 
 export default class SingleSession extends Component {
@@ -19,14 +21,46 @@ export default class SingleSession extends Component {
         this.props.hide();
     }
 
+    onSubmit = () => {
+        const { submitSession } = this.props;
+        const { session } = this.state;
+        submitSession(session);
+    }
+
     onSessionChange = (e) => {
         this.setState({ session: { ...this.state.session, session_count: e } });
     }
 
+    onSchoolChange = (e) => {
+        this.setState({ session: { ...this.state.session, school: e } });
+    }
+
+    onYearChange = (e) => {
+        this.setState({ session: { ...this.state.session, year: e } });
+    }
+
+    onFacilitatorChange = (e) => {
+        this.setState({ session: { ...this.state.session, facilitator: e } });
+    }
+
+    onGradeChange = (e) => {
+        this.setState({ session: { ...this.state.session, grade: e } });
+    }
+
+    onDayChange = (e) => {
+        this.setState({ session: { ...this.state.session, day: e } });
+    }
+
+    onTimeChange = (e, f, g) => {
+        console.log(e, f, g);
+        this.setState({ session: { ...this.state.session, start_time: f } });
+    }
+
+
+
     render() {
         const { visible, type } = this.props;
         const { session } = this.state;
-        console.log(session);
         return (
             <DialogContainer
                 aria-describedby='single-session-container'
@@ -38,7 +72,7 @@ export default class SingleSession extends Component {
                 lastChild={true}
                 disableScrollLocking={true}
                 renderNode={document.body}
-                width={400}
+                width={600}
             >
                 <h1>{type} Session</h1>
                 <TextField
@@ -56,6 +90,7 @@ export default class SingleSession extends Component {
                     onChange={this.onYearChange}
                     className='md-cell md-cell--bottom'
                     menuItems={['2017']}
+                    simplifiedMenu={false}
                 />
                 <SelectField
                     label='Facilitator'
@@ -64,6 +99,7 @@ export default class SingleSession extends Component {
                     onChange={this.onFacilitatorChange}
                     className='md-cell md-cell--bottom'
                     menuItems={['Amy', 'Amber']}
+                    simplifiedMenu={false}
                 />
                 <SelectField
                     label='Grade'
@@ -72,6 +108,7 @@ export default class SingleSession extends Component {
                     onChange={this.onGradeChange}
                     className='md-cell md-cell--bottom'
                     menuItems={[9,12]}
+                    simplifiedMenu={false}
                 />
                 <TextField
                     label='School'
@@ -88,7 +125,19 @@ export default class SingleSession extends Component {
                     onChange={this.onDayChange}
                     className='md-cell md-cell--bottom'
                     menuItems={['Mondays', 'Tuesdays', 'Wednesdays', 'Thursdays', 'Fridays']}
+                    simplifiedMenu={false}
                 />
+                <TimePicker
+                    id="session-time"
+                    label="Select Time"
+                    value={session.start_time}
+                    onChange={this.onTimeChange}
+                    lastChild={true}
+                    disableScrollLocking={true}
+                    renderNode={document.body}
+                />
+                <Button floating primary className='dialog-done' onClick={this.onSubmit}>done</Button>
+                <Button floating className='dialog-close' onClick={this.hide}>clear</Button>
             </DialogContainer>
         )
     }

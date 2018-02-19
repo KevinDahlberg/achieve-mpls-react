@@ -27,7 +27,7 @@ const formsReceived = (formArray) => {
 export const fetchFormsIfNeeded = () => (dispatch, getState) => {
     if (shouldFetchForms(getState())) {
         dispatch(fetchingForms(true));
-        return dispatch(getForms());
+        return dispatch(fetchForms());
     } else {
         return new Promise((resolve, reject) => {
             resolve(false);
@@ -44,7 +44,7 @@ const shouldFetchForms = (state) => {
     }
 }
 
-export const getForms = () => (dispatch) => {
+export const fetchForms = () => (dispatch) => {
     dispatch(fetchingForms(true))
     const init = {
         method: 'GET',

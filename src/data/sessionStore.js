@@ -37,7 +37,7 @@ const eventsReceived = (sessionArray) => {
 export const fetchSessionsIfNeeded = (year) => (dispatch, getState) => {
     if(shouldFetchSessions(getState())) {
         dispatch(fetchingSessions(true));
-        return dispatch(getSessions(year));
+        return dispatch(fetchSessions(year));
     } else {
         return new Promise((resolve, reject) => {
             resolve(false);
@@ -54,7 +54,7 @@ const shouldFetchSessions = (state) => {
     }
 }
 
-const getSessions = (year) => (dispatch) => {
+export const fetchSessions = (year) => (dispatch) => {
     dispatch(fetchingSessions(true))
     const init = {
         method: 'GET',
@@ -108,7 +108,6 @@ export const addSession = (session) => (dispatch) => {
     const url = envUrl + '/sessions/add'
     return new Promise((resolve, reject) => {
         fetch(url, init)
-        .then(response => response.json())
         .then((data) => {
             resolve(data)
         })
