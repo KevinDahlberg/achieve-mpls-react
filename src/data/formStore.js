@@ -1,5 +1,7 @@
 import fetch from 'isomorphic-fetch';
 
+import { envUrl } from '../constants';
+
 const FETCHING_FORMS = 'FETCHING_FORMS';
 const FORMS_RECEIVED = 'FORMS_RECEIVED';
 
@@ -42,7 +44,7 @@ const shouldFetchForms = (state) => {
     }
 }
 
-const getForms = () => (dispatch) => {
+export const getForms = () => (dispatch) => {
     dispatch(fetchingForms(true))
     const init = {
         method: 'GET',
@@ -64,6 +66,100 @@ const getForms = () => (dispatch) => {
         })
     })
 }
+
+export const addForm = (form) => (dispatch) => {
+    const init = {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include',
+        body: JSON.stringify(form),
+    }
+    const url = envUrl + '/forms/add';
+    return new Promise((resolve, reject) => {
+        fetch(url, init)
+        .then((response) => {
+            resolve(response);
+        })
+        .catch((error) => {
+            reject(error);
+        });
+    });
+}
+
+export const updateForm = (form) => (dispatch) => {
+    const init = {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include',
+        body: JSON.stringify(form),
+    }
+    const url = envUrl + '/forms/update';
+    return new Promise((resolve, reject) => {
+        fetch(url, init)
+        .then((response) => {
+            resolve(response);
+        })
+        .catch((error) => {
+            reject(error);
+        });
+    });
+}
+
+export const deleteForm = (form) => (dispatch) => {
+    const init = {
+        method: 'DELETE',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include',
+    }
+    const url = envUrl + '/delete/' + form.id
+    return new Promise((resolve, reject) => {
+        fetch(init, url)
+        .then((res) => {
+            resolve(res);
+        })
+        .catch((error) => {
+            reject(error);
+        });
+    });
+}
+
+export const deleteQuestion = (question) => (dispatch) => {
+    const init = {
+        method: 'DELETE',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include',
+    }
+    const url = envUrl + '/delete/' + question.id
+    return new Promise((resolve, reject) => {
+        fetch(init, url)
+        .then((res) => {
+            resolve(res);
+        })
+        .catch((error) => {
+            reject(error);
+        });
+    });
+}
+
+export const assignForms = (yearAndGradeObj) => (dispatch) => {
+    const init = {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include',
+        body: JSON.stringify(yearAndGradeObj),
+    }
+    const url = envUrl + '/assign'
+    return new Promise((resolve, reject) => {
+        fetch(init, url)
+        .then((res) => {
+            resolve(res);
+        })
+        .catch((error) => {
+            reject(error);
+        });
+    });
+}
+
 
 function formReducer(state = initialState, action) {
     switch (action.type) {
