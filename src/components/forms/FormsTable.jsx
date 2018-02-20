@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
     Button,
     DialogContainer,
@@ -17,6 +18,15 @@ import AssignForm from './AssignForm';
 import SingleForm from './SingleForm';
 
 export default class FormsTable extends Component {
+    static propTypes = {
+        deleteForm: PropTypes.func,
+        deleteQuestion: PropTypes.func,
+        forms: PropTypes.array,
+        submitAssign: PropTypes.func,
+        submitEdit: PropTypes.func,
+        years: PropTypes.array,
+    }
+
     constructor(props){
         super(props)
         this.state = {
@@ -51,8 +61,31 @@ export default class FormsTable extends Component {
         this.setState({ form: form, deleteVisible: true });
     }
 
+    submitAssign = (assign) => {
+        const { submitAssign } = this.props;
+        submitAssign(assign)
+    }
+
+    deleteForm = () => {
+        const { deleteForm } = this.props;
+        const { form } = this.state;
+        deleteForm(form)
+        this.deleteHide();
+    }
+
+    deleteQuestion = (question) => {
+        const { deleteQuestion } = this.props;
+        deleteQuestion(question);
+    }
+
+    submitEdit = (form) => {
+        const { submitEdit } = this.props;
+        submitEdit(form);
+        this.editHide();
+    }
+
     render() {
-        const { forms } = this.props;
+        const { forms, years } = this.props;
         const { assignVisible, editVisible, deleteVisible, form } = this.state;
         return(
             <div>
@@ -88,14 +121,18 @@ export default class FormsTable extends Component {
                         hide={this.assignHide}
                         visible={assignVisible}
                         form={form}
+                        years={years}
+                        submitAssign={this.submitAssign}
                     /> :
                     null
                 }
                 {editVisible ?
                     <SingleForm
+                        deleteQuestion={this.deleteQuestion}
                         hide={this.editHide}
                         visible={editVisible}
                         form={form}
+                        submitForm={this.submitEdit}
                     /> :
                     null
                 }

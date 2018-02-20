@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import moment from 'moment';
 import {
     Button,
     Paper,
@@ -6,7 +7,13 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { getEvents, fetchSessionsIfNeeded } from '../../data/sessionStore';
+import {
+    addEvent,
+    deleteEvent,
+    getEvents,
+    updateEvent,
+    fetchSessionsIfNeeded,
+} from '../../data/sessionStore';
 import { fetchFormsIfNeeded } from '../../data/formStore';
 
 import { newEvent } from '../../constants';
@@ -26,12 +33,17 @@ class Events extends Component {
     }
 
     componentDidMount() {
-        const { getEvents, 
-                fetchFormsIfNeeded, 
-                fetchSessionsIfNeeded,
-                sessions,
-                currentYear } = this.props;
         this.setState({ fetching: true });
+        this.dbCallsForComponent();
+    }
+
+    dbCallsForComponent() {
+        const { 
+            getEvents, 
+            fetchFormsIfNeeded, 
+            fetchSessionsIfNeeded,
+            sessions,
+            currentYear } = this.props;
         const id = Number(this.props.match.params.id);
         //turns out the session number isn't the same as the session's id
         //get sessions if it's a refresh
@@ -52,7 +64,6 @@ class Events extends Component {
             getEvents(res)
             .then((res) => {
                 this.setState({ events: res });
-                console.log(res);
                 //fetch forms for edit
                 fetchFormsIfNeeded()
                 .then((res) => {
@@ -72,12 +83,65 @@ class Events extends Component {
     }
 
     submitEvent = (event) => {
+        const { addEvent, formArray, sessions, getEvents } = this.props;
+        event.open_date = moment(event.date_form_open).format('YYYY-MM-DD');
+        event.close_date = moment(event.date_form_close).format('YYYY-MM-DD');
+        const form_id = formArray.filter((form) => form.form_name === event.form_name);
+        event.form_id = form_id[0].id;
+        const id = Number(this.props.match.params.id);
+        const session_id = sessions.filter((session) => session.session_count === id)
+        event.session_id = session_id[0].id;
+        console.log(event);
+        addEvent(event)
+        .then((res) => {
+            const id = Number(this.props.match.params.id);
+            const currentSession = sessions.filter((session) => session.session_count === id);
+            const result = currentSession[0].id;
+            getEvents(result)
+            .then((data) => {
+                this.setState({ events: data });
+            })
+        })
         this.setState({ addVisible: false, singleEvent: newEvent });
+    }
+
+    submitEdit = (event) => {
+        const { updateEvent, formArray, sessions, getEvents } = this.props;
+        event.open_date = moment(event.date_form_open).format('YYYY-MM-DD');
+        event.close_date = moment(event.date_form_close).format('YYYY-MM-DD');
+        const form_id = formArray.filter((form) => form.form_name === event.form_name);
+        event.form_id = form_id[0].id;
+        const id = Number(this.props.match.params.id);
+        const session_id = sessions.filter((session) => session.session_count === id)
+        event.session_id = session_id[0].id;
+        updateEvent(event)
+        .then((res) => {
+            const id = Number(this.props.match.params.id);
+            const currentSession = sessions.filter((session) => session.session_count === id);
+            const result = currentSession[0].id;
+            getEvents(result)
+            .then((data) => {
+                this.setState({ events: data });
+            })
+        })
+    }
+
+    deleteEvent = (event) => {
+        const { deleteEvent, getEvents, sessions } = this.props;
+        deleteEvent(event)
+        .then((res) => {
+            const id = Number(this.props.match.params.id);
+            const currentSession = sessions.filter((session) => session.session_count === id);
+            const result = currentSession[0].id;
+            getEvents(result)
+            .then((data) => {
+                this.setState({ events: data });
+            });
+        });
     }
 
     render() {
         const { formArray } = this.props;
-        console.log(formArray);
         const { fetching, events, singleEvent, addVisible } = this.state;
         return(
             <div className="tab-wrapper">
@@ -97,8 +161,10 @@ class Events extends Component {
                         <div className="table-container">
                             <div>
                                 <EventsTable 
+                                    deleteEvent={this.deleteEvent}
                                     events={events}
                                     formArray={formArray}
+                                    submitEdit={this.submitEdit}
                                 />
                             </div>
                             <div>
@@ -126,7 +192,15 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => (
     bindActionCreators(
-        { getEvents, fetchFormsIfNeeded, fetchSessionsIfNeeded }, dispatch
+        {   
+            addEvent,
+            deleteEvent,
+            getEvents,
+            updateEvent,
+            fetchSessionsIfNeeded,
+            fetchFormsIfNeeded, 
+        }, 
+        dispatch
     )
 );
 

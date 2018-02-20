@@ -8,11 +8,16 @@ import {
 
 import {
     addForm,
+    assignForms,
     deleteForm,
+    deleteQuestion,
     fetchFormsIfNeeded,
     fetchForms,
     updateForm,
 } from '../../data/formStore';
+import { fetchYearsIfNeeded } from '../../data/ticketStore';
+
+import { prepareYearsForSelect } from '../../utils';
 
 import FormsTable from './FormsTable';
 import SingleForm from './SingleForm';
@@ -34,10 +39,10 @@ class Forms extends Component {
     }
 
     componentDidMount() {
-        const { fetchFormsIfNeeded } = this.props;
+        const { fetchFormsIfNeeded, fetchYearsIfNeeded } = this.props;
         fetchFormsIfNeeded()
         .then((res) => {
-            console.log(res)
+            fetchYearsIfNeeded();
         })
     }
 
@@ -57,9 +62,41 @@ class Forms extends Component {
         })
     }
 
+    submitAssign = (assign) => {
+        const { assignForms } = this.props;
+        assignForms(assign);
+    }
+
+    updateForm = (form) => {
+        const { updateForm, fetchForms } = this.props;
+        updateForm(form)
+        .then(() => {
+            fetchForms();
+        });
+    }
+
+    deleteForm = (form) => {
+        const { deleteForm, fetchForms } = this.props;
+        deleteForm(form)
+        .then(() => {
+            fetchForms()
+        })
+    }
+
+    deleteQuestion = (question) => {
+        const { deleteQuestion } = this.props;
+        deleteQuestion(question)
+    }
+
+    //we don't need to call the db on the add form when removing a question
+    deleteAddQuestion = (question) => {
+        return
+    }
+
     render() {
-        const { forms } = this.props;
+        const { forms, years } = this.props;
         const { form, addVisible } = this.state;
+        const preppedYears = prepareYearsForSelect(years);
         return(
             <div className='tab-wrapper'>
                 <div className='tab-title'>
@@ -77,11 +114,17 @@ class Forms extends Component {
                 <div className="table-container">
                     {forms.length === 0 ? null :
                     <FormsTable
+                        deleteQuestion={this.deleteQuestion}
+                        deleteForm={this.deleteForm}
                         forms={forms}
                         formClick={this.onFormClick}
+                        submitAssign={this.submitAssign}
+                        submitEdit={this.updateForm}
+                        years={preppedYears}
                     />}
                 </div>
                 <SingleForm
+                    deleteQuestion={this.deleteAddQuestion}
                     hide={this.addFormHide}
                     form={form}
                     visible={addVisible}
@@ -96,15 +139,19 @@ class Forms extends Component {
 const mapStateToProps = state => ({
     forms: state.formReducer.forms,
     fetchingForms: state.formReducer.fetchingForms,
+    years: state.ticketReducer.years,
 })
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators(
         {     
             addForm,
+            assignForms,
             deleteForm,
+            deleteQuestion,
             fetchFormsIfNeeded,
             fetchForms,
+            fetchYearsIfNeeded,
             updateForm,
         }, 
         dispatch

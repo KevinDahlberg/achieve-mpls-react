@@ -14,6 +14,14 @@ const newForm = {
 }
 
 export default class SingleForm extends Component {
+    static propTypes = {
+        deleteQuestion: PropTypes.func,
+        form: PropTypes.object,
+        hide: PropTypes.func,
+        submitForm: PropTypes.func,
+        type: PropTypes.string,
+        visible: PropTypes.bool,
+    }
     constructor(props){
         super(props);
         this.state = {
@@ -44,9 +52,11 @@ export default class SingleForm extends Component {
         this.setState({ form: form });
     }
     
-    removeQuestion = (index) => {
+    removeQuestion = (index, question) => {
+        const { deleteQuestion } = this.props;
         const { form } = this.state;
         form.questions.splice(index, 1);
+        deleteQuestion(question);
         this.setState({ form: form});
     }
 
@@ -98,7 +108,7 @@ export default class SingleForm extends Component {
                             resize={{ min: 350, max: 350 }}
                             rows={1}
                         />
-                        <Button icon className='dialog-clear' onClick={(e) => this.removeQuestion(idx)}>clear</Button>
+                        <Button icon className='dialog-clear' onClick={(e) => this.removeQuestion(idx, question)}>clear</Button>
                     </div>
                     )
                 })}
@@ -108,12 +118,4 @@ export default class SingleForm extends Component {
             </DialogContainer>
         )
     }
-}
-
-SingleForm.propTypes = {
-    form: PropTypes.object,
-    hide: PropTypes.func,
-    submitForm: PropTypes.func,
-    type: PropTypes.string,
-    visible: PropTypes.bool,
 }

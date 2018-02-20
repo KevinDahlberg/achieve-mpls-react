@@ -65,8 +65,8 @@ class SessionsTable extends Component {
     }
 
     render() {
-        const { sessions, formArray, years } = this.props;
-        const { editVisible, eventsVisible, deleteVisible, session } = this.state;
+        const { sessions, years } = this.props;
+        const { editVisible, deleteVisible, session } = this.state;
         return (
             <div>
                 <Paper

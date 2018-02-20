@@ -43,13 +43,20 @@ export default class EventsTable extends Component {
     }
 
     submitEvent = (event) => {
+        const { submitEdit } = this.props;
         this.setState({ editVisible: false });
-        console.log(event);
+        submitEdit(event);
+    }
+
+    deleteEvent = () => {
+        const { deleteEvent } = this.props;
+        const { event } = this.state;
+        deleteEvent(event);
+        this.setState({ event: newEvent, deleteVisible: false });
     }
 
     render() {
         const { events, formArray } = this.props;
-        console.log(formArray);
         const { editVisible, event, deleteVisible } = this.state;
         return(
             <div>
@@ -116,6 +123,8 @@ export default class EventsTable extends Component {
 }
 
 EventsTable.propTypes = {
+    deleteEvent: PropTypes.func,
     events: PropTypes.array,
     formArray: PropTypes.array,
+    submitEdit: PropTypes.func,
 }

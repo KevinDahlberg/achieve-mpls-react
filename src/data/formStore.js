@@ -111,9 +111,10 @@ export const deleteForm = (form) => (dispatch) => {
         headers: {'Content-Type': 'application/json'},
         credentials: 'include',
     }
-    const url = envUrl + '/delete/' + form.id
+    console.log(form);
+    const url = envUrl + '/forms/delete/' + form.id
     return new Promise((resolve, reject) => {
-        fetch(init, url)
+        fetch(url, init)
         .then((res) => {
             resolve(res);
         })
@@ -129,9 +130,9 @@ export const deleteQuestion = (question) => (dispatch) => {
         headers: {'Content-Type': 'application/json'},
         credentials: 'include',
     }
-    const url = envUrl + '/delete/' + question.id
+    const url = envUrl + '/forms/deleteQuestion/' + question.id
     return new Promise((resolve, reject) => {
-        fetch(init, url)
+        fetch(url, init)
         .then((res) => {
             resolve(res);
         })
@@ -148,14 +149,16 @@ export const assignForms = (yearAndGradeObj) => (dispatch) => {
         credentials: 'include',
         body: JSON.stringify(yearAndGradeObj),
     }
-    const url = envUrl + '/assign'
+    const url = envUrl + '/forms/assign'
     return new Promise((resolve, reject) => {
-        fetch(init, url)
+        fetch(url, init)
         .then((res) => {
             resolve(res);
+            console.log(res)
         })
         .catch((error) => {
             reject(error);
+            console.error(error);
         });
     });
 }

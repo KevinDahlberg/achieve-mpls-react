@@ -49,13 +49,11 @@ export default class SingleEvent extends Component {
         const newArray = formArray.map((form) => {
             return form.form_name;
         });
-        console.log(newArray);
         return newArray;
     }
 
     render() {
         const { visible, type, formArray } = this.props;
-        console.log(formArray);
         const { event } = this.state;
         const preppedForms = this.prepareFormArray(formArray);
         return(

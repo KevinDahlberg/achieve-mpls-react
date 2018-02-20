@@ -167,7 +167,6 @@ export const addEvent = (event) => (dispatch) => {
     const url = envUrl + '/events/add'
     return new Promise((resolve, reject) => {
         fetch(url, init)
-        .then(response => response.json())
         .then((data) => {
             resolve(data)
         })
@@ -188,7 +187,6 @@ export const updateEvent = (event) => (dispatch) => {
     const url = envUrl + '/events/update'
     return new Promise((resolve, reject) => {
         fetch(url, init)
-        .then(response => response.json())
         .then((data) => {
             resolve(data)
         })
@@ -208,7 +206,6 @@ export const deleteEvent = (event) => (dispatch) => {
     const url = envUrl + '/events/delete/' + event.id
     return new Promise((resolve, reject) => {
         fetch(url, init)
-        .then(response => response.json())
         .then((data) => {
             resolve(data)
         })
