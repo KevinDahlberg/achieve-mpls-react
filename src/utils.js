@@ -8,6 +8,15 @@ export const calculateCurrentYear = (year) => {
     }
     return currentYear
 }
+
+export const prepareYearsForSelect = (years) => {
+  const changedYears = years.map((year) => {
+      const newYear = year.split(' ').slice(0,1);
+      return newYear[0];
+  })
+  console.log(changedYears);
+  return changedYears
+}
 /**
 * @desc generate the random pwd
 * @param the length of the pwd
@@ -22,3 +31,4 @@ export function generateId(len) {
   window.crypto.getRandomValues(arr);
   return Array.from(arr, dec2hex).join('');
 }
+

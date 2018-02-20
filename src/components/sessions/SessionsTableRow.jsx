@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
     Button,
     TableRow,
@@ -17,8 +18,8 @@ export default class SessionsTableRow extends Component {
     }
 
     deleteSession = () => {
-        const { session, deleteSession } = this.props;
-        deleteSession(session);
+        const { session, deleteSessionDial } = this.props;
+        deleteSessionDial(session);
     }
 
     render() {
@@ -37,4 +38,12 @@ export default class SessionsTableRow extends Component {
             </TableRow>
         )
     }
+}
+
+SessionsTableRow.propTypes = {
+    deleteSessionDial: PropTypes.func,
+    editSession: PropTypes.func,
+    idx: PropTypes.number,
+    session: PropTypes.object,
+    viewEvents: PropTypes.func, 
 }

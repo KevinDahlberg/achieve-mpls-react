@@ -12,12 +12,14 @@ import {
     fetchSessions,
     fetchSessionsIfNeeded, 
     getEvents } from '../../data/sessionStore';
+import { fetchYearsIfNeeded } from '../../data/ticketStore'
 import { newSession } from '../../constants';
+import { prepareYearsForSelect } from '../../utils';
 
 import SessionsTable from './SessionsTable';
 import SingleSession from './SingleSession';
 
-class ViewSessions extends Component {
+class Sessions extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -27,10 +29,10 @@ class ViewSessions extends Component {
     }
 
     componentDidMount() {
-        const { currentYear, fetchSessionsIfNeeded } = this.props;
+        const { currentYear, fetchSessionsIfNeeded, fetchYearsIfNeeded } = this.props;
         fetchSessionsIfNeeded(currentYear)
-        .then((res) => {
-            console.log(res);
+        .then(() => {
+            fetchYearsIfNeeded();
         })
     }
 
@@ -54,7 +56,6 @@ class ViewSessions extends Component {
     submitSession = (session) => {
         const { addSession, fetchSessions, currentYear, } = this.props;
         this.setState({ addVisible: false });
-        console.log(session);
         addSession(session)
         .then((res) => {
             fetchSessions(currentYear)
@@ -64,9 +65,26 @@ class ViewSessions extends Component {
         });
     }
 
+    updateSession = (session) => {
+        const { updateSession, fetchSessions, currentYear, } = this.props;
+        updateSession(session)
+        .then((res) => {
+            fetchSessions(currentYear);
+        });
+    }
+
+    deleteSession = (session) => {
+        const { deleteSession, fetchSessions, currentYear, } = this.props;
+        deleteSession(session)
+        .then(() => {
+            fetchSessions(currentYear);
+        });
+    }
+
     render() {
-        const { sessions, formArray } = this.props;
+        const { sessions, formArray, years } = this.props;
         const { addVisible, singleSession } = this.state;
+        const updatedYears = prepareYearsForSelect(years);
         return (
             <div className='tab-wrapper'>
                 <div className='tab-title'>
@@ -84,9 +102,12 @@ class ViewSessions extends Component {
                 <div className="table-container">
                     {sessions.length === 0 ? null :
                     <SessionsTable
+                        deleteSession={this.deleteSession}
                         sessions={sessions}
                         getEvent={this.getEvents}
                         formArray={formArray}
+                        years={updatedYears}
+                        submitSession={this.updateSession}
                     />
                     }
                 </div>
@@ -95,6 +116,7 @@ class ViewSessions extends Component {
                         session={singleSession}
                         visible={addVisible}
                         submitSession={this.submitSession}
+                        years={updatedYears}
                         type='Add'
                     />
             </div>
@@ -106,6 +128,7 @@ const mapStateToProps = state => ({
     sessions: state.sessionReducer.sessions,
     currentYear: state.ticketReducer.currentYear,
     formArray: state.formReducer.forms,
+    years: state.ticketReducer.years,
 })
 
 const mapDispatchToProps = dispatch => {
@@ -114,6 +137,7 @@ const mapDispatchToProps = dispatch => {
             addSession,
             updateSession,
             deleteSession,
+            fetchYearsIfNeeded,
             fetchSessions,
             fetchSessionsIfNeeded,  
             getEvents,
@@ -121,4 +145,4 @@ const mapDispatchToProps = dispatch => {
         dispatch
     );
 }
-export default connect(mapStateToProps, mapDispatchToProps)(ViewSessions);
+export default connect(mapStateToProps, mapDispatchToProps)(Sessions);

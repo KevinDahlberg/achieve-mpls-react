@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
+import moment from 'moment';
 import PropTypes from 'prop-types';
-
 import {
     Button,
     DialogContainer,
@@ -8,6 +8,8 @@ import {
     TextField,
     TimePicker,
 } from 'react-md';
+
+import { newSession } from '../../constants';
 
 export default class SingleSession extends Component {
     constructor(props){
@@ -17,6 +19,10 @@ export default class SingleSession extends Component {
         }
     }
 
+    componentWillMount() {
+        this.setState({ session: { ...this.state.session, start_time: new Date() } });
+    }
+
     hide = () => {
         this.props.hide();
     }
@@ -24,7 +30,9 @@ export default class SingleSession extends Component {
     onSubmit = () => {
         const { submitSession } = this.props;
         const { session } = this.state;
+        session.start_time = moment(session.start_time).format('HH:mm:ss');
         submitSession(session);
+        this.setState({ session: newSession });
     }
 
     onSessionChange = (e) => {
@@ -51,15 +59,13 @@ export default class SingleSession extends Component {
         this.setState({ session: { ...this.state.session, day: e } });
     }
 
-    onTimeChange = (e, f, g) => {
-        console.log(e, f, g);
-        this.setState({ session: { ...this.state.session, start_time: f } });
+    onTimeChange = (time, timeStamp, func) => {
+        this.setState({ session: { ...this.state.session, start_time: timeStamp } });
     }
 
 
-
     render() {
-        const { visible, type } = this.props;
+        const { visible, type, years } = this.props;
         const { session } = this.state;
         return (
             <DialogContainer
@@ -89,7 +95,7 @@ export default class SingleSession extends Component {
                     value={session.year}
                     onChange={this.onYearChange}
                     className='md-cell md-cell--bottom'
-                    menuItems={['2017']}
+                    menuItems={years}
                     simplifiedMenu={false}
                 />
                 <SelectField
@@ -149,4 +155,5 @@ SingleSession.propTypes = {
     submitSession: PropTypes.func,
     type: PropTypes.string,
     visible: PropTypes.bool,
+    years: PropTypes.array,
 }

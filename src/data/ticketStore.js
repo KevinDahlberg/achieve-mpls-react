@@ -29,7 +29,6 @@ const ticketsReceived = (ticketArray) => {
 }
 
 const yearsReceived = (years) => {
-    console.log('years in call ', years)
     return {
         type: YEARS_RECEIVED,
         years: years,
@@ -113,7 +112,6 @@ const getYears = () => (dispatch) => {
             const mapped = data.map((year) => {
                 return year.year + ' - ' + (year.year + 1)
             });
-
             dispatch(yearsReceived(mapped))
             return data;
         })

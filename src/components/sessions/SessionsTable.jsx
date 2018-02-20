@@ -42,8 +42,20 @@ class SessionsTable extends Component {
         this.setState({ editVisible: true, session: session });
     }
 
-    deleteSession = (session) => {
+    deleteSessionDial = (session) => {
         this.setState({ deleteVisible: true, session: session });
+    }
+
+    deleteSession = () => {
+        const { deleteSession } = this.props;
+        const { session } = this.state;
+        deleteSession(session);
+        this.setState({ deleteVisible: false, session: {} });
+    }
+
+    submitSession = (session) => {
+        this.setState({ editVisible: false, session: session });
+        this.props.submitSession(session);
     }
 
     viewEvents = (session) => {
@@ -53,7 +65,7 @@ class SessionsTable extends Component {
     }
 
     render() {
-        const { sessions, formArray } = this.props;
+        const { sessions, formArray, years } = this.props;
         const { editVisible, eventsVisible, deleteVisible, session } = this.state;
         return (
             <div>
@@ -83,7 +95,7 @@ class SessionsTable extends Component {
                                     session={session}
                                     viewEvents={this.viewEvents}
                                     editSession={this.editSession}
-                                    deleteSession={this.deleteSession}
+                                    deleteSessionDial={this.deleteSessionDial}
                                 />
                             ))}
                         </TableBody>
@@ -92,9 +104,11 @@ class SessionsTable extends Component {
                 {editVisible ?
                     <SingleSession
                         session={session}
+                        submitSession={this.submitSession}
                         visible={editVisible}
                         hide={this.editHide}
                         type={'Edit'}
+                        years={years}
                     /> :
                     null
                 }
@@ -122,8 +136,11 @@ class SessionsTable extends Component {
 }
 
 SessionsTable.propTypes = {
+    deleteSession: PropTypes.func,
     formArray: PropTypes.array,
     sessions: PropTypes.array,
+    submitSession: PropTypes.func,
+    years: PropTypes.array,
 }
 
 export default withRouter(SessionsTable);

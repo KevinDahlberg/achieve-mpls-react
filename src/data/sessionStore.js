@@ -128,7 +128,6 @@ export const updateSession = (session) => (dispatch) => {
     const url = envUrl + '/sessions/update';
     return new Promise((resolve, reject) => {
         fetch(url, init)
-        .then(response => response.json())
         .then((data) => {
             resolve(data)
         })
@@ -148,7 +147,6 @@ export const deleteSession = (session) => (dispatch) => {
     const url = envUrl + '/sessions/delete/' + session.id;
     return new Promise((resolve, reject) => {
         fetch(url, init)
-        .then(response => response.json())
         .then((data) => {
             resolve(data)
         })
