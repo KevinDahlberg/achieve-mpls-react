@@ -91,7 +91,6 @@ class Events extends Component {
         const id = Number(this.props.match.params.id);
         const session_id = sessions.filter((session) => session.session_count === id)
         event.session_id = session_id[0].id;
-        console.log(event);
         addEvent(event)
         .then((res) => {
             const id = Number(this.props.match.params.id);

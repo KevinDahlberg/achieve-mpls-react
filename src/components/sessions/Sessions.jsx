@@ -39,9 +39,6 @@ class Sessions extends Component {
     getEvents = (session) => {
         const { getEvents } = this.props;
         getEvents(session)
-        .then((res) => {
-            console.log(res);
-        })
     }
 
     addSessionHide = () => {
@@ -50,7 +47,6 @@ class Sessions extends Component {
 
     addSessionClick = () => {
         this.setState({ addVisible: true });
-        console.log('add session clicked');
     }
 
     submitSession = (session) => {
@@ -59,9 +55,6 @@ class Sessions extends Component {
         addSession(session)
         .then((res) => {
             fetchSessions(currentYear)
-            .then((res) => {
-                console.log(res);
-            });
         });
     }
 

@@ -38,7 +38,6 @@ export default class UsersTable extends Component {
     componentWillMount() {
         const { ascendingName } = this.state;
         const sortedUsersByName = this.sortUsers('fname', ascendingName);
-        console.log(sortedUsersByName);
         this.setState({ users: sortedUsersByName, slicedUsers: sortedUsersByName.slice(0,10) })
     }
 
@@ -144,7 +143,6 @@ export default class UsersTable extends Component {
     }
 
     resetPWClick = (user) => {
-        console.log('reset pw clicked ', user);
         this.setState({ user: user, resetVisible: true });
     }
     
@@ -153,7 +151,6 @@ export default class UsersTable extends Component {
         const { user } = this.state;
         deleteUser(user);
         this.setState({ user: {} })
-        console.log('delete user clicked,', this.state.user);
         this.deleteHide();
     }
 

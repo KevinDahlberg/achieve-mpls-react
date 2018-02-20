@@ -43,7 +43,6 @@ export default class TicketsTable extends Component {
     sortTicketNumbers = (key, ascending) => {
         const { tickets } = this.state;
         let sortedTickets = sortBy(tickets, function(ticket) {
-            console.log(ticket.key);
             return Number(ticket);
         });
         if (!ascending) {

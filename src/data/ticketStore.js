@@ -56,7 +56,6 @@ const shouldFetchTickets = (state) => {
 }
 
 const getTickets = (year) => (dispatch) => {
-    console.log('getTickets called');
     dispatch(gettingTickets(true))
     const init = {
         method: 'GET',

@@ -45,7 +45,6 @@ export default class SingleForm extends Component {
     }
 
     addQuestion = () => {
-        console.log(this.state);
         const { form } = this.state;
         const newQuestion = { question: '' };
         form.questions.push(newQuestion);

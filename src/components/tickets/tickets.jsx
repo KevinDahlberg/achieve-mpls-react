@@ -30,7 +30,6 @@ class Tickets extends Component {
         fetchTicketsIfNeeded(currentYear)
         .then((res) => {
             if (res) {
-            console.log('fetch if needed', res);
             this.fuse = new Fuse(res, ticketOptions);
             }
         });
@@ -45,7 +44,6 @@ class Tickets extends Component {
     }
 
     onTicketClick = (ticket) => {
-        console.log(ticket);
         this.setState({ singleTicket: ticket, visible: true })
     }
 

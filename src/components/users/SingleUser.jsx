@@ -52,7 +52,6 @@ export default class SingleUser extends Component {
     }
 
     prepareSessionsForSelect = (sessions) => {
-        console.log(sessions);
         return sessions.map((session) => session.session_count);
     }
 

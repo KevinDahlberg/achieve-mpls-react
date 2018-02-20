@@ -88,7 +88,6 @@ export const checkSession = () => (dispatch) => {
     }
     const url = envUrl + '/users/clearance'
     return new Promise((resolve, reject) => {
-        console.log('in check session');
         fetch(url, init)
         .then(response => response.json())
         .then((data) => {

@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { NavLink, Route, Switch, withRouter } from 'react-router-dom'
+import { NavLink, Route, withRouter } from 'react-router-dom'
 import { bindActionCreators } from 'redux'; 
 import {
     Button,
-    TabsContainer,
-    Tabs,
-    Tab,
 } from 'react-md';
 
 import * as logo from '../assets/achievempls-logo-white.png';
@@ -19,7 +16,6 @@ import Users from '../components/users/Users';
 import Sessions from '../components/sessions/Sessions';
 import Forms from '../components/forms/Forms';
 import Events from '../components/events/Events';
-import { ProgressCircle } from '../components/ProgressCircle'
 
 class Admin extends Component {
     
@@ -28,8 +24,6 @@ class Admin extends Component {
     }
 
     render() {
-        const { formsReceived, ticketsReceived, usersReceived } = this.props;
-        console.log('tickets received ', ticketsReceived);
         return (
             <div>
                 <header className='admin-header'>

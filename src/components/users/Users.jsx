@@ -50,7 +50,6 @@ class Users extends Component {
         .then((res) => {
             if (res) {
             this.fuse = new Fuse(res, usersOptions);
-            console.log(res)
             } else {
                 this.fuse = new Fuse (users, usersOptions);
             }

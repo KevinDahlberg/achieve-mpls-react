@@ -111,7 +111,6 @@ export const deleteForm = (form) => (dispatch) => {
         headers: {'Content-Type': 'application/json'},
         credentials: 'include',
     }
-    console.log(form);
     const url = envUrl + '/forms/delete/' + form.id
     return new Promise((resolve, reject) => {
         fetch(url, init)
@@ -154,11 +153,9 @@ export const assignForms = (yearAndGradeObj) => (dispatch) => {
         fetch(url, init)
         .then((res) => {
             resolve(res);
-            console.log(res)
         })
         .catch((error) => {
             reject(error);
-            console.error(error);
         });
     });
 }

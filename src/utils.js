@@ -14,7 +14,6 @@ export const prepareYearsForSelect = (years) => {
       const newYear = year.split(' ').slice(0,1);
       return newYear[0];
   })
-  console.log(changedYears);
   return changedYears
 }
 /**
