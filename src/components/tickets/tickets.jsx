@@ -7,7 +7,6 @@ import {
 } from 'react-md';
 
 import { fetchTicketsIfNeeded, fetchYearsIfNeeded } from '../../data/ticketStore';
-import { ticketOptions } from '../../constants';
 
 import TicketsTable from './TicketsTable';
 import YearMenu from './YearMenu';
@@ -18,7 +17,6 @@ class Tickets extends Component {
         super(props)
         this.state = {
             search: '',
-            searchResults: [],
             singleTicket: '',
             visible: false,
         }
@@ -27,16 +25,11 @@ class Tickets extends Component {
     componentDidMount() {
         const { currentYear, fetchTicketsIfNeeded, fetchYearsIfNeeded } = this.props;
         fetchYearsIfNeeded();
-        fetchTicketsIfNeeded(currentYear)
-        .then((res) => {
-            if (res) {
-            this.fuse = new Fuse(res, ticketOptions);
-            }
-        });
+        fetchTicketsIfNeeded(currentYear);
     }
 
     onSearchChange = (e) => {
-        this.setState({ searchResults: this.fuse.search(e), search: e });
+        this.setState({ search: e });
     }
 
     onDialogHide = () => {
@@ -49,7 +42,7 @@ class Tickets extends Component {
 
     render () {
         const { tickets, years, currentYear } = this.props;
-        const { search, searchResults, singleTicket, visible } = this.state;
+        const { search, singleTicket, visible } = this.state;
         return (
             <div className='tab-wrapper'>
                 <div className='tab-title'>
@@ -72,7 +65,8 @@ class Tickets extends Component {
                 <div className='table-container'>
                     {tickets.length === 0 ? null
                     : <TicketsTable 
-                        tickets={search ? searchResults : tickets}
+                        search={search}
+                        tickets={tickets}
                         onTicketClick={this.onTicketClick}
                     />}
                 </div>

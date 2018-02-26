@@ -18,6 +18,7 @@ const fetchingUsers = (bool) => {
 }
 
 const usersReceived = (userArray) => {
+    console.log('in users received');
     return {
         type: USERS_RECEIVED,
         fetchingUsers: false,

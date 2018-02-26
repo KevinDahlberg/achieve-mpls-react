@@ -13,7 +13,7 @@ import {
     addNewUser, 
     deleteUser,
     fetchUsers, 
-    updateUser } from '../../data/usersStore';
+    updateUser, } from '../../data/usersStore';
 import { fetchYearsIfNeeded } from '../../data/ticketStore';
 import { fetchSessionsIfNeeded } from '../../data/sessionStore';
 import { usersOptions } from '../../constants';
@@ -27,7 +27,6 @@ class Users extends Component {
         super(props)
         this.state = {
             search: '',
-            searchResults: [],
             user: {
                 fname: '',
                 lname: '',
@@ -36,22 +35,21 @@ class Users extends Component {
                 session_count: '',
                 year: '',
             },
+            users: this.props.users,
             addVisible: false
         }
     }
 
     componentDidMount() {
-        const { currentYear, 
+        const { 
+                currentYear, 
                 fetchUsersIfNeeded, 
                 fetchSessionsIfNeeded, 
-                fetchYearsIfNeeded, 
-                users } = this.props;
+                fetchYearsIfNeeded, } = this.props;
         fetchUsersIfNeeded(currentYear)
         .then((res) => {
             if (res) {
-            this.fuse = new Fuse(res, usersOptions);
-            } else {
-                this.fuse = new Fuse (users, usersOptions);
+                this.setState({ users: res });
             }
         })
         .then(() => {
@@ -61,7 +59,7 @@ class Users extends Component {
     }
 
     onSearchChange = (e) => {
-        this.setState({ searchResults: this.fuse.search(e), search: e });
+        this.setState({ search: e });
     }
 
     addUserHide = () => {
@@ -74,8 +72,7 @@ class Users extends Component {
 
     prepareUserToSubmit = (user, sessions) => {
         const userSession = sessions.filter((session) => session.session_count === user.session_count)
-        if (user.session_id) { 
-            user.session_id = userSession[0].id}
+        user.session_id = userSession[0].id;
         const userYear = user.year.split(' ').slice(0,1);
         user.year = userYear[0];
         return user;
@@ -85,42 +82,44 @@ class Users extends Component {
         const { addNewUser, sessions, fetchUsers, currentYear } = this.props;
         const userToSend = this.prepareUserToSubmit(user, sessions);
         addNewUser(userToSend)
-        .then((res) => {
+        .then(() => {
             fetchUsers(currentYear)
             .then((res) => {
-                this.fuse = new Fuse(res, usersOptions);
+                this.setState({ search: '', users: res });
             })
         })
     }
 
     submitEditUser = (user) => {
         const { updateUser, fetchUsers, currentYear, sessions, users } = this.props;
+        this.setState({ search: '' });
         const userToSend = this.prepareUserToSubmit(user, sessions)
         const userId = users.filter((singleUser) => singleUser.email === user.email);
         userToSend.id = userId[0].id;
         updateUser(userToSend)
-        .then((res) => {
+        .then(() => {
             fetchUsers(currentYear)
             .then((res) => {
-                this.fuse = new Fuse(res, usersOptions);
+                this.setState({ search: '', users: res });
             })
         })
     }
 
     deleteUser = (user) => {
         const { deleteUser, fetchUsers, currentYear } = this.props;
+        this.setState({ search: '' });
         deleteUser(user)
-        .then((res) => {
+        .then(() => {
             fetchUsers(currentYear)
             .then((res) => {
-                this.fuse = new Fuse(res, usersOptions);
-            })
+                this.setState({ search: '', users: res });
+            });
         })
     }
 
     render() {
-        const { users, years, currentYear, sessions } = this.props;
-        const { search, searchResults, addVisible, user } = this.state;
+        const { years, currentYear, sessions } = this.props;
+        const { search, addVisible, user, users } = this.state;
         return(
             <div className='tab-wrapper'>
                 <div className='tab-title'>
@@ -151,8 +150,9 @@ class Users extends Component {
                     {users.length === 0 ? null :
                     <UsersTable 
                         deleteUser = {this.deleteUser}
+                        search = {search}
                         sessions = {sessions}
-                        users={search ? searchResults : users} 
+                        users={users} 
                         usersClick={this.onUsersClick} 
                         submitEditUser={this.submitEditUser}
                         years={years}

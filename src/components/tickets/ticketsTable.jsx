@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import Fuse from 'fuse.js';
 import { sortBy } from 'lodash';
 import { 
     DataTable, 
@@ -10,9 +12,16 @@ import {
     TablePagination,
 } from 'react-md';
 
+import { ticketOptions } from '../../constants';
+
 import TicketsTableRow from './TicketsTableRow'
 
 export default class TicketsTable extends Component {
+    static propTypes = {
+        search: PropTypes.string,
+        tickets: PropTypes.array,
+    }
+
     constructor(props){
         super(props);
         this.state = {
@@ -29,6 +38,21 @@ export default class TicketsTable extends Component {
             ascendingSchool: true,
             ascendingDateCompleted: true,
         }
+    }
+
+    componentDidMount() {
+        const { tickets } = this.props;
+        this.fuse = new Fuse(tickets, ticketOptions);
+    }
+
+    componentWillReceiveProps() {
+        const { search } = this.props;
+        const { rows } = this.state;
+        const searchResults = this.fuse.search(search);
+        const sortedTickets = sortBy(searchResults, 'fname');
+        const sliceOfTickets = sortedTickets.slice(0,rows);
+        this.setState({ slicedTickets: sliceOfTickets, tickets: sortedTickets });
+        console.log(this.state);
     }
 
     sortTicketStrings = (key, ascending) => {

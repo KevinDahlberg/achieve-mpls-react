@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
+
+import Fuse from 'fuse.js';
 import { sortBy } from 'lodash';
 import {
     Button,
@@ -13,10 +15,21 @@ import {
     TablePagination,
 } from 'react-md';
 
+import { usersOptions } from '../../constants';
+
 import SingleUser from './SingleUser';
 import UsersTableRow from './UsersTableRow';
 
 export default class UsersTable extends Component {
+    static propTypes = {
+        deleteUser: PropTypes.func,
+        search: PropTypes.string,
+        sessions: PropTypes.array,
+        submitEditUser: PropTypes.func,
+        users: PropTypes.array,
+        years: PropTypes.array,
+    }
+
     constructor(props){
         super(props)
         this.state = {
@@ -24,8 +37,8 @@ export default class UsersTable extends Component {
             editVisible: false,
             deleteVisible: false,
             user: {},
-            users: this.props.users,
-            slicedUsers: this.props.users.slice(0,10),
+            users: [],
+            slicedUsers: [],
             ascendingName: true,
             ascendingEmail: true,
             ascendingRole: true,
@@ -35,10 +48,24 @@ export default class UsersTable extends Component {
         }
     }
 
-    componentWillMount() {
-        const { ascendingName } = this.state;
-        const sortedUsersByName = this.sortUsers('fname', ascendingName);
-        this.setState({ users: sortedUsersByName, slicedUsers: sortedUsersByName.slice(0,10) })
+    componentDidMount() {
+        const { users } = this.props;
+        //sets up search functionality
+        this.fuse = new Fuse(users, usersOptions);
+        this.setState({ users: users, slicedUsers: users.slice(0,10) });
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const { search, users } = nextProps;
+        const { rows } = this.state;
+        if (search) {
+        const searchResults = this.fuse.search(search);
+        const sortedUsers = sortBy(searchResults, 'fname');
+        const sliceOfUsers = sortedUsers.slice(0, rows);
+        this.setState({ slicedUsers: sliceOfUsers, users: sortedUsers, acendingName: true });
+        } else {
+            this.setState({ users: users, slicedUsers: users.slice(0,10) });
+        }
     }
 
     sortUsers = (key, ascending) => {
@@ -178,7 +205,7 @@ export default class UsersTable extends Component {
                 user, 
                 resetVisible, 
                 editVisible, 
-                deleteVisible, 
+                deleteVisible,
                 slicedUsers, 
                 ascendingName, 
                 ascendingEmail,
@@ -304,12 +331,4 @@ export default class UsersTable extends Component {
             </div>
         )
     }
-}
-
-UsersTable.propTypes = {
-    deleteUser: PropTypes.function,
-    sessions: PropTypes.array,
-    submitEditUser: PropTypes.function,
-    users: PropTypes.array,
-    years: PropTypes.array,
 }
