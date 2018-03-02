@@ -6,7 +6,7 @@ import {
     Toolbar,
 } from 'react-md'
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { NavLink, withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 
 import {
@@ -44,7 +44,8 @@ class Login extends Component {
         this.setState({ password: pw });
     }
 
-    submitLogin = () => {
+    submitLogin = (e) => {
+        e.preventDefault();
         const { email, password } = this.state;
         const { login } = this.props;
         const objToSend = {
@@ -76,7 +77,7 @@ class Login extends Component {
                     className='login-toolbar'
                 />
                 <div className='login-content'>
-                    <div className='login-fields'>
+                    <form className='login-fields' onSubmit={this.submitLogin}>
                         <TextField
                             id='email'
                             label='Email'
@@ -92,9 +93,9 @@ class Login extends Component {
                             onChange={this.onPWChange}
                             type='password'
                         />
-                        <p>Forgot Password</p>
-                        <Button raised primary onClick={this.submitLogin}>Login</Button>
-                    </div>
+                        <NavLink to="forgot-password">Forgot Password</NavLink>
+                        <Button raised primary type="submit">Login</Button>
+                    </form>
                 </div>
                 <div>
                 <DialogContainer

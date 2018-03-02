@@ -7,6 +7,8 @@ import Authorization from './authorization';
 import { checkSession } from './data/authStore';
 //views
 import Coach from './containers/coach';
+import ForgotPassword from './containers/ForgotPassword';
+import NewPassword from './containers/NewPassword';
 import Login from './containers/login';
 import Admin from './containers/admin';
 
@@ -26,6 +28,8 @@ class App extends Component {
         <Switch>
           <Route path='/admin' component={Authorization(['admin'])(Admin)} />
           <Route path='/coach' component={Authorization(['coach'])(Coach)} />
+          <Route path='/new-password' component={NewPassword} />
+          <Route path='/forgot-password' component={ForgotPassword} />
           <Route path='/login' component={Login} />
           <Route path='/' component={Login} />
         </Switch>

@@ -1,4 +1,5 @@
 import fetch from 'isomorphic-fetch';
+import moment from 'moment';
 import { envUrl } from '../constants';
 const AUTHENTICATE_USER = 'AUTHENTICATE_USER';
 const USER_AUTHENTICATED = 'USER_AUTHENTICATED';
@@ -7,6 +8,7 @@ const LOGGED_OUT = 'LOGGED_OUT';
 const initialState = {
     userName: '',
     userRole: '',
+    userSession: '',
     isAuthenticated: false,
     authenticating: true,
 }
@@ -19,6 +21,7 @@ function authenticateUser(userObj) {
         isAuthenticated: true,
         userName: userObj.user,
         userRole: userObj.role,
+        userSession: userObj.session,
     }
 }
 
@@ -32,14 +35,16 @@ function userLoggedOut() {
         isAuthenticated: false,
         userName: '',
         userRole: '',
+        userSession: '',
     }
 }
 
 /** ACTION FUNCTIONS */
-const setUser = (user, role) => (dispatch) => {
+const setUser = (user, role, session) => (dispatch) => {
     const userObj = {
         user: user,
-        role: role
+        role: role,
+        userSession: session,
     }
     return new Promise((res, rej) => {
         dispatch(authenticateUser(userObj))
@@ -69,11 +74,39 @@ export const login = (creds) => (dispatch) => {
         fetch(url, init)
         .then(response => response.json())
         .then((data) => {
-            dispatch(setUser(data.username, data.role))
+            dispatch(setUser(data.username, data.role, data.session_count))
             .then((data) => resolve(data))
         })
         .catch((error) => {
             dispatch(authenticating(false));
+            reject(error);
+        })
+    })
+}
+
+export const forgotPW = (email) => (dispatch) => {
+    // set expiration date of chance
+    const chanceExpiration = new Date();
+    chanceExpiration.setDate(chanceExpiration.getDate() + 30);
+    const chance_expiration = moment(chanceExpiration).format('YYYY-MM-DD');
+    const objToSend = {
+        email: email,
+        chance_expiration: chance_expiration,
+    }
+
+    const init = {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include',
+        body: JSON.stringify(objToSend),
+    }
+    const url = envUrl + '/mail/forgotpw';
+    return new Promise((resolve, reject) => {
+        fetch(url, init)
+        .then((data) => {
+            resolve(data)
+        })
+        .catch((error) => {
             reject(error);
         })
     })
