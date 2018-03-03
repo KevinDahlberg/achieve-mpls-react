@@ -18,8 +18,8 @@ import { fetchFormsIfNeeded } from '../../data/formStore';
 
 import { newEvent } from '../../constants';
 
-import EventsTable from './EventsTable';
-import SingleEvent from './SingleEvent';
+import EventsTable from './Components/EventsTable';
+import SingleEvent from './Components/SingleEvent';
 
 class Events extends Component {
     constructor(props) {

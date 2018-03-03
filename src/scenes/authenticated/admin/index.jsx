@@ -11,11 +11,11 @@ import * as logo from '../assets/achievempls-logo-white.png';
 import { logout } from '../data/authStore';
 
 
-import Tickets from '../components/tickets/Tickets';
-import Users from '../components/users/Users';
-import Sessions from '../components/sessions/Sessions';
-import Forms from '../components/forms/Forms';
-import Events from '../components/events/Events';
+import Tickets from './Views/Tickets';
+import Users from './Views/Users';
+import Sessions from './Views/Sessions';
+import Forms from './Views/Forms';
+import Events from './Views/Events';
 
 class Admin extends Component {
     

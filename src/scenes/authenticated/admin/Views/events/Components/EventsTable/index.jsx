@@ -11,7 +11,7 @@ import {
     TableColumn,
 } from 'react-md';
 
-import SingleEvent from './SingleEvent';
+import SingleEvent from '../SingleEvent';
 import EventsTableRow from './EventsTableRow';
 
 import { newEvent } from '../../constants';
