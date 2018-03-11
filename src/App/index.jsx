@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Switch, Route, withRouter } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -37,12 +37,12 @@ class App extends Component {
                     <div><h1>Loading...</h1></div> :
                         <div className="App">
                         <Switch>
-                        <Route path='/admin' component={Authorization(['admin'])(Admin)} />
-                        <Route path='/coach' component={Authorization(['coach'])(Coach)} />
-                        <Route path='/new-password' component={NewPassword} />
-                        <Route path='/forgot-password' component={ForgotPassword} />
-                        <Route path='/login' component={Login} />
-                        <Route path='/' component={Login} />
+                            <Route path='/admin' component={Authorization(['admin'])(Admin)} />
+                            <Route path='/coach' component={Authorization(['coach'])(Coach)} />
+                            <Route path='/new-password' component={NewPassword} />
+                            <Route path='/forgot-password' component={ForgotPassword} />
+                            <Route path='/login' component={Login} />
+                            <Route path='/' component={Login} />
                         </Switch>
                     </div>
                 }
@@ -56,4 +56,4 @@ const mapDispatchToProps = dispatch => {
     { checkSession }, dispatch
   )
 }
-export default withRouter(connect(null, mapDispatchToProps)(App));
+export default connect(null, mapDispatchToProps)(App);

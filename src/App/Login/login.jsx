@@ -63,6 +63,7 @@ class Login extends Component {
             }
         })
         .catch((error) => {
+            console.error(error);
             this.showDialog();
         });
     }
@@ -115,10 +116,9 @@ class Login extends Component {
     }
 }
 
-const mapStateToProps = state => ({
-    isAuthenticated: state.authReducer.isAuthenticated,
-    authenticating: state.authReducer.authenticating,
-})
+const mapStateToProps = (state) => ({ 
+    isAuthenticated: state.reducers.authReducer.isAuthenticated 
+});
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators(

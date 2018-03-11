@@ -1,5 +1,12 @@
 /** Admin Reducer */
+import { combineReducers } from 'redux';
 import types from './types';
+
+import eventsReducer from './Views/Events/reducers';
+import formsReducer from './Views/Forms/reducers';
+import sessionsReducer from './Views/Sessions/reducers';
+import ticketsReducer from './Views/Tickets/reducers';
+import usersReducer from './Views/Tickets/reducers';
 
 const initialState = {
     events: [],
@@ -73,4 +80,14 @@ function reducer(state = initialState, action) {
     }
 }
 
-export default reducer;
+const reducers = combineReducers({
+    reducer,
+    eventsReducer,
+    formsReducer,
+    sessionsReducer,
+    ticketsReducer,
+    usersReducer,
+})
+
+
+export default reducers;

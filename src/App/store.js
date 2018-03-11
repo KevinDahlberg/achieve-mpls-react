@@ -26,8 +26,8 @@ export const login = (creds) => (dispatch) => {
                 role: data.role,
                 session: data.session_count,
             }
-            dispatch(actions.authenticateUser(userObj))
-            .then((data) => resolve(data))
+            dispatch(actions.authenticateUser(userObj));
+            resolve(data);
         })
         .catch((error) => {
             dispatch(actions.authenticating(false));
@@ -82,10 +82,7 @@ export const checkSession = () => (dispatch) => {
                 session: data.session_count,
             }
             dispatch(actions.authenticateUser(userObj))
-            .then((data) => {
-                dispatch(actions.authenticating(false));
-                resolve(data)
-            })
+            resolve(data)
         })
         .catch((error) => {
             dispatch(actions.authenticating(false));
