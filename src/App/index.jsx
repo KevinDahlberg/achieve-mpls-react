@@ -4,13 +4,13 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import Authorization from './authorization';
-import { checkSession } from './data/authStore';
+import { checkSession } from './store';
 //views
-import Coach from './authenticated/coach';
-import ForgotPassword from './login/ForgotPassword';
-import NewPassword from './login/NewPassword';
-import Login from './login/login';
-import Admin from './authenticated/admin';
+import Coach from './Authenticated/Coach';
+import ForgotPassword from './Login/ForgotPassword';
+import NewPassword from './Login/NewPassword';
+import Login from './Login/login';
+import Admin from './Authenticated/Admin';
 
 class App extends Component {
     constructor(props) {
@@ -25,6 +25,7 @@ class App extends Component {
         checkSession()
         .then((res) => {
             this.setState({ authenticating: false })
+            // add if statement to say if there is a session present, push to authenticated.
         })
     }
 

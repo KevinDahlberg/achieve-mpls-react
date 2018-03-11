@@ -1,0 +1,18 @@
+/** Types for EVENT */
+
+const DELETING_EVENT = 'DELETING_EVENT';
+const EVENT_DELETED = 'EVENT_DELETED';
+const ADDING_EVENT = 'ADDING_EVENT';
+const EVENT_ADDED = 'EVENT_ADDED';
+const UPDATING_EVENT = 'UPDATING_EVENT';
+const EVENT_UPDATED = 'EVENT_UPDATED';
+// fetching EVENT is in the admin redux duck
+
+export default {
+    DELETING_EVENT,
+    EVENT_DELETED,
+    ADDING_EVENT,
+    EVENT_ADDED,
+    UPDATING_EVENT,
+    EVENT_UPDATED,
+}

@@ -17,7 +17,7 @@ import {
 
 import { usersOptions } from '../../constants';
 
-import SingleUser from './SingleUser';
+import SingleUser from '../SingleUser';
 import UsersTableRow from './UsersTableRow';
 
 export default class UsersTable extends Component {

@@ -13,7 +13,7 @@ import {
 } from 'react-md';
 
 import SessionsTableRow from './SessionsTableRow';
-import SingleSession from './SingleSession';
+import SingleSession from '../SingleSession';
 
 class SessionsTable extends Component {
     constructor(props) {

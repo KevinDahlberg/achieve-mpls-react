@@ -11,16 +11,18 @@ import {
     assignForms,
     deleteForm,
     deleteQuestion,
-    fetchFormsIfNeeded,
-    fetchForms,
     updateForm,
-} from '../../data/formStore';
-import { fetchYearsIfNeeded } from '../../data/ticketStore';
+} from './store';
+import { 
+    fetchYearsIfNeeded,
+    fetchFormsIfNeeded,
+    fetchForms, 
+} from '../../store';
 
 import { prepareYearsForSelect } from '../../utils';
 
-import FormsTable from './FormsTable';
-import SingleForm from './SingleForm';
+import FormsTable from './Components/FormsTable';
+import SingleForm from './Components/SingleForm';
 
 const newForm = {
     form_name: '',
@@ -35,14 +37,18 @@ class Forms extends Component {
         this.state = {
             form: newForm,
             addVisible: false,
+            fetching: true,
         }
     }
 
-    componentDidMount() {
+    componentWillMount() {
         const { fetchFormsIfNeeded, fetchYearsIfNeeded } = this.props;
         fetchFormsIfNeeded()
         .then((res) => {
-            fetchYearsIfNeeded();
+            fetchYearsIfNeeded()
+            .then(() => {
+                this.setState({ fetching: false });
+            })
         })
     }
 
@@ -95,42 +101,45 @@ class Forms extends Component {
 
     render() {
         const { forms, years } = this.props;
-        const { form, addVisible } = this.state;
+        const { form, addVisible, fetching } = this.state;
         const preppedYears = prepareYearsForSelect(years);
         return(
             <div className='tab-wrapper'>
-                <div className='tab-title'>
-                    <h2>Ticket Templates</h2>
-                </div>
-                <div className='tab-items'>
-                    <Paper
-                        zDepth={2}
-                        className='add-wrapper'
-                    >
-                        <span className='add-text'>Add Form</span>
-                        <Button floating primary className='add-button' onClick={this.addFormClick}>add</Button>
-                    </Paper>
-                </div>
-                <div className="table-container">
-                    {forms.length === 0 ? null :
-                    <FormsTable
-                        deleteQuestion={this.deleteQuestion}
-                        deleteForm={this.deleteForm}
-                        forms={forms}
-                        formClick={this.onFormClick}
-                        submitAssign={this.submitAssign}
-                        submitEdit={this.updateForm}
-                        years={preppedYears}
-                    />}
-                </div>
-                <SingleForm
-                    deleteQuestion={this.deleteAddQuestion}
-                    hide={this.addFormHide}
-                    form={form}
-                    visible={addVisible}
-                    submitForm={this.submitAddForm}
-                    type='Add'
-                />
+                {fetching ? null :
+                <div>
+                    <div className='tab-title'>
+                        <h2>Ticket Templates</h2>
+                    </div>
+                    <div className='tab-items'>
+                        <Paper
+                            zDepth={2}
+                            className='add-wrapper'
+                        >
+                            <span className='add-text'>Add Form</span>
+                            <Button floating primary className='add-button' onClick={this.addFormClick}>add</Button>
+                        </Paper>
+                    </div>
+                    <div className="table-container">
+                        {forms.length === 0 ? null :
+                        <FormsTable
+                            deleteQuestion={this.deleteQuestion}
+                            deleteForm={this.deleteForm}
+                            forms={forms}
+                            formClick={this.onFormClick}
+                            submitAssign={this.submitAssign}
+                            submitEdit={this.updateForm}
+                            years={preppedYears}
+                        />}
+                    </div>
+                    <SingleForm
+                        deleteQuestion={this.deleteAddQuestion}
+                        hide={this.addFormHide}
+                        form={form}
+                        visible={addVisible}
+                        submitForm={this.submitAddForm}
+                        type='Add'
+                    />
+                </div>}
             </div>
         )
     }

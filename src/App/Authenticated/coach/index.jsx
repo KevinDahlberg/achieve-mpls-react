@@ -6,10 +6,10 @@ import {
     TextField
 } from 'react-md';
 
-import * as logo from '../../../assets/achievempls-logo-white.png';
+import * as logo from '../../assets/achievempls-logo-white.png';
 
-import { logout } from '../../../data/authStore';
-import { getExitTickets } from '../../../data/coachStore';
+import { logout } from '../../store';
+import { getExitTickets } from './store';
 
 class Coach extends Component {
     constructor(props){

@@ -6,11 +6,11 @@ import {
     TextField,
 } from 'react-md';
 
-import { fetchTicketsIfNeeded, fetchYearsIfNeeded } from '../../data/ticketStore';
+import { fetchTicketsIfNeeded, fetchYearsIfNeeded } from '../../store';
 
-import TicketsTable from './TicketsTable';
-import YearMenu from './YearMenu';
-import SingleTicket from './SingleTicket';
+import TicketsTable from './Components/TicketsTable';
+import YearMenu from '../Components/YearMenu';
+import SingleTicket from './Components/SingleTicket';
 
 class Tickets extends Component {
     constructor(props) {

@@ -8,24 +8,29 @@ import {
     TextField,
 } from 'react-md';
 
-import { 
-    fetchUsersIfNeeded, 
+import {  
     addNewUser, 
-    deleteUser,
-    fetchUsers, 
-    updateUser, } from '../../data/usersStore';
-import { fetchYearsIfNeeded } from '../../data/ticketStore';
-import { fetchSessionsIfNeeded } from '../../data/sessionStore';
+    deleteUser, 
+    updateUser, 
+} from './store';
+import {
+    fetchYearsIfNeeded,
+    fetchSessionsIfNeeded,
+    fetchUsersIfNeeded,
+    fetchUsers,
+} from '../../store';
+
 import { usersOptions } from './constants';
 
-import SingleUser from './SingleUser';
-import UsersTable from './UsersTable';
-import YearMenu from '../tickets/YearMenu';
+import SingleUser from './Components/SingleUser';
+import UsersTable from './Components/UsersTable';
+import YearMenu from '../Tickets/Components/YearMenu';
 
 class Users extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            fetching: true,
             search: '',
             user: {
                 fname: '',
@@ -42,10 +47,11 @@ class Users extends Component {
 
     componentDidMount() {
         const { 
-                currentYear, 
-                fetchUsersIfNeeded, 
-                fetchSessionsIfNeeded, 
-                fetchYearsIfNeeded, } = this.props;
+            currentYear, 
+            fetchUsersIfNeeded, 
+            fetchSessionsIfNeeded, 
+            fetchYearsIfNeeded, 
+        } = this.props;
         fetchUsersIfNeeded(currentYear)
         .then((res) => {
             if (res) {
@@ -53,8 +59,13 @@ class Users extends Component {
             }
         })
         .then(() => {
-            fetchSessionsIfNeeded(currentYear);
-            fetchYearsIfNeeded();
+            fetchSessionsIfNeeded(currentYear)
+            .then(() => {
+                fetchYearsIfNeeded()
+                .then(() => {
+                    this.setState({ fetching: false });
+                })
+            })
         })
     }
 
@@ -119,54 +130,59 @@ class Users extends Component {
 
     render() {
         const { years, currentYear, sessions } = this.props;
-        const { search, addVisible, user, users } = this.state;
+        const { search, addVisible, user, users, fetching } = this.state;
         return(
+            
             <div className='tab-wrapper'>
-                <div className='tab-title'>
-                <h2>Users</h2>
-                <YearMenu 
-                    years={years}
-                    currentYear={currentYear}
-                />
-                </div>
-                <div className='tab-items'>
-                    <TextField
-                        id='search-field'
-                        label='Search...'
-                        value={search}
-                        onChange={this.onSearchChange}
-                        size={20}
-                        fullWidth={false}
-                    />
-                    <Paper
-                        zDepth={2}
-                        className='add-wrapper'
-                    >
-                        <span className='add-text'>Add User</span>
-                        <Button floating primary className='add-button' onClick={this.addUserClick}>add</Button>
-                    </Paper>
-                </div>
-                <div className='table-container'>
-                    {users.length === 0 ? null :
-                    <UsersTable 
-                        deleteUser = {this.deleteUser}
-                        search = {search}
-                        sessions = {sessions}
-                        users={users} 
-                        usersClick={this.onUsersClick} 
-                        submitEditUser={this.submitEditUser}
-                        years={years}
-                    />}
-                </div>
-                    <SingleUser
-                        hide={this.addUserHide}
-                        user={user}
-                        visible={addVisible}
-                        submitUser={this.submitAddUser}
-                        sessions={sessions}
-                        years={years}
-                        type='Add'
-                    />
+                {fetching ? null :
+                    <div>
+                        <div className='tab-title'>
+                            <h2>Users</h2>
+                            <YearMenu 
+                                years={years}
+                                currentYear={currentYear}
+                            />
+                        </div>
+                        <div className='tab-items'>
+                            <TextField
+                                id='search-field'
+                                label='Search...'
+                                value={search}
+                                onChange={this.onSearchChange}
+                                size={20}
+                                fullWidth={false}
+                            />
+                            <Paper
+                                zDepth={2}
+                                className='add-wrapper'
+                            >
+                                <span className='add-text'>Add User</span>
+                                <Button floating primary className='add-button' onClick={this.addUserClick}>add</Button>
+                            </Paper>
+                        </div>
+                        <div className='table-container'>
+                            {users.length === 0 ? null :
+                            <UsersTable 
+                                deleteUser = {this.deleteUser}
+                                search = {search}
+                                sessions = {sessions}
+                                users={users} 
+                                usersClick={this.onUsersClick} 
+                                submitEditUser={this.submitEditUser}
+                                years={years}
+                            />}
+                        </div>
+                            <SingleUser
+                                hide={this.addUserHide}
+                                user={user}
+                                visible={addVisible}
+                                submitUser={this.submitAddUser}
+                                sessions={sessions}
+                                years={years}
+                                type='Add'
+                            />
+                    </div>
+                }
             </div>
         )
     }

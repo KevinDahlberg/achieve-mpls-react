@@ -1,0 +1,18 @@
+/** Types for Tickets */
+
+const DELETING_TICKET = 'DELETING_TICKET';
+const TICKET_DELETED = 'TICKET_DELETED';
+const ADDING_TICKET = 'ADDING_TICKET';
+const TICKET_ADDED = 'TICKET_ADDED';
+const UPDATING_TICKET = 'UPDATING_TICKET';
+const TICKET_UPDATED = 'TICKET_UPDATED';
+// fetching ticket is in the admin redux duck
+
+export default {
+    DELETING_TICKET,
+    TICKET_DELETED,
+    ADDING_TICKET,
+    TICKET_ADDED,
+    UPDATING_TICKET,
+    TICKET_UPDATED,
+}

@@ -1,76 +1,13 @@
+/** Users Queries */
 import fetch from 'isomorphic-fetch';
 import moment from 'moment';
 
-import { generateId } from '../utils';
-import { envUrl } from '../constants';
-
-const FETCHING_USERS = 'FETCHING_USERS';
-const USERS_RECEIVED = 'USERS_RECEIVED';
-
-const initialState = {
-    fetchingUsers: false,
-    users: [],
-    usersReceived: false,
-}
-
-const fetchingUsers = (bool) => {
-    return {type: FETCHING_USERS, fetchingUsers: bool};
-}
-
-const usersReceived = (userArray) => {
-    console.log('in users received');
-    return {
-        type: USERS_RECEIVED,
-        fetchingUsers: false,
-        usersReceived: true,
-        users: userArray,
-    }
-}
-
-export const fetchUsersIfNeeded = (year) => (dispatch, getState) => {
-    if (shouldFetchUsers(getState())) {
-        dispatch(fetchingUsers(true));
-        return dispatch(fetchUsers(year))
-    } else {
-        return new Promise((resolve, reject) => {
-            resolve(false);
-        })
-    }
-}
-const shouldFetchUsers = (state) => {
-    const { users } = state.usersReducer;
-    if (users.length === 0) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-export const fetchUsers = (year) => (dispatch) => {
-    //todo set up backend to filter out users based on year
-    dispatch(fetchingUsers(true))
-    const init = {
-        method: 'GET',
-        headers: {'Content-Type': 'application/json'},
-        credentials: 'include',
-    }
-    const url = envUrl + '/users';
-    return new Promise((resolve, reject) => {
-        fetch(url, init)
-        .then(response => response.json())
-        .then((data) => {
-            dispatch(usersReceived(data))
-            return data;
-        })
-        .then((data) => resolve(data))
-        .catch((error) => {
-            dispatch(fetchingUsers(false));
-            reject(error);
-        })
-    })
-}
+import actions from './actions';
+import { generateId } from './utils';
+import { envUrl } from '../../../../constants';
 
 export const addNewUser = (user) => (dispatch) => {
+    dispatch(actions.addingUser());
     user.password = generateId(10);
     const init = {
         method: 'POST',
@@ -82,15 +19,18 @@ export const addNewUser = (user) => (dispatch) => {
     return new Promise((resolve, reject) => {
         fetch(url, init)
         .then((response) => {
+            dispatch(actions.userAdded());
             resolve(response);
         })
         .catch((error) => {
+            dispatch(actions.userAdded());
             reject(error);
         })
     })
 }
 
 export const updateUser = (user) => (dispatch) => {
+    dispatch(actions.updatingUser());
     const init = {
         method: 'PUT',
         headers: {'Content-Type': 'application/json'},
@@ -101,14 +41,17 @@ export const updateUser = (user) => (dispatch) => {
     return new Promise((resolve, reject) => {
         fetch(url, init)
         .then((response) => {
+            dispatch(actions.userUpdated());
             resolve(response);
         })
         .catch((error) => {
+            dispatch(actions.userUpdated());
             reject(error);
         })
     })
 }
 
+// might need to move this DB call, not necessarily related to users, also used by Login components
 export const resetPW = (user) => (dispatch) => {
     const chanceExpiration = new Date();
     chanceExpiration.setDate(chanceExpiration.getDate() + 30);
@@ -119,7 +62,7 @@ export const resetPW = (user) => (dispatch) => {
         credentials: 'include',
     }
     // obj needs id, email, and chance 
-    const url = 'http://localhost:5000/mail'
+    const url = envUrl + '/mail'
     return new Promise((resolve, reject) => {
         fetch(url, init)
         .then(response => response.json())
@@ -167,24 +110,3 @@ export const deleteUser = (user) => (dispatch) => {
         }
     })   
 }
-
-function usersReducer(state = initialState, action) {
-    switch (action.type) {
-        case FETCHING_USERS:
-        return {
-            ...state,
-            fetchingUsers: action.fetchingUsers,
-        };
-        case USERS_RECEIVED:
-        return {
-            ...state,
-            fetchingUsers: action.fetchingUsers,
-            users: action.users,
-            usersReceived: action.usersReceived,
-        }
-        default:
-            return state;
-    }
-}
-
-export default usersReducer;

@@ -1,73 +1,11 @@
+/** Form Queries */
 import fetch from 'isomorphic-fetch';
+import { envUrl } from '../../../../constants';
 
-import { envUrl } from '../constants';
-
-const FETCHING_FORMS = 'FETCHING_FORMS';
-const FORMS_RECEIVED = 'FORMS_RECEIVED';
-
-const initialState = {
-    fetchingForms: false,
-    forms: [],
-    formsReceived: false,
-}
-
-const fetchingForms = (bool) => {
-    return {type: FETCHING_FORMS, fetchingForms: bool};
-}
-
-const formsReceived = (formArray) => {
-    return {
-        type: FORMS_RECEIVED,
-        fetchingForms: false,
-        forms: formArray,
-        formsReceived: true,
-    }
-}
-
-export const fetchFormsIfNeeded = () => (dispatch, getState) => {
-    if (shouldFetchForms(getState())) {
-        dispatch(fetchingForms(true));
-        return dispatch(fetchForms());
-    } else {
-        return new Promise((resolve, reject) => {
-            resolve(false);
-        })
-    }
-}
-
-const shouldFetchForms = (state) => {
-    const { forms } = state.formReducer;
-    if (forms.length === 0) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-export const fetchForms = () => (dispatch) => {
-    dispatch(fetchingForms(true))
-    const init = {
-        method: 'GET',
-        headers: {'Content-Type': 'application/json'},
-        credentials: 'include',
-    }
-    const url = 'http://localhost:5000/forms'
-    return new Promise((resolve, reject) => {
-        fetch(url, init)
-        .then(response => response.json())
-        .then((data) => {
-            dispatch(formsReceived(data))
-            return data;
-        })
-        .then((data) => resolve(data))
-        .catch((error) => {
-            dispatch(fetchingForms(false));
-            reject(error);
-        })
-    })
-}
+import actions from './actions';
 
 export const addForm = (form) => (dispatch) => {
+    dispatch(actions.addingForm());
     const init = {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -78,15 +16,18 @@ export const addForm = (form) => (dispatch) => {
     return new Promise((resolve, reject) => {
         fetch(url, init)
         .then((response) => {
+            dispatch(actions.formAdded());
             resolve(response);
         })
         .catch((error) => {
+            dispatch(actions.formAdded());
             reject(error);
         });
     });
 }
 
 export const updateForm = (form) => (dispatch) => {
+    dispatch(actions.updatingForm());
     const init = {
         method: 'PUT',
         headers: {'Content-Type': 'application/json'},
@@ -97,15 +38,18 @@ export const updateForm = (form) => (dispatch) => {
     return new Promise((resolve, reject) => {
         fetch(url, init)
         .then((response) => {
+            dispatch(actions.formUpdated());
             resolve(response);
         })
         .catch((error) => {
+            dispatch(actions.formUpdated());
             reject(error);
         });
     });
 }
 
 export const deleteForm = (form) => (dispatch) => {
+    dispatch(actions.deletingForm());
     const init = {
         method: 'DELETE',
         headers: {'Content-Type': 'application/json'},
@@ -115,14 +59,17 @@ export const deleteForm = (form) => (dispatch) => {
     return new Promise((resolve, reject) => {
         fetch(url, init)
         .then((res) => {
+            dispatch(actions.formDeleted());
             resolve(res);
         })
         .catch((error) => {
+            dispatch(actions.formDeleted());
             reject(error);
         });
     });
 }
 
+// todo - no actions associated with deleteQuestion yet
 export const deleteQuestion = (question) => (dispatch) => {
     const init = {
         method: 'DELETE',
@@ -141,6 +88,7 @@ export const deleteQuestion = (question) => (dispatch) => {
     });
 }
 
+// todo - no actions for assinging forms yet
 export const assignForms = (yearAndGradeObj) => (dispatch) => {
     const init = {
         method: 'POST',
@@ -159,25 +107,3 @@ export const assignForms = (yearAndGradeObj) => (dispatch) => {
         });
     });
 }
-
-
-function formReducer(state = initialState, action) {
-    switch (action.type) {
-        case FETCHING_FORMS:
-        return {
-            ...state,
-            fetchingForms: action.fetchingForms,
-        }
-        case FORMS_RECEIVED:
-        return {
-            ...state,
-            fetchingForms: action.fetchingForms,
-            forms: action.forms,
-            formsReceived: action.formsReceived,
-        }
-        default:
-            return state;
-    }
-}
-
-export default formReducer;

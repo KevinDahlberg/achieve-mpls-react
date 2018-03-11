@@ -12,9 +12,9 @@ import { bindActionCreators } from 'redux';
 import {
     checkSession,
     login,
-} from '../../data/authStore'
+} from '../store'
 
-import * as logo from '../../assets/achievempls-logo-white.png';
+import * as logo from '../assets/achievempls-logo-white.png';
 
 class Login extends Component {
     constructor(props){

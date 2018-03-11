@@ -10,8 +10,8 @@ import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import * as logo from '../../assets/achievempls-logo-white.png';
-import { forgotPW } from '../../data/authStore';
+import * as logo from '../assets/achievempls-logo-white.png';
+import { forgotPW } from '../store';
 
 class ForgotPassword extends Component {
     constructor(props) {

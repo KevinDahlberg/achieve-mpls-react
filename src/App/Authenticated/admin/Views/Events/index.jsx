@@ -10,11 +10,13 @@ import { bindActionCreators } from 'redux';
 import {
     addEvent,
     deleteEvent,
-    getEvents,
     updateEvent,
+} from './store';
+import { 
     fetchSessionsIfNeeded,
-} from '../../data/sessionStore';
-import { fetchFormsIfNeeded } from '../../data/formStore';
+    fetchFormsIfNeeded,
+    getEvents,
+} from '../../store';
 
 import { newEvent } from './constants';
 

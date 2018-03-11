@@ -6,9 +6,9 @@ import {
     Button,
 } from 'react-md';
 
-import * as logo from '../../../assets/achievempls-logo-white.png';
+import * as logo from '../../assets/achievempls-logo-white.png';
 
-import { logout } from '../store';
+import { logout } from '../../store';
  
 
 import Tickets from './Views/Tickets';

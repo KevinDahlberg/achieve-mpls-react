@@ -5,19 +5,23 @@ import {
     Button,
     Paper,
 } from 'react-md';
+
 import {
     addSession,
     updateSession,
-    deleteSession,
+    deleteSession, 
+} from './store';
+import { 
+    fetchYearsIfNeeded,
     fetchSessions,
-    fetchSessionsIfNeeded, 
-    getEvents } from '../../data/sessionStore';
-import { fetchYearsIfNeeded } from '../../data/ticketStore'
+    fetchSessionsIfNeeded,
+    getEvents, 
+} from '../../store'
 import { newSession } from './constants';
 import { prepareYearsForSelect } from '../../utils';
 
-import SessionsTable from './SessionsTable';
-import SingleSession from './SingleSession';
+import SessionsTable from './Components/SessionsTable';
+import SingleSession from './Components/SingleSession';
 
 class Sessions extends Component {
     constructor(props) {
@@ -25,6 +29,7 @@ class Sessions extends Component {
         this.state = {
             singleSession: newSession,
             addVisible: false,
+            fetching: true,
         }
     }
 
@@ -32,7 +37,10 @@ class Sessions extends Component {
         const { currentYear, fetchSessionsIfNeeded, fetchYearsIfNeeded } = this.props;
         fetchSessionsIfNeeded(currentYear)
         .then(() => {
-            fetchYearsIfNeeded();
+            fetchYearsIfNeeded()
+            .then(() => {
+                this.setState({ fetching: false })
+            })
         })
     }
 
@@ -76,42 +84,45 @@ class Sessions extends Component {
 
     render() {
         const { sessions, formArray, years } = this.props;
-        const { addVisible, singleSession } = this.state;
+        const { addVisible, singleSession, fetching } = this.state;
         const updatedYears = prepareYearsForSelect(years);
         return (
             <div className='tab-wrapper'>
-                <div className='tab-title'>
-                    <h2>Manage Sessions</h2>
-                </div>
-                <div className='tab-items'>
-                    <Paper
-                        zDepth={2}
-                        className='add-wrapper'
-                    >
-                        <span className='add-text'>Add Session</span>
-                        <Button floating primary className='add-button' onClick={this.addSessionClick}>add</Button>
-                    </Paper>
-                </div>
-                <div className="table-container">
-                    {sessions.length === 0 ? null :
-                    <SessionsTable
-                        deleteSession={this.deleteSession}
-                        sessions={sessions}
-                        getEvent={this.getEvents}
-                        formArray={formArray}
-                        years={updatedYears}
-                        submitSession={this.updateSession}
-                    />
-                    }
-                </div>
-                    <SingleSession
-                        hide={this.addSessionHide}
-                        session={singleSession}
-                        visible={addVisible}
-                        submitSession={this.submitSession}
-                        years={updatedYears}
-                        type='Add'
-                    />
+                {fetching ? null :
+                <div>
+                    <div className='tab-title'>
+                        <h2>Manage Sessions</h2>
+                    </div>
+                    <div className='tab-items'>
+                        <Paper
+                            zDepth={2}
+                            className='add-wrapper'
+                        >
+                            <span className='add-text'>Add Session</span>
+                            <Button floating primary className='add-button' onClick={this.addSessionClick}>add</Button>
+                        </Paper>
+                    </div>
+                    <div className="table-container">
+                        {sessions.length === 0 ? null :
+                        <SessionsTable
+                            deleteSession={this.deleteSession}
+                            sessions={sessions}
+                            getEvent={this.getEvents}
+                            formArray={formArray}
+                            years={updatedYears}
+                            submitSession={this.updateSession}
+                        />
+                        }
+                    </div>
+                        <SingleSession
+                            hide={this.addSessionHide}
+                            session={singleSession}
+                            visible={addVisible}
+                            submitSession={this.submitSession}
+                            years={updatedYears}
+                            type='Add'
+                        />
+                </div>}
             </div>
         );
     }

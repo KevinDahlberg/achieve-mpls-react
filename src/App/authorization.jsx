@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { checkSession } from './data/authStore';
+import { checkSession } from './store';
 
 const Authorization = (allowedRoles) => (WrappedComponent) => {
     class WithAuthorization extends Component {

@@ -14,8 +14,8 @@ import {
 import { newForm } from '../../constants';
 
 import FormsTableRow from './FormsTableRow';
-import AssignForm from './AssignForm';
-import SingleForm from './SingleForm';
+import AssignForm from '../AssignForm';
+import SingleForm from '../SingleForm';
 
 export default class FormsTable extends Component {
     static propTypes = {
