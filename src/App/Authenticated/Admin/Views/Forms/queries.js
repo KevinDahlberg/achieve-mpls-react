@@ -2,10 +2,7 @@
 import fetch from 'isomorphic-fetch';
 import { envUrl } from '../../../../constants';
 
-import actions from './actions';
-
-export const addForm = (form) => (dispatch) => {
-    dispatch(actions.addingForm());
+export const addForm = (form) => {
     const init = {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -16,18 +13,15 @@ export const addForm = (form) => (dispatch) => {
     return new Promise((resolve, reject) => {
         fetch(url, init)
         .then((response) => {
-            dispatch(actions.formAdded());
             resolve(response);
         })
         .catch((error) => {
-            dispatch(actions.formAdded());
             reject(error);
         });
     });
 }
 
-export const updateForm = (form) => (dispatch) => {
-    dispatch(actions.updatingForm());
+export const updateForm = (form) => {
     const init = {
         method: 'PUT',
         headers: {'Content-Type': 'application/json'},
@@ -38,18 +32,15 @@ export const updateForm = (form) => (dispatch) => {
     return new Promise((resolve, reject) => {
         fetch(url, init)
         .then((response) => {
-            dispatch(actions.formUpdated());
             resolve(response);
         })
         .catch((error) => {
-            dispatch(actions.formUpdated());
             reject(error);
         });
     });
 }
 
-export const deleteForm = (form) => (dispatch) => {
-    dispatch(actions.deletingForm());
+export const deleteForm = (form) => {
     const init = {
         method: 'DELETE',
         headers: {'Content-Type': 'application/json'},
@@ -59,18 +50,15 @@ export const deleteForm = (form) => (dispatch) => {
     return new Promise((resolve, reject) => {
         fetch(url, init)
         .then((res) => {
-            dispatch(actions.formDeleted());
             resolve(res);
         })
         .catch((error) => {
-            dispatch(actions.formDeleted());
             reject(error);
         });
     });
 }
 
-// todo - no actions associated with deleteQuestion yet
-export const deleteQuestion = (question) => (dispatch) => {
+export const deleteQuestion = (question) => {
     const init = {
         method: 'DELETE',
         headers: {'Content-Type': 'application/json'},
@@ -88,8 +76,7 @@ export const deleteQuestion = (question) => (dispatch) => {
     });
 }
 
-// todo - no actions for assinging forms yet
-export const assignForms = (yearAndGradeObj) => (dispatch) => {
+export const assignForms = (yearAndGradeObj) => {
     const init = {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},

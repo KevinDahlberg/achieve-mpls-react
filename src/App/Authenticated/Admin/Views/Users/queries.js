@@ -2,12 +2,10 @@
 import fetch from 'isomorphic-fetch';
 import moment from 'moment';
 
-import actions from './actions';
 import { generateId } from './utils';
 import { envUrl } from '../../../../constants';
 
-export const addNewUser = (user) => (dispatch) => {
-    dispatch(actions.addingUser());
+export const addNewUser = (user) => {
     user.password = generateId(10);
     const init = {
         method: 'POST',
@@ -19,18 +17,15 @@ export const addNewUser = (user) => (dispatch) => {
     return new Promise((resolve, reject) => {
         fetch(url, init)
         .then((response) => {
-            dispatch(actions.userAdded());
             resolve(response);
         })
         .catch((error) => {
-            dispatch(actions.userAdded());
             reject(error);
         })
     })
 }
 
-export const updateUser = (user) => (dispatch) => {
-    dispatch(actions.updatingUser());
+export const updateUser = (user) => {
     const init = {
         method: 'PUT',
         headers: {'Content-Type': 'application/json'},
@@ -41,18 +36,16 @@ export const updateUser = (user) => (dispatch) => {
     return new Promise((resolve, reject) => {
         fetch(url, init)
         .then((response) => {
-            dispatch(actions.userUpdated());
             resolve(response);
         })
         .catch((error) => {
-            dispatch(actions.userUpdated());
             reject(error);
         })
     })
 }
 
 // might need to move this DB call, not necessarily related to users, also used by Login components
-export const resetPW = (user) => (dispatch) => {
+export const resetPW = (user) => {
     const chanceExpiration = new Date();
     chanceExpiration.setDate(chanceExpiration.getDate() + 30);
     user.chance_expiration = moment(chanceExpiration).format('YYYY-MM-DD');
@@ -75,7 +68,7 @@ export const resetPW = (user) => (dispatch) => {
     })
 }
 
-export const deleteUser = (user) => (dispatch) => {
+export const deleteUser = (user) => {
     const userId = user.id;
     const adminUrl = envUrl + '/users/delete/' + userId
     const coachUrl = envUrl + '/users/deactivateUser'

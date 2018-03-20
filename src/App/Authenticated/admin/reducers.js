@@ -2,12 +2,6 @@
 import { combineReducers } from 'redux';
 import types from './types';
 
-import eventsReducer from './Views/Events/reducers';
-import formsReducer from './Views/Forms/reducers';
-import sessionsReducer from './Views/Sessions/reducers';
-import ticketsReducer from './Views/Tickets/reducers';
-import usersReducer from './Views/Tickets/reducers';
-
 const initialState = {
     events: [],
     forms: [],
@@ -82,12 +76,6 @@ function reducer(state = initialState, action) {
 
 const reducers = combineReducers({
     reducer,
-    eventsReducer,
-    formsReducer,
-    sessionsReducer,
-    ticketsReducer,
-    usersReducer,
 })
-
 
 export default reducers;

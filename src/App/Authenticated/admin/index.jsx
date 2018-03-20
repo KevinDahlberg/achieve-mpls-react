@@ -24,6 +24,7 @@ class Admin extends Component {
     }
 
     render() {
+        console.log('admin rendering');
         return (
             <div>
                 <header className='admin-header'>
@@ -62,16 +63,10 @@ class Admin extends Component {
     }
 }
 
-const stateToProps = state => ({
-    ticketsReceived: state.ticketReducer.ticketsReceived,
-    usersReceived: state.usersReducer.usersReceived,
-    formsReceived: state.formReducer.formsReceived,
-})
-
 const dispatchToProps = dispatch => {
     return bindActionCreators(
         { logout }, dispatch
     );
 }
 
-export default connect(stateToProps, dispatchToProps)(Admin);
+export default connect(null, dispatchToProps)(Admin);

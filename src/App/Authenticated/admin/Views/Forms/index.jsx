@@ -12,7 +12,7 @@ import {
     deleteForm,
     deleteQuestion,
     updateForm,
-} from './store';
+} from './queries';
 import { 
     fetchYearsIfNeeded,
     fetchFormsIfNeeded,
@@ -61,7 +61,7 @@ class Forms extends Component {
     }
 
     submitAddForm = (form) => {
-        const { addForm, fetchForms } = this.props;
+        const { fetchForms } = this.props;
         addForm(form)
         .then((res) => {
             fetchForms()
@@ -69,12 +69,11 @@ class Forms extends Component {
     }
 
     submitAssign = (assign) => {
-        const { assignForms } = this.props;
         assignForms(assign);
     }
 
     updateForm = (form) => {
-        const { updateForm, fetchForms } = this.props;
+        const { fetchForms } = this.props;
         updateForm(form)
         .then(() => {
             fetchForms();
@@ -82,7 +81,7 @@ class Forms extends Component {
     }
 
     deleteForm = (form) => {
-        const { deleteForm, fetchForms } = this.props;
+        const { fetchForms } = this.props;
         deleteForm(form)
         .then(() => {
             fetchForms()
@@ -90,7 +89,6 @@ class Forms extends Component {
     }
 
     deleteQuestion = (question) => {
-        const { deleteQuestion } = this.props;
         deleteQuestion(question)
     }
 
@@ -154,14 +152,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => {
     return bindActionCreators(
         {     
-            addForm,
-            assignForms,
-            deleteForm,
-            deleteQuestion,
             fetchFormsIfNeeded,
             fetchForms,
             fetchYearsIfNeeded,
-            updateForm,
         }, 
         dispatch
     );

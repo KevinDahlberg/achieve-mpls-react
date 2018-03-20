@@ -1,68 +1,59 @@
+/** Sessions Queries */
 import fetch from 'isomorphic-fetch';
+
 import { envUrl } from '../../../../constants';
 
-import actions from './actions';
-
-export const addEvent = (event) => (dispatch) => {
-    dispatch(actions.addingEvent());
+export const addSession = (session) => {
     const init = {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         credentials: 'include',
-        body: JSON.stringify(event),
+        body: JSON.stringify(session),
     }
-    const url = envUrl + '/events/add'
+    const url = envUrl + '/sessions/add'
     return new Promise((resolve, reject) => {
         fetch(url, init)
         .then((data) => {
-            dispatch(actions.eventAdded());
             resolve(data)
         })
         .catch((error) => {
-            dispatch(actions.eventAdded());
             reject(error);
         })
     })
 }
 
-export const updateEvent = (event) => (dispatch) => {
-    dispatch(actions.updatingEvent());
+export const updateSession = (session) => {
     const init = {
         method: 'PUT',
         headers: {'Content-Type': 'application/json'},
         credentials: 'include',
-        body: JSON.stringify(event),
+        body: JSON.stringify(session),
     }
-    const url = envUrl + '/events/update'
+    const url = envUrl + '/sessions/update';
     return new Promise((resolve, reject) => {
         fetch(url, init)
         .then((data) => {
-            dispatch(actions.eventUpdated());
             resolve(data)
         })
         .catch((error) => {
-            dispatch(actions.eventUpdated());
             reject(error);
         })
     })
 }
 
-export const deleteEvent = (event) => (dispatch) => {
-    dispatch(actions.deletingEvent());
+export const deleteSession = (session) => {
     const init = {
         method: 'DELETE',
         headers: {'Content-Type': 'application/json'},
         credentials: 'include',
     }
-    const url = envUrl + '/events/delete/' + event.id
+    const url = envUrl + '/sessions/delete/' + session.id;
     return new Promise((resolve, reject) => {
         fetch(url, init)
         .then((data) => {
-            dispatch(actions.eventDeleted());
             resolve(data)
         })
         .catch((error) => {
-            dispatch(actions.eventDeleted());
             reject(error);
         })
     })

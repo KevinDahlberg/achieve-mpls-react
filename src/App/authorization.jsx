@@ -10,10 +10,13 @@ const Authorization = (allowedRoles) => (WrappedComponent) => {
 
         render() {
             const { authenticating, isAuthenticated, role } = this.props;
+            console.log('hitting auth', role, authenticating, isAuthenticated);
             if (authenticating) {
+                console.log('returning null in auth');
                 return null
             } else {
                 if (isAuthenticated && allowedRoles.includes(role)) {
+                    console.log('in if statement');
                     return <WrappedComponent {...this.props} />
                 } else {
                     return <Redirect to='/login' />
@@ -22,10 +25,10 @@ const Authorization = (allowedRoles) => (WrappedComponent) => {
         }
     }
 
-    const mapStateToProps = ({ authReducer }) => ({
-        authenticating: authReducer.authenticating,
-        isAuthenticated: authReducer.isAuthenticated,
-        role: authReducer.userRole
+    const mapStateToProps = ({ reducers }) => ({
+        authenticating: reducers.authReducer.authenticating,
+        isAuthenticated: reducers.authReducer.isAuthenticated,
+        role: reducers.authReducer.userRole
     })
 
     const mapDispatchToProps = dispatch => {

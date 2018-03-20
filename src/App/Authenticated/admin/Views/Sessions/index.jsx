@@ -10,8 +10,8 @@ import {
     addSession,
     updateSession,
     deleteSession, 
-} from './store';
-import { 
+} from './queries';
+import {
     fetchYearsIfNeeded,
     fetchSessions,
     fetchSessionsIfNeeded,
@@ -58,7 +58,7 @@ class Sessions extends Component {
     }
 
     submitSession = (session) => {
-        const { addSession, fetchSessions, currentYear, } = this.props;
+        const { fetchSessions, currentYear, } = this.props;
         this.setState({ addVisible: false });
         addSession(session)
         .then((res) => {
@@ -67,7 +67,7 @@ class Sessions extends Component {
     }
 
     updateSession = (session) => {
-        const { updateSession, fetchSessions, currentYear, } = this.props;
+        const { fetchSessions, currentYear, } = this.props;
         updateSession(session)
         .then((res) => {
             fetchSessions(currentYear);
@@ -75,7 +75,7 @@ class Sessions extends Component {
     }
 
     deleteSession = (session) => {
-        const { deleteSession, fetchSessions, currentYear, } = this.props;
+        const { fetchSessions, currentYear, } = this.props;
         deleteSession(session)
         .then(() => {
             fetchSessions(currentYear);
@@ -137,10 +137,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators(
-        {   
-            addSession,
-            updateSession,
-            deleteSession,
+        {
             fetchYearsIfNeeded,
             fetchSessions,
             fetchSessionsIfNeeded,  

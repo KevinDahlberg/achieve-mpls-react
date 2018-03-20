@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -31,11 +31,13 @@ class App extends Component {
 
     render() {
         const { authenticating } = this.state;
+        console.log(authenticating);
         return (
             <div>
                 {authenticating ? 
                     <div><h1>Loading...</h1></div> :
                         <div className="App">
+                        <p>no longer loading</p>
                         <Switch>
                             <Route path='/admin' component={Authorization(['admin'])(Admin)} />
                             <Route path='/coach' component={Authorization(['coach'])(Coach)} />

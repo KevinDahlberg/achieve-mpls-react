@@ -13,6 +13,7 @@ const initialState = {
 }
 
 const authReducer = (state = initialState, action) => {
+    console.log(state);
     switch (action.type) {
         case types.AUTHENTICATE_USER:
             return {
@@ -22,7 +23,7 @@ const authReducer = (state = initialState, action) => {
         case types.USER_AUTHENTICATED:
             return {
                 ...state,
-                autheinticating: action.authenticating,
+                authenticating: action.authenticating,
                 isAuthenticated: action.isAuthenticated,
                 userName: action.userName,
                 userRole: action.userRole,

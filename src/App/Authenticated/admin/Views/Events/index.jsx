@@ -11,7 +11,7 @@ import {
     addEvent,
     deleteEvent,
     updateEvent,
-} from './store';
+} from './queries';
 import { 
     fetchSessionsIfNeeded,
     fetchFormsIfNeeded,
@@ -85,7 +85,7 @@ class Events extends Component {
     }
 
     submitEvent = (event) => {
-        const { addEvent, formArray, sessions, getEvents } = this.props;
+        const { formArray, sessions, getEvents } = this.props;
         event.open_date = moment(event.date_form_open).format('YYYY-MM-DD');
         event.close_date = moment(event.date_form_close).format('YYYY-MM-DD');
         const form_id = formArray.filter((form) => form.form_name === event.form_name);
@@ -107,7 +107,7 @@ class Events extends Component {
     }
 
     submitEdit = (event) => {
-        const { updateEvent, formArray, sessions, getEvents } = this.props;
+        const { formArray, sessions, getEvents } = this.props;
         event.open_date = moment(event.date_form_open).format('YYYY-MM-DD');
         event.close_date = moment(event.date_form_close).format('YYYY-MM-DD');
         const form_id = formArray.filter((form) => form.form_name === event.form_name);
@@ -128,7 +128,7 @@ class Events extends Component {
     }
 
     deleteEvent = (event) => {
-        const { deleteEvent, getEvents, sessions } = this.props;
+        const { getEvents, sessions } = this.props;
         deleteEvent(event)
         .then((res) => {
             const id = Number(this.props.match.params.id);
@@ -185,19 +185,16 @@ class Events extends Component {
     }
 }
 
-const mapStateToProps = state => ({
-    sessions: state.sessionReducer.sessions,
-    currentYear: state.ticketReducer.currentYear,
-    formArray: state.formReducer.forms,
+const mapStateToProps = ({ adminReducer }) => ({
+    sessions: adminReducer.sessions,
+    currentYear: adminReducer.currentYear,
+    formArray: adminReducer.forms,
 })
 
 const mapDispatchToProps = dispatch => (
     bindActionCreators(
         {   
-            addEvent,
-            deleteEvent,
             getEvents,
-            updateEvent,
             fetchSessionsIfNeeded,
             fetchFormsIfNeeded, 
         }, 

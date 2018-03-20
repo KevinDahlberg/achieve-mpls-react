@@ -118,7 +118,8 @@ export const fetchYearsIfNeeded = () => (dispatch, getState) => {
 }
 
 const shouldFetchYears = (state) => {
-    const { years } = state.ticketReducer;
+    console.log(state);
+    const { years } = state.reducers.adminReducer.reducer;
     if (years.length === 0) {
         return true;
     } else {

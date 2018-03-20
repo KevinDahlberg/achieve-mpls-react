@@ -12,7 +12,7 @@ import {
     addNewUser, 
     deleteUser, 
     updateUser, 
-} from './store';
+} from './queries';
 import {
     fetchYearsIfNeeded,
     fetchSessionsIfNeeded,
@@ -24,7 +24,7 @@ import { usersOptions } from './constants';
 
 import SingleUser from './Components/SingleUser';
 import UsersTable from './Components/UsersTable';
-import YearMenu from '../Tickets/Components/YearMenu';
+import YearMenu from '../Components/YearMenu';
 
 class Users extends Component {
     constructor(props) {
@@ -90,7 +90,7 @@ class Users extends Component {
     }
 
     submitAddUser = (user) => {
-        const { addNewUser, sessions, fetchUsers, currentYear } = this.props;
+        const { sessions, fetchUsers, currentYear } = this.props;
         const userToSend = this.prepareUserToSubmit(user, sessions);
         addNewUser(userToSend)
         .then(() => {
@@ -102,7 +102,7 @@ class Users extends Component {
     }
 
     submitEditUser = (user) => {
-        const { updateUser, fetchUsers, currentYear, sessions, users } = this.props;
+        const { fetchUsers, currentYear, sessions, users } = this.props;
         this.setState({ search: '' });
         const userToSend = this.prepareUserToSubmit(user, sessions)
         const userId = users.filter((singleUser) => singleUser.email === user.email);
@@ -117,7 +117,7 @@ class Users extends Component {
     }
 
     deleteUser = (user) => {
-        const { deleteUser, fetchUsers, currentYear } = this.props;
+        const { fetchUsers, currentYear } = this.props;
         this.setState({ search: '' });
         deleteUser(user)
         .then(() => {
@@ -200,12 +200,9 @@ const mapDispatchToProps = dispatch => {
     return bindActionCreators(
         {
             fetchUsersIfNeeded, 
-            addNewUser, 
-            deleteUser,
             fetchSessionsIfNeeded,
             fetchUsers,
             fetchYearsIfNeeded,
-            updateUser,
         }, 
         dispatch
     );
