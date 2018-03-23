@@ -37,7 +37,6 @@ class App extends Component {
                 {authenticating ? 
                     <div><h1>Loading...</h1></div> :
                         <div className="App">
-                        <p>no longer loading</p>
                         <Switch>
                             <Route path='/admin' component={Authorization(['admin'])(Admin)} />
                             <Route path='/coach' component={Authorization(['coach'])(Coach)} />
@@ -58,4 +57,4 @@ const mapDispatchToProps = dispatch => {
     { checkSession }, dispatch
   )
 }
-export default connect(null, mapDispatchToProps)(App);
+export default withRouter(connect(null, mapDispatchToProps)(App));

@@ -4,6 +4,7 @@ import actions from './actions';
 import { envUrl } from './constants';
 
 export const login = (creds) => (dispatch) => {
+    console.log(creds);
     dispatch(actions.authenticating(true));
     const objToSend = {
         email: creds.email,
@@ -21,6 +22,7 @@ export const login = (creds) => (dispatch) => {
         fetch(url, init)
         .then(response => response.json())
         .then((data) => {
+            console.log(data);
             const userObj = {
                 user: data.username,
                 role: data.role,

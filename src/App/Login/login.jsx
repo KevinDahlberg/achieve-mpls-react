@@ -54,6 +54,7 @@ class Login extends Component {
         }
         login(objToSend)
         .then((res) => {
+            console.log(res);
             if (res.role === 'admin') {
                 this.props.history.push('/admin');
             } else if (res.role === 'coach') {
@@ -117,7 +118,7 @@ class Login extends Component {
 }
 
 const mapStateToProps = (state) => ({ 
-    isAuthenticated: state.reducers.authReducer.isAuthenticated 
+    isAuthenticated: state.authReducer.isAuthenticated 
 });
 
 const mapDispatchToProps = dispatch => {

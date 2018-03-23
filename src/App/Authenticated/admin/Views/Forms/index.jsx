@@ -144,9 +144,9 @@ class Forms extends Component {
 }
 
 const mapStateToProps = state => ({
-    forms: state.formReducer.forms,
-    fetchingForms: state.formReducer.fetchingForms,
-    years: state.ticketReducer.years,
+    forms: state.adminReducer.forms,
+    fetchingForms: state.adminReducer.fetchingForms,
+    years: state.adminReducer.years,
 })
 
 const mapDispatchToProps = dispatch => {

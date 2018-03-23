@@ -94,13 +94,11 @@ class Tickets extends Component {
     }
 }
 
-const mapStateToProps = ({ reducers }) => {
-    console.log(reducers);
-    return ({
-    tickets: reducers.adminReducer.reducer.tickets,
-    currentYear: reducers.adminReducer.reducer.currentYear,
-    years: reducers.adminReducer.reducer.years,
-})}
+const mapStateToProps = state => ({
+    tickets: state.adminReducer.tickets,
+    currentYear: state.adminReducer.currentYear,
+    years: state.adminReducer.years,
+})
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators(

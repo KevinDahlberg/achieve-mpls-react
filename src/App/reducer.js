@@ -2,8 +2,6 @@
 import { combineReducers } from 'redux';
 
 import types from './types'
-import coachReducer from './Authenticated/Coach/reducers';
-import adminReducer from './Authenticated/Admin/reducers'
 
 const initialState = {
     isAuthenticated: false,
@@ -12,7 +10,7 @@ const initialState = {
     userSession: '',
 }
 
-const authReducer = (state = initialState, action) => {
+const reducer = (state = initialState, action) => {
     console.log(state);
     switch (action.type) {
         case types.AUTHENTICATE_USER:
@@ -42,10 +40,4 @@ const authReducer = (state = initialState, action) => {
     }
 }
 
-const reducers = combineReducers({
-    adminReducer,
-    authReducer,
-    coachReducer,
-})
-
-export default reducers
+export default reducer

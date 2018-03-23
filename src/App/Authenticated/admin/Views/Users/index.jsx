@@ -189,11 +189,11 @@ class Users extends Component {
 }
 
 const mapStateToProps = state => ({
-    users: state.usersReducer.users,
-    fetchingUsers: state.usersReducer.fetchingUsers,
-    years: state.ticketReducer.years,
-    currentYear: state.ticketReducer.currentYear,
-    sessions: state.sessionReducer.sessions
+    users: state.adminReducer.users,
+    fetchingUsers: state.adminReducer.fetchingUsers,
+    years: state.adminReducer.years,
+    currentYear: state.adminReducer.currentYear,
+    sessions: state.adminReducer.sessions
 })
 
 const mapDispatchToProps = dispatch => {

@@ -25,10 +25,10 @@ const Authorization = (allowedRoles) => (WrappedComponent) => {
         }
     }
 
-    const mapStateToProps = ({ reducers }) => ({
-        authenticating: reducers.authReducer.authenticating,
-        isAuthenticated: reducers.authReducer.isAuthenticated,
-        role: reducers.authReducer.userRole
+    const mapStateToProps = state => ({
+        authenticating: state.authReducer.authenticating,
+        isAuthenticated: state.authReducer.isAuthenticated,
+        role: state.authReducer.userRole
     })
 
     const mapDispatchToProps = dispatch => {

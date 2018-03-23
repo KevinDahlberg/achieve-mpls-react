@@ -129,10 +129,10 @@ class Sessions extends Component {
 }
 
 const mapStateToProps = state => ({
-    sessions: state.sessionReducer.sessions,
-    currentYear: state.ticketReducer.currentYear,
-    formArray: state.formReducer.forms,
-    years: state.ticketReducer.years,
+    sessions: state.adminReducer.sessions,
+    currentYear: state.adminReducer.currentYear,
+    formArray: state.adminReducer.forms,
+    years: state.adminReducer.years,
 })
 
 const mapDispatchToProps = dispatch => {
