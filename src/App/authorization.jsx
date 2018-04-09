@@ -10,13 +10,10 @@ const Authorization = (allowedRoles) => (WrappedComponent) => {
 
         render() {
             const { authenticating, isAuthenticated, role } = this.props;
-            console.log('hitting auth', role, authenticating, isAuthenticated);
             if (authenticating) {
-                console.log('returning null in auth');
                 return null
             } else {
                 if (isAuthenticated && allowedRoles.includes(role)) {
-                    console.log('in if statement');
                     return <WrappedComponent {...this.props} />
                 } else {
                     return <Redirect to='/login' />

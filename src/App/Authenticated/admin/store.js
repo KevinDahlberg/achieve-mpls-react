@@ -13,7 +13,7 @@ export const fetchFormsIfNeeded = () => (dispatch, getState) => {
 }
 
 const shouldFetchForms = (state) => {
-    const { forms } = state.formReducer;
+    const { forms } = state.adminReducer;
     if (forms.length === 0) {
         return true;
     } else {
@@ -56,7 +56,7 @@ export const fetchSessionsIfNeeded = (year) => (dispatch, getState) => {
 }
 
 const shouldFetchSessions = (state) => {
-    const { sessions } = state.sessionReducer;
+    const { sessions } = state.adminReducer;
     if (sessions.length === 0) {
         return true;
     } else {
@@ -118,8 +118,8 @@ export const fetchYearsIfNeeded = () => (dispatch, getState) => {
 }
 
 const shouldFetchYears = (state) => {
-    console.log(state);
-    const { years } = state.reducers.adminReducer.reducer;
+    console.log('should fetch years', state);
+    const { years } = state.adminReducer;
     if (years.length === 0) {
         return true;
     } else {
@@ -163,7 +163,7 @@ export const fetchTicketsIfNeeded = (year) => (dispatch, getState) => {
 }
 
 const shouldFetchTickets = (state) => {
-    const { tickets } = state.ticketReducer;
+    const { tickets } = state.adminReducer;
     if (tickets.length === 0) {
         return true;
     } else {
@@ -183,6 +183,7 @@ const fetchTickets = (year) => (dispatch) => {
         fetch(url, init)
         .then(response => response.json())
         .then((data) => {
+            console.log(data);
             dispatch(actions.ticketsReceived(data))
             return data;
         })
@@ -204,8 +205,9 @@ export const fetchUsersIfNeeded = (year) => (dispatch, getState) => {
         })
     }
 }
+
 const shouldFetchUsers = (state) => {
-    const { users } = state.usersReducer;
+    const { users } = state.adminReducer;
     if (users.length === 0) {
         return true;
     } else {

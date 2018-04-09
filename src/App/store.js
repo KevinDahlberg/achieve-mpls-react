@@ -4,10 +4,9 @@ import actions from './actions';
 import { envUrl } from './constants';
 
 export const login = (creds) => (dispatch) => {
-    console.log(creds);
     dispatch(actions.authenticating(true));
     const objToSend = {
-        email: creds.email,
+        username: creds.email,
         password: creds.password,
     }
     //fetch object
@@ -17,12 +16,11 @@ export const login = (creds) => (dispatch) => {
         credentials: 'include',
         body: JSON.stringify(objToSend),
     }
-    const url = envUrl
+    const url = envUrl + '/auth';
     return new Promise(function(resolve, reject) {
         fetch(url, init)
         .then(response => response.json())
         .then((data) => {
-            console.log(data);
             const userObj = {
                 user: data.username,
                 role: data.role,
@@ -73,10 +71,10 @@ export const checkSession = () => (dispatch) => {
         headers: {'Content-Type': 'application/json'},
         credentials: 'include',
     }
-    const url = envUrl + '/users/clearance'
+    const url = envUrl + '/auth/clearance'
     return new Promise((resolve, reject) => {
         fetch(url, init)
-        .then(response => response.json())
+        // .then(response => response.json())
         .then((data) => {
             const userObj = {
                 user: data.username,

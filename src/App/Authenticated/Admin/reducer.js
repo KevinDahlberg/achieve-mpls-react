@@ -1,6 +1,9 @@
 /** Admin Reducer */
-import { combineReducers } from 'redux';
 import types from './types';
+
+import { calculateCurrentYear } from './utils';
+
+const todaysDate = new Date();
 
 const initialState = {
     events: [],
@@ -10,9 +13,10 @@ const initialState = {
     users: [],
     years: [],
     fetching: false,
+    currentYear: calculateCurrentYear(todaysDate.getFullYear()),
 }
 
-function reducer(state = initialState, action) {
+const reducer = (state = initialState, action) => {
     switch(action.type) {
         case types.FETCHING_EVENTS:
         return {
@@ -68,6 +72,12 @@ function reducer(state = initialState, action) {
             ...state,
             fetching: action.fetching,
             users: action.users,
+        }
+        case types.YEARS_RECEIVED:
+        return {
+            ...state,
+            fetching: action.fetching,
+            years: action.years,
         }
         default:
         return state;

@@ -31,7 +31,6 @@ class App extends Component {
 
     render() {
         const { authenticating } = this.state;
-        console.log(authenticating);
         return (
             <div>
                 {authenticating ? 

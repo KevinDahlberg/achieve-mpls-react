@@ -1,0 +1,1 @@
+export { SingleUser } from './SingleUser';

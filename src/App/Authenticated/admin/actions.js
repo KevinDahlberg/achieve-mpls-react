@@ -75,6 +75,14 @@ const usersReceived = (users) => {
     }
 }
 
+const yearsReceived = (years) => {
+    return {
+        type: types.YEARS_RECEIVED,
+        fetching: false,
+        years: years,
+    }
+}
+
 export default {
     fetchingEvents,
     fetchingForms,
@@ -86,4 +94,5 @@ export default {
     sessionsReceived,
     ticketsReceived,
     usersReceived,
+    yearsReceived,
 }
