@@ -1,0 +1,1 @@
+export { SingleTicket } from './SingleTicket';

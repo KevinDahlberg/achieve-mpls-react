@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
-import Fuse from 'fuse.js';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {
-    TextField,
-} from 'react-md';
+import { TextField } from 'react-md';
+import Fuse from 'fuse.js';
 
 import { fetchTicketsIfNeeded, fetchYearsIfNeeded } from '../../store';
+import { sortArray } from './utils';
 
-import TicketsTable from './Components/TicketsTable';
+import { TicketsTable } from './TicketsTable';
 import { YearMenu } from '../../Shared-Components';
-import SingleTicket from './Components/SingleTicket';
+import { SingleTicket } from './SingleTicket';
+import { ticketOptions } from './constants';
 
 class TicketsContainer extends Component {
     constructor(props) {
@@ -20,23 +20,43 @@ class TicketsContainer extends Component {
             search: '',
             singleTicket: '',
             visible: false,
+            tickets: [],
         }
     }
 
     componentWillMount() {
-        const { currentYear, fetchTicketsIfNeeded, fetchYearsIfNeeded } = this.props;
+        const { currentYear, fetchTicketsIfNeeded, fetchYearsIfNeeded, tickets } = this.props;
         fetchYearsIfNeeded()
         .then(() => {
             fetchTicketsIfNeeded(currentYear)
-            .then(() => {
+            .then((res) => {
+                if (res) {
+                    this.filterSearch(res, null);
+                } else {
+                    this.filterSearch(tickets, null);
+                }
                 this.setState({ fetching: false });
-                console.log(this.props);
             });
         });
     }
 
+    filterSearch = (tickets, search) => {
+        if (search) {
+            const ticketsFused = new Fuse(tickets, ticketOptions);
+            const searchResults = ticketsFused.search(search);
+            this.setState({ tickets: searchResults });
+        } else {
+            this.setState({ tickets: tickets });
+        }
+    }
+
     onSearchChange = (e) => {
-        this.setState({ search: e });
+        const { tickets } = this.props;
+        const ticketsFused = new Fuse(tickets, ticketOptions);
+        const searchResults = ticketsFused.search(e);
+        searchResults.length === 0 ?
+            this.setState({ search: e, tickets: this.props.tickets }) :
+            this.setState({ search: e, tickets: searchResults });
     }
 
     onDialogHide = () => {
@@ -47,9 +67,18 @@ class TicketsContainer extends Component {
         this.setState({ singleTicket: ticket, visible: true })
     }
 
+    sortTickets = (key, ascending) => {
+        const { tickets } = this.props;
+        const { search } = this.state;
+        const sortedTickets = sortArray(tickets, key, ascending);
+        search.length === 0 ?
+            this.filterSearch(sortedTickets, null) :
+            this.filterSearch(sortedTickets, search);
+    }
+
     render () {
-        const { tickets, years, currentYear } = this.props;
-        const { fetching, search, singleTicket, visible } = this.state;
+        const { years, currentYear } = this.props;
+        const { tickets, fetching, search, singleTicket, visible } = this.state;
         return (
             <div className='tab-wrapper'>
                 {fetching ? null :
@@ -74,8 +103,8 @@ class TicketsContainer extends Component {
                     <div className='table-container'>
                         {tickets.length === 0 ? null
                         : <TicketsTable 
-                            search={search}
                             tickets={tickets}
+                            sortArray={this.sortTickets}
                             onTicketClick={this.onTicketClick}
                         />}
                     </div>

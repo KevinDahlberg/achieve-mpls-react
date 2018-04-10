@@ -50,10 +50,13 @@ export const deleteSession = (session) => {
     const url = envUrl + '/sessions/delete/' + session.id;
     return new Promise((resolve, reject) => {
         fetch(url, init)
+        .then(response => response.json())
         .then((data) => {
+            console.log(data);
             resolve(data)
         })
         .catch((error) => {
+            console.error(error);
             reject(error);
         })
     })

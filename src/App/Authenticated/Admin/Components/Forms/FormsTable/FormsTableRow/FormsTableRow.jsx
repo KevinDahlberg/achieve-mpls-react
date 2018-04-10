@@ -5,7 +5,7 @@ import {
     TableColumn,
 } from 'react-md'
 
-export default class FormsTableRow extends Component {
+export class FormsTableRow extends Component {
 
     assignForm = () => {
         const { form, assignForm } = this.props;

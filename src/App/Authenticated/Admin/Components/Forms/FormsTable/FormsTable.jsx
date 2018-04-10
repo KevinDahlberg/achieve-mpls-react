@@ -11,13 +11,13 @@ import {
     TableColumn,
 } from 'react-md';
 
-import { newForm } from '../../constants';
+import { newForm } from '../constants';
 
-import FormsTableRow from './FormsTableRow';
-import AssignForm from '../AssignForm';
-import SingleForm from '../SingleForm';
+import { FormsTableRow } from './FormsTableRow';
+import { AssignForm } from '../AssignForm';
+import { SingleForm } from '../SingleForm';
 
-export default class FormsTable extends Component {
+export class FormsTable extends Component {
     static propTypes = {
         deleteForm: PropTypes.func,
         deleteQuestion: PropTypes.func,

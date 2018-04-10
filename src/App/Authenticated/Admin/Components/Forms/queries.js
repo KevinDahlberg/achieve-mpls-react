@@ -16,6 +16,7 @@ export const addForm = (form) => {
             resolve(response);
         })
         .catch((error) => {
+            console.error(error);
             reject(error);
         });
     });
@@ -35,6 +36,7 @@ export const updateForm = (form) => {
             resolve(response);
         })
         .catch((error) => {
+            console.error(error);
             reject(error);
         });
     });
@@ -53,6 +55,7 @@ export const deleteForm = (form) => {
             resolve(res);
         })
         .catch((error) => {
+            console.error(error);
             reject(error);
         });
     });
@@ -71,6 +74,7 @@ export const deleteQuestion = (question) => {
             resolve(res);
         })
         .catch((error) => {
+            console.error(error);
             reject(error);
         });
     });
@@ -90,6 +94,7 @@ export const assignForms = (yearAndGradeObj) => {
             resolve(res);
         })
         .catch((error) => {
+            console.error(error);
             reject(error);
         });
     });

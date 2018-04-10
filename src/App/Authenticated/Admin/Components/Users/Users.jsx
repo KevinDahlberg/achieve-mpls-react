@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import Fuse from 'fuse.js';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {
@@ -19,8 +18,6 @@ import {
     fetchUsersIfNeeded,
     fetchUsers,
 } from '../../store';
-
-import { usersOptions } from './constants';
 
 import { SingleUser } from './SingleUser';
 import { UsersTable } from './UsersTable';

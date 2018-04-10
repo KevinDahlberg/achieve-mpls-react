@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { DialogContainer, Divider } from 'react-md'
 
-export default class SingleTicket extends Component {
+export class SingleTicket extends Component {
 
     hide = () => {
         this.props.onDialogHide();

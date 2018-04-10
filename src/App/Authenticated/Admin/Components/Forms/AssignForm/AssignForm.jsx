@@ -9,7 +9,7 @@ import {
     TextField,
 } from 'react-md';
 
-export default class AssignForm extends Component {
+export class AssignForm extends Component {
     static propTypes = {
         hide: PropTypes.func,
         form: PropTypes.object,

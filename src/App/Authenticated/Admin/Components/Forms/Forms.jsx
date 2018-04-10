@@ -21,8 +21,8 @@ import {
 
 import { prepareYearsForSelect } from '../../utils';
 
-import FormsTable from './Components/FormsTable';
-import SingleForm from './Components/SingleForm';
+import { FormsTable } from './FormsTable';
+import { SingleForm } from './SingleForm';
 
 const newForm = {
     form_name: '',
@@ -130,7 +130,7 @@ class FormsContainer extends Component {
                         />}
                     </div>
                     <SingleForm
-                        deleteQuestion={this.deleteAddQuestion}
+                        deleteQuestion={this.deleteQuestion}
                         hide={this.addFormHide}
                         form={form}
                         visible={addVisible}
@@ -152,6 +152,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => {
     return bindActionCreators(
         {     
+            deleteQuestion,
             fetchFormsIfNeeded,
             fetchForms,
             fetchYearsIfNeeded,

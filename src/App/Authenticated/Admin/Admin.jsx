@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { NavLink, Route, withRouter } from 'react-router-dom'
+import { NavLink, Route } from 'react-router-dom'
 import { bindActionCreators } from 'redux'; 
 import {
     Button,
@@ -62,4 +62,4 @@ const dispatchToProps = dispatch => {
     );
 }
 
-export default withRouter(connect(null, dispatchToProps)(Admin));
+export default connect(null, dispatchToProps)(Admin);

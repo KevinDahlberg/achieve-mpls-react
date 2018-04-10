@@ -118,7 +118,6 @@ export const fetchYearsIfNeeded = () => (dispatch, getState) => {
 }
 
 const shouldFetchYears = (state) => {
-    console.log('should fetch years', state);
     const { years } = state.adminReducer;
     if (years.length === 0) {
         return true;
@@ -183,13 +182,13 @@ const fetchTickets = (year) => (dispatch) => {
         fetch(url, init)
         .then(response => response.json())
         .then((data) => {
-            console.log(data);
             dispatch(actions.ticketsReceived(data))
             return data;
         })
         .then((data) => resolve(data))
         .catch((error) => {
             dispatch(actions.fetchingTickets(false));
+            console.error(error);
             reject(error);
         })
     })

@@ -13,7 +13,7 @@ const newForm = {
     ],
 }
 
-export default class SingleForm extends Component {
+export class SingleForm extends Component {
     static propTypes = {
         deleteQuestion: PropTypes.func,
         form: PropTypes.object,

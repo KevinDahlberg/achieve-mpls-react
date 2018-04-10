@@ -5,7 +5,7 @@ import {
     TableColumn,
 } from 'react-md'
 
-export default class TicketsTableRow extends Component {
+export class TicketsTableRow extends Component {
     viewTicket = () => {
         const { ticket, viewTicket } = this.props
         viewTicket(ticket);

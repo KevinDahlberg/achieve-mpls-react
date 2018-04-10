@@ -12,11 +12,11 @@ import {
     TablePagination,
 } from 'react-md';
 
-import { ticketOptions } from '../../constants';
+import { ticketOptions } from '../constants';
 
-import TicketsTableRow from './TicketsTableRow'
+import { TicketsTableRow } from './TicketsTableRow'
 
-export default class TicketsTable extends Component {
+export class TicketsTable extends Component {
     static propTypes = {
         search: PropTypes.string,
         tickets: PropTypes.array,
@@ -26,32 +26,37 @@ export default class TicketsTable extends Component {
         super(props);
         this.state = {
             ticket: {},
-            tickets: this.props.tickets,
             slicedTickets: this.props.tickets.slice(0,10),
             rows: 10,
-            ascendingSession: true,
-            ascendingEvent: true,
-            ascendingName: true,
-            ascendingRating: true,
-            ascendingFacilitator: true,
-            ascendingDay: true,
-            ascendingSchool: true,
-            ascendingDateCompleted: true,
+            ascending: {
+                session: true,
+                event: true,
+                name: true,
+                rating: true,
+                facilitator: true,
+                day: true,
+                school: true,
+                completed: true,
+            }
         }
     }
-
-    componentDidMount() {
+    
+    componentWillReceiveProps() {
         const { tickets } = this.props;
-        this.fuse = new Fuse(tickets, ticketOptions);
+        const { rows } = this.state;
+        const sliceOfTickets = tickets.slice(0,rows);
+        this.setState({ slicedTickets: sliceOfTickets });
     }
 
-    componentWillReceiveProps() {
-        const { search } = this.props;
-        const { rows } = this.state;
-        const searchResults = this.fuse.search(search);
-        const sortedTickets = sortBy(searchResults, 'fname');
-        const sliceOfTickets = sortedTickets.slice(0,rows);
-        this.setState({ slicedTickets: sliceOfTickets, tickets: sortedTickets });
+    // changes all items except the key of the selected item to true, sets
+    // state with the currentKey as false.
+    setAscending = (currentKey) => {
+        const { ascending } = this.state;
+        Object.keys(ascending).map(key => {
+            ascending[key] = true;
+        })
+        const updatedAscending = { ...ascending, currentKey: false }
+        this.setState({ ascending: updatedAscending });
     }
 
     sortTicketStrings = (key, ascending) => {
@@ -249,20 +254,15 @@ export default class TicketsTable extends Component {
     viewTicket = (ticket, e) => {
         this.props.onTicketClick(ticket);
     }
+
+    sortArray = (key, ascending) => {
+        this.props.sortArray(key, !ascending);
+        this.setAscending(key);
+    }
     
     render() {
         const { tickets } = this.props;
-        const { 
-            ascendingSession,
-            ascendingEvent,
-            ascendingName,
-            ascendingRating,
-            ascendingFacilitator,
-            ascendingDay,
-            ascendingSchool,
-            ascendingDateCompleted,
-            slicedTickets,
-        } = this.state
+        const { ascending } = this.state
         return (
             <Paper
                 zDepth={2}
@@ -272,8 +272,8 @@ export default class TicketsTable extends Component {
                     <TableHeader>
                         <TableRow>
                             <TableColumn
-                                sorted={ascendingSession}
-                                onClick={this.sortBySession}
+                                sorted={ascending.session}
+                                onClick={(e) => this.sortArray('session', ascending.session)}
                                 role="button"
                             >
                                 Session

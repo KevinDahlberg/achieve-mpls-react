@@ -35,10 +35,6 @@ class EventsContainer extends Component {
     }
 
     componentDidMount() {
-        this.dbCallsForComponent();
-    }
-
-    dbCallsForComponent() {
         const { 
             getEvents, 
             fetchFormsIfNeeded, 
@@ -83,6 +79,7 @@ class EventsContainer extends Component {
         this.setState({ addVisible: true });
     }
 
+    // the next 3 methods get a little long, and might be able to be abstracted out.
     submitEvent = (event) => {
         const { formArray, sessions, getEvents } = this.props;
         event.open_date = moment(event.date_form_open).format('YYYY-MM-DD');
