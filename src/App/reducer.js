@@ -8,6 +8,7 @@ const initialState = {
     userName: '',
     userRole: '',
     userSession: '',
+    userId: '',
 }
 
 const reducer = (state = initialState, action) => {
@@ -25,6 +26,7 @@ const reducer = (state = initialState, action) => {
                 userName: action.userName,
                 userRole: action.userRole,
                 userSession: action.userSession,
+                userId: action.userId,
             }
         case types.LOGGED_OUT:
             return {
@@ -33,6 +35,7 @@ const reducer = (state = initialState, action) => {
                 userName: action.userName,
                 userRole: action.userRole,
                 userSession: action.userSession,
+                userId: action.userId,
             }
         default:
             return { ...state }

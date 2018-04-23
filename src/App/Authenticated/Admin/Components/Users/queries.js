@@ -48,18 +48,21 @@ export const updateUser = (user) => {
 export const resetPW = (user) => {
     const chanceExpiration = new Date();
     chanceExpiration.setDate(chanceExpiration.getDate() + 30);
-    user.chance_expiration = moment(chanceExpiration).format('YYYY-MM-DD');
+    const objectToSend = { ...user, chance_expiration: moment(chanceExpiration).format('YYYY-MM-DD') }
+    console.log(objectToSend);
     const init = {
-        method: 'GET',
+        method: 'POST',
         headers: {'Content-Type': 'application/json'},
         credentials: 'include',
+        body: JSON.stringify(objectToSend),
     }
     // obj needs id, email, and chance 
-    const url = envUrl + '/mail'
+    const url = envUrl + '/pwregister/resetpw'
     return new Promise((resolve, reject) => {
         fetch(url, init)
         .then(response => response.json())
         .then((res) => {
+            console.log(res);
             resolve(res);
         })
         .catch((error) => {

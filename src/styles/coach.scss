@@ -8,3 +8,40 @@
     max-height: 100px;
     justify-content: flex-end;
 }
+
+.question-wrapper {
+    width: 100%;
+}
+
+.question-container {
+    padding: 20px;
+    background-color: $achieve-white;
+    width: 100%;
+}
+
+.question-heading {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.question-button {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.form-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+    flex-direction: column;
+}
+
+.page-wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    flex-direction: column;
+}

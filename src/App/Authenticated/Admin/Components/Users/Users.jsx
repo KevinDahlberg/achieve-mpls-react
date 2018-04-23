@@ -6,11 +6,13 @@ import {
     Paper,
     TextField,
 } from 'react-md';
+import Fuse from 'fuse.js';
 
 import {  
     addNewUser, 
     deleteUser, 
     updateUser, 
+    resetPW,
 } from './queries';
 import {
     fetchYearsIfNeeded,
@@ -18,6 +20,8 @@ import {
     fetchUsersIfNeeded,
     fetchUsers,
 } from '../../store';
+import { sortArray } from '../../utils';
+import { usersOptions } from './constants';
 
 import { SingleUser } from './SingleUser';
 import { UsersTable } from './UsersTable';
@@ -37,22 +41,25 @@ class UsersContainer extends Component {
                 session_count: '',
                 year: '',
             },
-            users: this.props.users,
+            users: [],
             addVisible: false
         }
     }
 
-    componentDidMount() {
+    componentWillMount() {
         const { 
             currentYear, 
             fetchUsersIfNeeded, 
             fetchSessionsIfNeeded, 
-            fetchYearsIfNeeded, 
+            fetchYearsIfNeeded,
+            users,
         } = this.props;
         fetchUsersIfNeeded(currentYear)
         .then((res) => {
             if (res) {
-                this.setState({ users: res });
+                this.filterSearch(res, null);
+            } else {
+                this.filterSearch(users, null);
             }
         })
         .then(() => {
@@ -61,13 +68,24 @@ class UsersContainer extends Component {
                 fetchYearsIfNeeded()
                 .then(() => {
                     this.setState({ fetching: false });
-                })
-            })
-        })
-    }
+                });
+            });
+        });
+    };
 
     onSearchChange = (e) => {
-        this.setState({ search: e });
+        const { users } = this.props;
+        this.filterSearch(users, e);
+    }
+
+    filterSearch = (users, search) => {
+        if (search) {
+            const usersFused = new Fuse(users, usersOptions);
+            const searchResults = usersFused.search(search);
+            this.setState({ users: searchResults, search: search });
+        } else {
+            this.setState({ users: users, search: search });
+        }
     }
 
     addUserHide = () => {
@@ -86,6 +104,11 @@ class UsersContainer extends Component {
         return user;
     }
 
+    resetPW = (user) => {
+        console.log(user);
+        resetPW(user)
+    }
+
     submitAddUser = (user) => {
         const { sessions, fetchUsers, currentYear } = this.props;
         const userToSend = this.prepareUserToSubmit(user, sessions);
@@ -93,7 +116,7 @@ class UsersContainer extends Component {
         .then(() => {
             fetchUsers(currentYear)
             .then((res) => {
-                this.setState({ search: '', users: res });
+                this.filterSearch(res, null);
             })
         })
     }
@@ -108,7 +131,7 @@ class UsersContainer extends Component {
         .then(() => {
             fetchUsers(currentYear)
             .then((res) => {
-                this.setState({ search: '', users: res });
+                this.filterSearch(res, null);            
             })
         })
     }
@@ -120,9 +143,18 @@ class UsersContainer extends Component {
         .then(() => {
             fetchUsers(currentYear)
             .then((res) => {
-                this.setState({ search: '', users: res });
+                this.filterSearch(res, null);            
             });
         })
+    }
+
+    sortUsers = (key, ascending) => {
+        const { users } = this.props;
+        const { search } = this.state;
+        const sortedUsers = sortArray(users, key, ascending);
+        search.length === 0 ?
+            this.filterSearch(sortedUsers, null) :
+            this.filterSearch(sortedUsers, search);
     }
 
     render() {
@@ -167,6 +199,8 @@ class UsersContainer extends Component {
                                 usersClick={this.onUsersClick} 
                                 submitEditUser={this.submitEditUser}
                                 years={years}
+                                sortArray={this.sortUsers}
+                                resetPW={this.resetPW}
                             />}
                         </div>
                             <SingleUser

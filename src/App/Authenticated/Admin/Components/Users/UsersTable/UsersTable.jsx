@@ -28,6 +28,7 @@ export class UsersTable extends Component {
         submitEditUser: PropTypes.func,
         users: PropTypes.array,
         years: PropTypes.array,
+        resetPW: PropTypes.func,
     }
 
     constructor(props){
@@ -39,11 +40,13 @@ export class UsersTable extends Component {
             user: {},
             users: [],
             slicedUsers: [],
-            ascendingName: true,
-            ascendingEmail: true,
-            ascendingRole: true,
-            ascendingSession: true,
-            ascendingStatus: true,
+            ascending: {
+                fname: true,
+                email: true,
+                role: true,
+                session_count: true,
+                status: true,
+            },
             rows: 10,
         }
     }
@@ -58,103 +61,20 @@ export class UsersTable extends Component {
     componentWillReceiveProps(nextProps) {
         const { search, users } = nextProps;
         const { rows } = this.state;
-        if (search) {
-        const searchResults = this.fuse.search(search);
-        const sortedUsers = sortBy(searchResults, 'fname');
-        const sliceOfUsers = sortedUsers.slice(0, rows);
-        this.setState({ slicedUsers: sliceOfUsers, users: sortedUsers, acendingName: true });
-        } else {
-            this.setState({ users: users, slicedUsers: users.slice(0,10) });
-        }
+        const sliceOfUsers = users.slice(0, rows);
+        this.setState({ slicedUsers: sliceOfUsers });
     }
 
-    sortUsers = (key, ascending) => {
-        const { users } = this.state;
-        let sortedUsers = sortBy(users, key)
-        if (!ascending) {
-            sortedUsers.reverse();
-        }
-        return sortedUsers
-    }
-
-    sortByName = () => {
-        const { rows } = this.state;
-        const ascendingName = !this.state.ascendingName;
-        const sorted = this.sortUsers('fname', ascendingName);
-        this.setState({ 
-            ascendingName,
-            ascendingEmail: true,
-            ascendingRole: true,
-            ascendingSession: true,
-            ascendingStatus: true,
-            users: sorted,
-            slicedUsers: sorted.slice(0,rows)
-        });
-    }
-
-    sortByEmail = () => {
-        const { rows } = this.state;
-        const ascendingEmail = !this.state.ascendingEmail;
-        const sorted = this.sortUsers('email', ascendingEmail);
-        this.setState({ 
-            ascendingEmail, 
-            ascendingName: true,
-            ascendingRole: true,
-            ascendingSession: true,
-            ascendingStatus: true,
-            users: sorted, 
-            slicedUsers: sorted.slice(0,rows)
-        });
-    }
-
-    sortByRole = () => {
-        const { rows } = this.state;
-        const ascendingRole = !this.state.ascendingRole;
-        const sorted = this.sortUsers('role', ascendingRole);
-        this.setState({
-            ascendingRole,
-            ascendingEmail: true,
-            ascendingName: true,
-            ascendingSession: true,
-            ascendingStatus: true,
-            users: sorted,
-            slicedUsers: sorted.slice(0,rows),
-        });
-    }
-
-    sortBySession = () => {
-        const { rows, users } = this.state;
-        const ascendingSession = !this.state.ascendingSession;
-        let sorted = sortBy(users, function(o) {
-            return Number(o.session_count);
-        });
-        if (!ascendingSession) {
-            sorted.reverse();
-        }
-        this.setState({
-            ascendingSession,
-            ascendingEmail: true,
-            ascendingName: true,
-            ascendingRole: true,
-            ascendingStatus: true,
-            users: sorted,
-            slicedUsers: sorted.slice(0,rows),
+    // changes all items except the key of the selected item to true, sets
+    // state with the currentKey as false.
+    setAscending = (currentKey) => {
+        const { ascending } = this.state;
+        const currentKeyValue = ascending[currentKey];
+        Object.keys(ascending).map(key => {
+            ascending[key] = true;
         })
-    }
-
-    sortByStatus = () => {
-        const { rows } = this.state;
-        const ascendingStatus = !this.state.ascendingStatus;
-        const sorted = this.sortUsers('status', ascendingStatus);
-        this.setState({
-            ascendingStatus,
-            ascendingEmail: true,
-            ascendingName: true,
-            ascendingRole: true,
-            ascendingSession: true,
-            users: sorted,
-            slicedUsers: sorted.slice(0,rows),
-        })
+        const updatedAscending = { ...ascending, [currentKey]: !currentKeyValue }
+        this.setState({ ascending: updatedAscending });
     }
 
     resetHide = () => {
@@ -171,6 +91,11 @@ export class UsersTable extends Component {
 
     resetPWClick = (user) => {
         this.setState({ user: user, resetVisible: true });
+    }
+
+    resetPW = () => {
+        this.props.resetPW(this.state.user);
+        this.setState({ user: {}, resetVisible: false });
     }
     
     deleteUser = () => {
@@ -199,20 +124,14 @@ export class UsersTable extends Component {
         this.setState({ slicedUsers: users.slice(start, start + rowsPerPage), rows: rowsPerPage });
     }
 
+    sortArray = (key, ascending) => {
+        this.props.sortArray(key, !ascending);
+        this.setAscending(key);
+    }
+
     render() {
         const { users, sessions, years } = this.props;
-        const { 
-                user, 
-                resetVisible, 
-                editVisible, 
-                deleteVisible,
-                slicedUsers, 
-                ascendingName, 
-                ascendingEmail,
-                ascendingRole,
-                ascendingSession,
-                ascendingStatus, 
-            } = this.state;
+        const { user, ascending, slicedUsers, resetVisible, editVisible, deleteVisible } = this.state;
         return (
             <div>
                 <Paper
@@ -224,36 +143,36 @@ export class UsersTable extends Component {
                             <TableRow>
                                 <TableColumn>Registration</TableColumn>
                                 <TableColumn 
-                                    sorted={ascendingName} 
-                                    onClick={this.sortByName}
+                                    sorted={ascending.fname} 
+                                    onClick={(e) => this.sortArray('fname', ascending.fname)}
                                     role="button"
                                 >
                                     Name
                                 </TableColumn>
                                 <TableColumn
-                                    sorted={ascendingEmail}
-                                    onClick={this.sortByEmail}
+                                    sorted={ascending.email}
+                                    onClick={(e) => this.sortArray('email', ascending.email)}
                                     role="button"
                                 >
                                     Email
                                 </TableColumn>
                                 <TableColumn
-                                    sorted={ascendingRole}
-                                    onClick={this.sortByRole}
+                                    sorted={ascending.role}
+                                    onClick={(e) => this.sortArray('role', ascending.role)}
                                     role="button"
                                 >
                                     Role
                                 </TableColumn>
                                 <TableColumn
-                                    sorted={ascendingSession}
-                                    onClick={this.sortBySession}
+                                    sorted={ascending.session}
+                                    onClick={(e) => this.sortArray('session_count', ascending.session_count)}
                                     role="button"
                                 >
                                     Session
                                 </TableColumn>
                                 <TableColumn
-                                    sorted={ascendingStatus}
-                                    onClick={this.sortByStatus}
+                                    sorted={ascending.status}
+                                    onClick={(e) => this.sortArray('status', ascending.status)}
                                     role="button"
                                 >
                                     Status

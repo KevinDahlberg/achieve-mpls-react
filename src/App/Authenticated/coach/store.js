@@ -15,6 +15,7 @@ export const getExitTickets = (session, id) => (dispatch) => {
         fetch(url, init)
         .then(response => response.json())
         .then((data) => {
+            console.log(data);
             dispatch(actions.exitTicketsReceived(data))
             return data;
         })
@@ -24,4 +25,27 @@ export const getExitTickets = (session, id) => (dispatch) => {
             reject(error);
         });
     });
+}
+
+export const sendExitTicket = (ticket) => (dispatch) => {
+    dispatch(actions.sendingExitTicket())
+    const init = {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include',
+        body: JSON.stringify(ticket),
+    }
+    const url = envUrl + '/coach/completedTicket'
+    return new Promise ((resolve, reject) => {
+        fetch(url, init)
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data);
+            resolve(data)
+        })
+        .catch((error) => {
+            reject(error);
+        })
+
+    }) 
 }

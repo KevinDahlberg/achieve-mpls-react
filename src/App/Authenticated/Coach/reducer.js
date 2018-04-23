@@ -19,6 +19,12 @@ function reducer(state = initialState, action) {
             fetchingExitTickets: action.fetchingExitTickets,
             exitTickets: action.exitTickets,
         }
+        case types.SENDING_EXIT_TICKET:
+        return {
+            ...state,
+            fetchingExitTickets: action.fetchingExitTickets,
+            exitTickets: action.exitTickets,
+        }
         default:
         return state;
     }

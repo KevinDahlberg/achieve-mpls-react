@@ -13,7 +13,16 @@ const exitTicketsReceived = (exitTickets) => {
     }
 }
 
+const sendingExitTicket = () => {
+    return {
+        type: types.SENDING_EXIT_TICKET,
+        fetchingExitTickets: false,
+        exitTickets: [],
+    }
+}
+
 export default {
     fetchingExitTickets,
     exitTicketsReceived,
+    sendingExitTicket,
 }

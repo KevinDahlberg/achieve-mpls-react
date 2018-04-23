@@ -28,6 +28,7 @@ class ForgotPassword extends Component {
     }
 
     backHome = () => {
+        this.setState({ email: '' });
         this.props.history.push('/login');
     }
 

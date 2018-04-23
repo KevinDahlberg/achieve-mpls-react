@@ -17,6 +17,7 @@ function authenticateUser(userObj) {
         userName: userObj.user,
         userRole: userObj.role,
         userSession: userObj.session,
+        userId: userObj.userId,
     }
 }
 
@@ -27,6 +28,7 @@ function userLoggedOut() {
         userName: '',
         userRole: '',
         userSession: '',
+        userId: '',
     }
 }
 

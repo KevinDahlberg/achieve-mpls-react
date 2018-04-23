@@ -25,6 +25,7 @@ export const login = (creds) => (dispatch) => {
                 user: data.username,
                 role: data.role,
                 session: data.session_count,
+                userId: data.user_id,
             }
             dispatch(actions.authenticateUser(userObj));
             resolve(data);
@@ -36,7 +37,9 @@ export const login = (creds) => (dispatch) => {
     })
 }
 
+// sends out email to user so they can reset their password
 export const forgotPW = (email) => (dispatch) => {
+    console.log('forgot pw');
     // set expiration date of chance
     const chanceExpiration = new Date();
     chanceExpiration.setDate(chanceExpiration.getDate() + 30);
@@ -45,16 +48,64 @@ export const forgotPW = (email) => (dispatch) => {
         email: email,
         chance_expiration: chance_expiration,
     }
-
     const init = {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         credentials: 'include',
         body: JSON.stringify(objToSend),
     }
-    const url = envUrl + '/mail/forgotpw';
+    const url = envUrl + '/pwregister/forgotpw';
     return new Promise((resolve, reject) => {
         fetch(url, init)
+        .then((response) => response.json())
+        .then((data) => {
+            resolve(data)
+        })
+        .catch((error) => {
+            reject(error);
+        })
+    })
+}
+
+// add a new pw
+export const addPW = (password, user) => {
+    console.log(password, user);
+    const objectToSend = { password: password, id: user.id }
+    const init = {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include',
+        body: JSON.stringify(objectToSend),
+    }
+    const url = envUrl + '/pwregister/addPwd'
+    return new Promise((resolve, reject) => {
+        fetch(url, init)
+        .then((response) => response.json())
+        .then((data) => {
+            resolve(data)
+        })
+        .catch((error) => {
+            reject(error);
+        })
+    })
+}
+
+// checks token with database, gets user
+export const checkToken = (token) => {
+    const objectToSend = {
+        token: token,
+        date: moment().format('MM-DD-YYYY'),
+    }
+    const init = {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include',
+        body: JSON.stringify(objectToSend),
+    }
+    const url = envUrl + '/pwregister'
+    return new Promise((resolve, reject) => {
+        fetch(url, init)
+        .then((response) => response.json())
         .then((data) => {
             resolve(data)
         })
@@ -75,12 +126,15 @@ export const checkSession = () => (dispatch) => {
     return new Promise((resolve, reject) => {
         fetch(url, init)
         // .then(response => response.json())
+        .then(response => response.json())
         .then((data) => {
             const userObj = {
                 user: data.username,
                 role: data.role,
                 session: data.session_count,
+                userId: data.user_id,
             }
+            console.log(userObj);
             dispatch(actions.authenticateUser(userObj))
             resolve(data)
         })

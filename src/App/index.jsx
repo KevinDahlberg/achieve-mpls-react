@@ -8,7 +8,7 @@ import { checkSession } from './store';
 //views
 import Coach from './Authenticated/Coach';
 import ForgotPassword from './Login/ForgotPassword';
-import NewPassword from './Login/NewPassword';
+import CreatePassword from './Login/CreatePassword';
 import Login from './Login/login';
 import Admin from './Authenticated/Admin';
 
@@ -39,7 +39,7 @@ class App extends Component {
                         <Switch>
                             <Route path='/admin' component={Authorization(['admin'])(Admin)} />
                             <Route path='/coach' component={Authorization(['coach'])(Coach)} />
-                            <Route path='/new-password' component={NewPassword} />
+                            <Route path='/create-password/:id' component={CreatePassword} />
                             <Route path='/forgot-password' component={ForgotPassword} />
                             <Route path='/login' component={Login} />
                             <Route path='/' component={Login} />

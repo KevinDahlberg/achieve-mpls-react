@@ -5,12 +5,13 @@ import { TextField } from 'react-md';
 import Fuse from 'fuse.js';
 
 import { fetchTicketsIfNeeded, fetchYearsIfNeeded } from '../../store';
-import { sortArray } from './utils';
+import { sortArray } from '../../utils';
+import { ticketOptions } from './constants';
 
 import { TicketsTable } from './TicketsTable';
 import { YearMenu } from '../../Shared-Components';
 import { SingleTicket } from './SingleTicket';
-import { ticketOptions } from './constants';
+
 
 class TicketsContainer extends Component {
     constructor(props) {
@@ -40,23 +41,19 @@ class TicketsContainer extends Component {
         });
     }
 
+    onSearchChange = (e) => {
+        const { tickets } = this.props;
+        this.filterSearch(tickets, e);
+    }
+
     filterSearch = (tickets, search) => {
         if (search) {
             const ticketsFused = new Fuse(tickets, ticketOptions);
             const searchResults = ticketsFused.search(search);
-            this.setState({ tickets: searchResults });
+            this.setState({ tickets: searchResults, search: search });
         } else {
-            this.setState({ tickets: tickets });
+            this.setState({ tickets: tickets, search: search });
         }
-    }
-
-    onSearchChange = (e) => {
-        const { tickets } = this.props;
-        const ticketsFused = new Fuse(tickets, ticketOptions);
-        const searchResults = ticketsFused.search(e);
-        searchResults.length === 0 ?
-            this.setState({ search: e, tickets: this.props.tickets }) :
-            this.setState({ search: e, tickets: searchResults });
     }
 
     onDialogHide = () => {
@@ -102,11 +99,13 @@ class TicketsContainer extends Component {
                     </div>
                     <div className='table-container'>
                         {tickets.length === 0 ? null
-                        : <TicketsTable 
+                        : 
+                        <TicketsTable 
                             tickets={tickets}
                             sortArray={this.sortTickets}
                             onTicketClick={this.onTicketClick}
-                        />}
+                        />
+                        }
                     </div>
                     {singleTicket 
                         ? <SingleTicket 
