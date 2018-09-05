@@ -15,6 +15,13 @@ const fetchingForms = (bool) => {
     }
 }
 
+const fetchingYears = (bool) => {
+    return {
+        type: types.FETCHING_YEARS,
+        fetching: bool,
+    }
+}
+
 const fetchingSessions = (bool) => {
     return {
         type: types.FETCHING_SESSIONS,
@@ -88,6 +95,7 @@ export default {
     fetchingForms,
     fetchingSessions,
     fetchingTickets,
+    fetchingYears,
     fetchingUsers,
     eventsReceived,
     formsReceived,

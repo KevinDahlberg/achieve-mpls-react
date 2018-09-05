@@ -4,17 +4,30 @@ import {
 } from 'react-md';
 
 export class YearMenu extends Component {
+
+    filterYearRange = (years) => {
+        return years.map(year => {
+            return year.yearRange;
+        });
+    }
+
+    onYearChange = (value) => {
+        this.props.onYearChange(value);
+    }
+    
     render() {
         const { years, currentYear } = this.props;
+        const filteredYears = this.filterYearRange(years);
         const currentPlaceholder = currentYear + ' - ' + (currentYear + 1);
         return(
             <SelectField
                 id='year-dropdown-menu'
-                menuItems={years}
+                menuItems={filteredYears}
                 placeholder={currentPlaceholder}
                 sameWidth={true}
                 simplifiedMenu={true}
                 className='md-cell--2'
+                onChange={this.onYearChange}
             />
         )
     }

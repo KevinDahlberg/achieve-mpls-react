@@ -10,11 +10,9 @@ import {
     addForm,
     assignForms,
     deleteForm,
-    deleteQuestion,
     updateForm,
 } from './queries';
 import { 
-    fetchYearsIfNeeded,
     fetchFormsIfNeeded,
     fetchForms, 
 } from '../../store';
@@ -42,13 +40,10 @@ class FormsContainer extends Component {
     }
 
     componentWillMount() {
-        const { fetchFormsIfNeeded, fetchYearsIfNeeded } = this.props;
+        const { fetchFormsIfNeeded } = this.props;
         fetchFormsIfNeeded()
         .then((res) => {
-            fetchYearsIfNeeded()
-            .then(() => {
-                this.setState({ fetching: false });
-            })
+            this.setState({ fetching: false });
         })
     }
 
@@ -89,7 +84,8 @@ class FormsContainer extends Component {
     }
 
     deleteQuestion = (question) => {
-        deleteQuestion(question)
+        // todo - put delete question logic here
+        console.log(question);
     }
 
     //we don't need to call the db on the add form when removing a question
@@ -152,10 +148,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => {
     return bindActionCreators(
         {     
-            deleteQuestion,
             fetchFormsIfNeeded,
             fetchForms,
-            fetchYearsIfNeeded,
         }, 
         dispatch
     );

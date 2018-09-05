@@ -15,10 +15,8 @@ import {
 } from './queries';
 
 import {
-    fetchYearsIfNeeded,
     fetchSessions,
     fetchSessionsIfNeeded,
-    getEvents, 
 } from '../../store'
 
 import { newSession } from './constants';
@@ -38,19 +36,11 @@ class SessionsContainer extends Component {
     }
 
     componentDidMount() {
-        const { currentYear, fetchSessionsIfNeeded, fetchYearsIfNeeded } = this.props;
+        const { currentYear, fetchSessionsIfNeeded,} = this.props;
         fetchSessionsIfNeeded(currentYear)
         .then(() => {
-            fetchYearsIfNeeded()
-            .then(() => {
-                this.setState({ fetching: false })
-            })
+            this.setState({ fetching: false })
         })
-    }
-
-    getEvents = (session) => {
-        const { getEvents } = this.props;
-        getEvents(session)
     }
 
     addSessionHide = () => {
@@ -148,10 +138,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => {
     return bindActionCreators(
         {
-            fetchYearsIfNeeded,
             fetchSessions,
             fetchSessionsIfNeeded,  
-            getEvents,
         }, 
         dispatch
     );

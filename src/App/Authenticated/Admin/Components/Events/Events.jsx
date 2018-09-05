@@ -1,22 +1,11 @@
 import React, { Component } from 'react';
 import moment from 'moment';
-import {
-    Button,
-    Paper,
-} from 'react-md';
+import { Button, Paper } from 'react-md';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import {
-    addEvent,
-    deleteEvent,
-    updateEvent,
-} from './queries';
-import { 
-    fetchSessionsIfNeeded,
-    fetchFormsIfNeeded,
-    getEvents,
-} from '../../store';
+import { addEvent, deleteEvent, updateEvent } from './queries';
+import { fetchSessionsIfNeeded, fetchFormsIfNeeded } from '../../store';
 
 import { newEvent } from './constants';
 
@@ -31,43 +20,37 @@ class EventsContainer extends Component {
             fetching: true,
             singleEvent: newEvent,
             addVisible: false,
+            currentSession: {}
         }
     }
 
     componentDidMount() {
         const { 
-            getEvents, 
             fetchFormsIfNeeded, 
             fetchSessionsIfNeeded,
             sessions,
             currentYear } = this.props;
-        const id = Number(this.props.match.params.id);
+        const id = this.props.match.params.id;
         //turns out the session number isn't the same as the session's id
         //get sessions if it's a refresh
         fetchSessionsIfNeeded(currentYear)
         .then((res) => {
             let result;
             if (res) {
-                const currentSession = res.filter((session) => session.session_count === id)
-                result = currentSession[0].id;
+                result = res.filter((session) => session.id === id)[0]
             } else {
-                const currentSession = sessions.filter((session) => session.session_count === id)
-                result = currentSession[0].id;
+                result = sessions.filter((session) => session.id === id)[0];
             }
             return result;
         })
         .then((res) => {
-            //get events with new session id
-            getEvents(res)
+            this.setState({ events: res.events, currentSession: res });
+            //fetch forms for edit
+            fetchFormsIfNeeded()
             .then((res) => {
-                this.setState({ events: res });
-                //fetch forms for edit
-                fetchFormsIfNeeded()
-                .then((res) => {
-                    //sets fetching to false so things will render
-                    this.setState({ fetching: false });
-                })
-            })
+                //sets fetching to false so things will render
+                this.setState({ fetching: false });
+            });
         });
     }
 
@@ -82,8 +65,8 @@ class EventsContainer extends Component {
     // the next 3 methods get a little long, and might be able to be abstracted out.
     submitEvent = (event) => {
         const { formArray, sessions, getEvents } = this.props;
-        event.open_date = moment(event.date_form_open).format('YYYY-MM-DD');
-        event.close_date = moment(event.date_form_close).format('YYYY-MM-DD');
+        event.open_date = moment(event.open).format('YYYY-MM-DD');
+        event.close_date = moment(event.close).format('YYYY-MM-DD');
         const form_id = formArray.filter((form) => form.form_name === event.form_name);
         event.form_id = form_id[0].id;
         const id = Number(this.props.match.params.id);
@@ -104,9 +87,9 @@ class EventsContainer extends Component {
 
     submitEdit = (event) => {
         const { formArray, sessions, getEvents } = this.props;
-        event.open_date = moment(event.date_form_open).format('YYYY-MM-DD');
-        event.close_date = moment(event.date_form_close).format('YYYY-MM-DD');
-        const form_id = formArray.filter((form) => form.form_name === event.form_name);
+        event.open_date = moment(event.open).format('YYYY-MM-DD');
+        event.close_date = moment(event.close).format('YYYY-MM-DD');
+        const form_id = formArray.filter((form) => form.name === event.form);
         event.form_id = form_id[0].id;
         const id = Number(this.props.match.params.id);
         const session_id = sessions.filter((session) => session.session_count === id)
@@ -139,17 +122,14 @@ class EventsContainer extends Component {
 
     render() {
         const { formArray } = this.props;
-        const { fetching, events, singleEvent, addVisible } = this.state;
+        const { currentSession, fetching, events, singleEvent, addVisible } = this.state;
         return(
             <div className="tab-wrapper">
                 <div className="tab-title">
-                    <h1>Events for Session {this.props.match.params.id}</h1>
+                    <h1>Events for Session {currentSession.session}</h1>
                 </div>
                 <div className='tab-items'>
-                    <Paper
-                        zDepth={2}
-                        className='add-wrapper'
-                    >
+                    <Paper zDepth={2} className='add-wrapper'>
                         <span className='add-text'>Add Event</span>
                         <Button floating primary className='add-button' onClick={this.addEventClick}>add</Button>
                     </Paper>
@@ -190,7 +170,6 @@ const mapStateToProps = ({ adminReducer }) => ({
 const mapDispatchToProps = dispatch => (
     bindActionCreators(
         {   
-            getEvents,
             fetchSessionsIfNeeded,
             fetchFormsIfNeeded, 
         }, 

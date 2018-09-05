@@ -4,12 +4,13 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import Authorization from './authorization';
-import { checkSession } from './store';
+import { checkLogin } from './store';
 //views
 import Coach from './Authenticated/Coach';
 import ForgotPassword from './Login/ForgotPassword';
 import CreatePassword from './Login/CreatePassword';
 import Login from './Login/login';
+import Signup from './Login/Signup';
 import Admin from './Authenticated/Admin';
 
 class App extends Component {
@@ -21,12 +22,20 @@ class App extends Component {
     }
 
     componentWillMount() {
-        const { checkSession } = this.props;
-        checkSession()
+        const { checkLogin } = this.props;
+        checkLogin()
         .then((res) => {
+            if (res.role === 'admin') {
+                this.props.history.push('/admin');
+            }
+            if (res.role === 'coach') {
+                this.props.history.push('/coach');
+            }
             this.setState({ authenticating: false })
-            // add if statement to say if there is a session present, push to authenticated.
         })
+        .catch(() => {
+            this.setState({ authenticating: false});
+        });
     }
 
     render() {
@@ -41,6 +50,7 @@ class App extends Component {
                             <Route path='/coach' component={Authorization(['coach'])(Coach)} />
                             <Route path='/create-password/:id' component={CreatePassword} />
                             <Route path='/forgot-password' component={ForgotPassword} />
+                            <Route path='/register' component={Signup} />
                             <Route path='/login' component={Login} />
                             <Route path='/' component={Login} />
                         </Switch>
@@ -53,7 +63,7 @@ class App extends Component {
 
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
-    { checkSession }, dispatch
+    { checkLogin }, dispatch
   )
 }
 export default withRouter(connect(null, mapDispatchToProps)(App));

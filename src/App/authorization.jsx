@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { checkSession } from './store';
+import { checkLogin } from './store';
 
 const Authorization = (allowedRoles) => (WrappedComponent) => {
     class WithAuthorization extends Component {
@@ -30,7 +30,7 @@ const Authorization = (allowedRoles) => (WrappedComponent) => {
 
     const mapDispatchToProps = dispatch => {
         return bindActionCreators(
-            { checkSession }, dispatch
+            { checkLogin }, dispatch
         )
     }
 

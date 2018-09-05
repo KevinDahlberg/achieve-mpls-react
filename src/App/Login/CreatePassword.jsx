@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import * as logo from '../assets/achievempls-logo-white.png';
-import { forgotPW, addPW, checkToken } from '../store';
+import { forgotPW } from '../store';
 
 class CreatePassword extends Component {
     constructor(props) {
@@ -26,13 +26,7 @@ class CreatePassword extends Component {
     }
 
     componentWillMount() {
-        const token = this.props.match.params.id;
-        console.log(token);
-        checkToken(token)
-        .then((res) => {
-            const user = res[0];
-            this.setState({ user: user });
-        })
+
     }
 
     hideDialog = () => {
@@ -57,12 +51,8 @@ class CreatePassword extends Component {
         const { newPW } = this.props;
         const { password, user } = this.state;
         e.preventDefault();
-        this.setState({ sending: true, dialogVisible: true });
-        addPW(password, user)
-        .then(() => {
-            this.setState({ sending: false, user: {} });
-        });
     }
+
 
     render() {
         const { dialogVisible, sending, password, confirm } = this.state;
@@ -115,7 +105,7 @@ class CreatePassword extends Component {
                             </div> :
                             <div>
                                 <p>Go to Login</p>
-                                <Button flat prmiary onClick={this.backHome}>Login</Button>
+                                <Button flat primary onClick={this.backHome}>Login</Button>
                             </div>
                         }
                     </DialogContainer>
@@ -127,7 +117,7 @@ class CreatePassword extends Component {
 
 const dispatchToProps = dispatch => (
     bindActionCreators(
-        { forgotPW, addPW, checkToken }, dispatch
+        { forgotPW }, dispatch
     )
 )
 

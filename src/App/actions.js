@@ -14,10 +14,11 @@ function authenticateUser(userObj) {
         type: types.USER_AUTHENTICATED, 
         authenticating: false,
         isAuthenticated: true,
-        userName: userObj.user,
+        firstName: userObj.fname,
+        lastName: userObj.lname,
+        email: userObj.email,
         userRole: userObj.role,
-        userSession: userObj.session,
-        userId: userObj.userId,
+        years: userObj.years,
     }
 }
 
@@ -25,10 +26,11 @@ function userLoggedOut() {
     return {
         type: types.LOGGED_OUT, 
         isAuthenticated: false,
-        userName: '',
+        firstName: '',
+        lastName: '',
+        email: '',
         userRole: '',
-        userSession: '',
-        userId: '',
+        years: [],
     }
 }
 

@@ -8,27 +8,35 @@ import {
 } from 'react-md';
 
 export class SingleUser extends Component {
-    constructor(props){
-        super(props);
+    static propTypes = {
+        deleteUser: PropTypes.func,
+        editing: PropTypes.bool,
+        hide: PropTypes.func,
+        sessions: PropTypes.array,
+        submitUser: PropTypes.func,
+        user: PropTypes.object,
+        visible: PropTypes.bool,
+        years: PropTypes.array,
+    }
+
+    constructor(props) {
+        super(props)
         this.state = {
-            user: this.props.user
+            user: {}
         }
+    }
+
+    componentDidMount() {
+        const { user } = this.props
+        this.setState({ user });
     }
 
     hide = () => {
         this.props.hide();
     }
 
-    onFnameChange = (e) => {
-        this.setState({ user: { ...this.state.user, fname: e } });
-    }
-    
-    onLnameChange = (e) => {
-        this.setState({ user: { ...this.state.user, lname: e } });
-    }
-
-    onEmailChange = (e) => {
-        this.setState({ user: { ...this.state.user, email: e } });
+    onInputChange = (value, event) => {
+        this.setState({ user: { ...this.state.user, [event.target.name]: value } });
     }
 
     onRoleChange = (e) => {
@@ -36,7 +44,7 @@ export class SingleUser extends Component {
     }
 
     onSessionChange = (e) => {
-        this.setState({ user: { ...this.state.user, session_count: e } });
+        this.setState({ user: { ...this.state.user, session: e } });
     }
 
     onYearChange = (e) => {
@@ -57,8 +65,7 @@ export class SingleUser extends Component {
 
     prepareYearsForSelect = (years) => {
         const changedYears = years.map((year) => {
-            const newYear = year.split(' ').slice(0,1);
-            return newYear[0];
+            return year.yearRange;
         })
         return changedYears
     }
@@ -84,8 +91,9 @@ export class SingleUser extends Component {
                 <h1>{type} User</h1>
                 <SelectField
                     label='Session'
-                    id='user-session'
-                    value={user.session_count}
+                    id='session'
+                    name='session'
+                    value={user.session}
                     onChange={this.onSessionChange}
                     simplifiedMenu={false}
                     className='md-cell md-cell--bottom'
@@ -93,7 +101,8 @@ export class SingleUser extends Component {
                 />
                 <SelectField
                     label='Year'
-                    id='user-year'
+                    id='year'
+                    name='year'
                     value={user.year}
                     onChange={this.onYearChange}
                     simplifiedMenu={false}
@@ -102,7 +111,8 @@ export class SingleUser extends Component {
                 />
                 <SelectField
                     label='Role'
-                    id='user-role'
+                    id='role'
+                    name='role'
                     controlled='true'
                     value={user.role}
                     simplifiedMenu={false}
@@ -111,33 +121,36 @@ export class SingleUser extends Component {
                     menuItems={['coach', 'admin']}
                 />
                 <TextField
-                    id='user-fname'
+                    id='fname'
                     label='First Name'
+                    name='fname'
                     floating={true}
                     value={user.fname}
-                    onChange={this.onFnameChange}
+                    onChange={this.onInputChange}
                     className='md-cell md-cell--bottom'
                     required
                     resize={{ min: 200, max: 350 }}
                     rows={1}
                 />
                 <TextField
-                    id='user-lname'
+                    id='lname'
                     label='Last Name'
+                    name='lname'
                     floating={true}
                     value={user.lname}
-                    onChange={this.onLnameChange}
+                    onChange={this.onInputChange}
                     className='md-cell md-cell--bottom'
                     required
                     resize={{ min: 200, max: 350 }}
                     rows={1}
                 />
                 <TextField
-                    id='user-email'
+                    id='email'
                     label='Email'
+                    name='email'
                     floating={true}
                     value={user.email}
-                    onChange={this.onEmailChange}
+                    onChange={this.onInputChange}
                     className='md-cell md-cell--bottom'
                     required
                     resize={{ min: 200, max: 350 }}
@@ -148,13 +161,4 @@ export class SingleUser extends Component {
             </DialogContainer>
         )
     }
-}
-
-SingleUser.propTypes = {
-    hide: PropTypes.func,
-    sessions: PropTypes.array,
-    submitUser: PropTypes.func,
-    type: PropTypes.string,
-    user: PropTypes.object,
-    visible: PropTypes.bool,
 }

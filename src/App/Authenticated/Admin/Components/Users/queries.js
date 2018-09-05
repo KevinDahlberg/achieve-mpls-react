@@ -1,21 +1,10 @@
 /** Users Queries */
-import fetch from 'isomorphic-fetch';
-import moment from 'moment';
+import { db } from '../../../../../firebase';
 
-import { generateId } from './utils';
-import { envUrl } from '../../../../constants';
 
 export const addNewUser = (user) => {
-    user.password = generateId(10);
-    const init = {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        credentials: 'include',
-        body: JSON.stringify(user),
-    }
-    const url = envUrl + '/users/postUser';
     return new Promise((resolve, reject) => {
-        fetch(url, init)
+        db.collection('users').add(user)
         .then((response) => {
             resolve(response);
         })
@@ -26,15 +15,8 @@ export const addNewUser = (user) => {
 }
 
 export const updateUser = (user) => {
-    const init = {
-        method: 'PUT',
-        headers: {'Content-Type': 'application/json'},
-        credentials: 'include',
-        body: JSON.stringify(user),
-    }
-    const url = envUrl + '/users/updateUser';
     return new Promise((resolve, reject) => {
-        fetch(url, init)
+        db.collection('users').doc(user.id).update({...user})
         .then((response) => {
             resolve(response);
         })
@@ -44,26 +26,38 @@ export const updateUser = (user) => {
     })
 }
 
-// might need to move this DB call, not necessarily related to users, also used by Login components
-export const resetPW = (user) => {
-    const chanceExpiration = new Date();
-    chanceExpiration.setDate(chanceExpiration.getDate() + 30);
-    const objectToSend = { ...user, chance_expiration: moment(chanceExpiration).format('YYYY-MM-DD') }
-    console.log(objectToSend);
-    const init = {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        credentials: 'include',
-        body: JSON.stringify(objectToSend),
-    }
-    // obj needs id, email, and chance 
-    const url = envUrl + '/pwregister/resetpw'
+export const deleteUser = (user) => {
     return new Promise((resolve, reject) => {
-        fetch(url, init)
-        .then(response => response.json())
+        db.collection('users').doc(user.id).delete()
         .then((res) => {
-            console.log(res);
             resolve(res);
+        })
+        .catch((error) => {
+            reject(error);
+        })
+    }) 
+}
+
+export const addNewYear = (details) => {
+    const yearObj = { year: details.year, yearRange: details.yearRange };
+    return new Promise((resolve, reject) => {
+        db.collection('years').doc(details.year).set(yearObj)
+        .then((response) => {
+            let i;
+            for (i = 0; i < details.sessions; i++) {
+                const sessionObj = {
+                    dayOfWeek: '',
+                    events: [],
+                    facilitator: '',
+                    grade: '',
+                    school: '',
+                    session: i + 1,
+                    startTime: '',
+                    year: details.year,
+                }
+                db.collection('years').doc(details.year.toString()).collection('sessions').add(sessionObj);
+            }
+            resolve(response);
         })
         .catch((error) => {
             reject(error);
@@ -71,38 +65,19 @@ export const resetPW = (user) => {
     })
 }
 
-export const deleteUser = (user) => {
-    const userId = user.id;
-    const adminUrl = envUrl + '/users/delete/' + userId
-    const coachUrl = envUrl + '/users/deactivateUser'
+export const getSingleUser = (user) => {
     return new Promise((resolve, reject) => {
-        if (user.role === 'admin') {
-            const init = {
-                method: 'DELETE',
-                headers: {'Content-Type': 'application/json'},
-                credentials: 'include',
-            }
-            fetch(adminUrl, init)
-            .then((res) => {
-                resolve(res);
-            })
-            .catch((error) => {
-                reject(error);
-            })
-        } else {
-            const init = {
-                method: 'PUT',
-                headers: {'Content-Type': 'application/json'},
-                credentials: 'include',
-                body: JSON.stringify(user),
-            }
-            fetch(coachUrl, init)
-            .then((res) => {
-                resolve(res);
-            })
-            .catch((error) => {
-                reject(error);
-            })
-        }
-    })   
+        db.collection('users').where('email', '==', user.email).get()
+        .then((data) => {
+            const user = data.docs.map((doc) => {
+                const docData = doc.data();
+                const id = doc.id;
+                return { ...docData, id}
+            })[0];
+            resolve(user);
+        })
+        .catch((error) => {
+            reject(error);
+        });
+    });
 }

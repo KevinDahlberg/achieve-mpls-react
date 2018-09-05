@@ -1,18 +1,9 @@
 /** Sessions Queries */
-import fetch from 'isomorphic-fetch';
+import { db } from '../../../../../firebase';
 
-import { envUrl } from '../../../../constants';
-
-export const addSession = (session) => {
-    const init = {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        credentials: 'include',
-        body: JSON.stringify(session),
-    }
-    const url = envUrl + '/sessions/add'
+export const addSession = (session, year) => {
     return new Promise((resolve, reject) => {
-        fetch(url, init)
+       db.collection('years').doc(year.toString()).add(session)
         .then((data) => {
             resolve(data)
         })
@@ -22,16 +13,9 @@ export const addSession = (session) => {
     })
 }
 
-export const updateSession = (session) => {
-    const init = {
-        method: 'PUT',
-        headers: {'Content-Type': 'application/json'},
-        credentials: 'include',
-        body: JSON.stringify(session),
-    }
-    const url = envUrl + '/sessions/update';
+export const updateSession = (session, year) => {
     return new Promise((resolve, reject) => {
-        fetch(url, init)
+        db.collection('years').doc(year.toString()).update({...session})
         .then((data) => {
             resolve(data)
         })
@@ -41,22 +25,13 @@ export const updateSession = (session) => {
     })
 }
 
-export const deleteSession = (session) => {
-    const init = {
-        method: 'DELETE',
-        headers: {'Content-Type': 'application/json'},
-        credentials: 'include',
-    }
-    const url = envUrl + '/sessions/delete/' + session.id;
+export const deleteSession = (session, year) => {
     return new Promise((resolve, reject) => {
-        fetch(url, init)
-        .then(response => response.json())
+        db.collection('years').doc(session.id).delete()
         .then((data) => {
-            console.log(data);
             resolve(data)
         })
         .catch((error) => {
-            console.error(error);
             reject(error);
         })
     })

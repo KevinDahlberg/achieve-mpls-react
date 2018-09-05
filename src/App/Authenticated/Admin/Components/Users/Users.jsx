@@ -1,21 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {
-    Button,
-    Paper,
-    TextField,
-} from 'react-md';
+import { Button, Paper, TextField, } from 'react-md';
 import Fuse from 'fuse.js';
 
-import {  
-    addNewUser, 
-    deleteUser, 
-    updateUser, 
-    resetPW,
-} from './queries';
+import { addNewUser, deleteUser, updateUser, addNewYear } from './queries';
 import {
-    fetchYearsIfNeeded,
     fetchSessionsIfNeeded,
     fetchUsersIfNeeded,
     fetchUsers,
@@ -26,23 +16,29 @@ import { usersOptions } from './constants';
 import { SingleUser } from './SingleUser';
 import { UsersTable } from './UsersTable';
 import { YearMenu } from '../../Shared-Components';
+import { AddYear } from './AddYear/AddYear';
 
 class UsersContainer extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            addVisible: false,
+            addYearVisible: false,
+            editing: false,
             fetching: true,
             search: '',
+            singleUser: '',
+            slicedUsers: [],
+            tableRows: 10,
             user: {
                 fname: '',
                 lname: '',
                 email: '',
                 role: '',
-                session_count: '',
+                session: '',
                 year: '',
             },
             users: [],
-            addVisible: false
         }
     }
 
@@ -50,8 +46,6 @@ class UsersContainer extends Component {
         const { 
             currentYear, 
             fetchUsersIfNeeded, 
-            fetchSessionsIfNeeded, 
-            fetchYearsIfNeeded,
             users,
         } = this.props;
         fetchUsersIfNeeded(currentYear)
@@ -61,15 +55,7 @@ class UsersContainer extends Component {
             } else {
                 this.filterSearch(users, null);
             }
-        })
-        .then(() => {
-            fetchSessionsIfNeeded(currentYear)
-            .then(() => {
-                fetchYearsIfNeeded()
-                .then(() => {
-                    this.setState({ fetching: false });
-                });
-            });
+            this.setState({ fetching: false });
         });
     };
 
@@ -78,22 +64,75 @@ class UsersContainer extends Component {
         this.filterSearch(users, e);
     }
 
-    filterSearch = (users, search) => {
-        if (search) {
-            const usersFused = new Fuse(users, usersOptions);
-            const searchResults = usersFused.search(search);
-            this.setState({ users: searchResults, search: search });
-        } else {
-            this.setState({ users: users, search: search });
-        }
+    onPagination = (start, rowsPerPage) => {
+        const { users } = this.state;
+        this.setState({
+            slicedUsers: users.slice(start, start + rowsPerPage),
+            tableRows: rowsPerPage,
+            fetching: false,
+        })
+    }
+
+    onUserClick = (user) => {
+        console.log(user);
+        this.setState({ user, addVisible: true, editing: true })
+    }
+
+    onYearChange = (year) => {
+        const { tableRows } = this.state;
+        const { fetchUsers, years } = this.props;
+        const selectedYear = years.filter(yr => yr.yearRange === year)[0];
+        fetchUsers(parseFloat(selectedYear.year))
+        .then((res) => {
+            this.filterSearch(res, null);
+            this.onPagination(0, tableRows)
+        })
+    }
+
+    addUserClick = () => {
+        this.setState({ addVisible: true, editing: false });
     }
 
     addUserHide = () => {
         this.setState({ addVisible: false });
     }
 
-    addUserClick = () => {
-        this.setState({ addVisible: true });
+    addYearPopup = () => {
+        this.setState({ addYearVisible: true });
+    }
+
+    addYearHide = () => {
+        this.setState({ addYearVisible: false });
+    }
+
+    createNewYear = (nextYear) => {
+        nextYear.yearRange = `${nextYear.year} - ${parseFloat(nextYear.year) + 1}`;
+        addNewYear(nextYear);
+    }
+
+    deleteUser = (user) => {
+        const { fetchUsers, currentYear } = this.props;
+        this.setState({ search: '' });
+        deleteUser(user)
+        .then(() => {
+            fetchUsers(currentYear)
+            .then((res) => {
+                this.filterSearch(res, null);            
+            });
+        })
+    }
+
+    filterSearch = (users, search) => {
+        const { tableRows } = this.state;
+        if (search) {
+            const usersFused = new Fuse(users, usersOptions);
+            const searchResults = usersFused.search(search);
+            this.setState({ users: searchResults, search: search });
+            this.onPagination(0, tableRows);
+        } else {
+            this.setState({ users: users, search: '' });
+            this.onPagination(0, tableRows);
+        }
     }
 
     prepareUserToSubmit = (user, sessions) => {
@@ -104,9 +143,12 @@ class UsersContainer extends Component {
         return user;
     }
 
-    resetPW = (user) => {
-        console.log(user);
-        resetPW(user)
+    sortUsers = (key, ascending) => {
+        const { users, search } = this.state;
+        const sortedUsers = sortArray(users, key, ascending);
+        search.length === 0 ?
+            this.filterSearch(sortedUsers, null) :
+            this.filterSearch(sortedUsers, search);
     }
 
     submitAddUser = (user) => {
@@ -136,32 +178,10 @@ class UsersContainer extends Component {
         })
     }
 
-    deleteUser = (user) => {
-        const { fetchUsers, currentYear } = this.props;
-        this.setState({ search: '' });
-        deleteUser(user)
-        .then(() => {
-            fetchUsers(currentYear)
-            .then((res) => {
-                this.filterSearch(res, null);            
-            });
-        })
-    }
-
-    sortUsers = (key, ascending) => {
-        const { users } = this.props;
-        const { search } = this.state;
-        const sortedUsers = sortArray(users, key, ascending);
-        search.length === 0 ?
-            this.filterSearch(sortedUsers, null) :
-            this.filterSearch(sortedUsers, search);
-    }
-
     render() {
         const { years, currentYear, sessions } = this.props;
-        const { search, addVisible, user, users, fetching } = this.state;
-        return(
-            
+        const { search, addVisible, editing, slicedUsers, user, users, fetching, addYearVisible } = this.state;
+        return( 
             <div className='tab-wrapper'>
                 {fetching ? null :
                     <div>
@@ -170,6 +190,7 @@ class UsersContainer extends Component {
                             <YearMenu 
                                 years={years}
                                 currentYear={currentYear}
+                                onYearChange={this.onYearChange}
                             />
                         </div>
                         <div className='tab-items'>
@@ -188,29 +209,44 @@ class UsersContainer extends Component {
                                 <span className='add-text'>Add User</span>
                                 <Button floating primary className='add-button' onClick={this.addUserClick}>add</Button>
                             </Paper>
+                            <Paper
+                                zDepth={2}
+                                className='add-wrapper'
+                            >
+                                <span className="add-text">Add Year</span>
+                                <Button floating primary className="add-button" onClick={this.addYearPopup}>add</Button>
+                            </Paper>
                         </div>
                         <div className='table-container'>
-                            {users.length === 0 ? null :
                             <UsersTable 
                                 deleteUser = {this.deleteUser}
-                                search = {search}
+                                onPagination={this.onPagination}
+                                onUserClick={this.onUserClick}
                                 sessions = {sessions}
-                                users={users} 
-                                usersClick={this.onUsersClick} 
-                                submitEditUser={this.submitEditUser}
-                                years={years}
+                                slicedUsers={slicedUsers}
                                 sortArray={this.sortUsers}
-                                resetPW={this.resetPW}
-                            />}
+                                submitEditUser={this.submitEditUser}
+                                users={users}
+                                userClick={this.onUserClick}
+                            />
                         </div>
+                        {user ?
                             <SingleUser
+                                deleteUser={this.deleteUser}
+                                editing={editing}
                                 hide={this.addUserHide}
+                                sessions={sessions}
+                                submitUser={this.submitAddUser}
                                 user={user}
                                 visible={addVisible}
-                                submitUser={this.submitAddUser}
-                                sessions={sessions}
                                 years={years}
-                                type='Add'
+                            /> : null
+                        }
+                            <AddYear
+                                years={years}
+                                hide={this.addYearHide}
+                                visible={addYearVisible}
+                                createNewYear={this.createNewYear}
                             />
                     </div>
                 }
@@ -233,7 +269,6 @@ const mapDispatchToProps = dispatch => {
             fetchUsersIfNeeded, 
             fetchSessionsIfNeeded,
             fetchUsers,
-            fetchYearsIfNeeded,
         }, 
         dispatch
     );

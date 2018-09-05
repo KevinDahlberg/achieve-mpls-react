@@ -20,6 +20,7 @@ class ForgotPassword extends Component {
             dialogVisible: false,
             email: '',
             sending: false,
+            message: '',
         }
     }
 
@@ -41,11 +42,14 @@ class ForgotPassword extends Component {
         const { forgotPW } = this.props;
         const { email } = this.state;
         e.preventDefault();
-        this.setState({ sending: true, dialogVisible: true });
+        this.setState({ dialogVisible: true })
         forgotPW(email)
         .then(() => {
-            this.setState({ sending: false });
-        });
+            this.setState({ message: 'Password Reset Email Sent, Please Check Your Inbox.'})
+        })
+        .catch((error) => {
+            this.setState({ message: 'Reset Email Not Sent.  Please double check your email.'});
+        })
     }
 
     render() {
@@ -86,8 +90,9 @@ class ForgotPassword extends Component {
                                 <LinearProgress />
                             </div> :
                             <div>
-                                <p>Please Check Your Email</p>
-                                <Button flat prmiary onClick={this.backHome}>Close</Button>
+                                <p>{this.message}</p>
+                                <Button flat primary onClick={(e) => this.setState({ dialogVisible: false })}>Close</Button>
+                                <Button flat prmiary onClick={this.backHome}>Login</Button>
                             </div>
                         }
                     </DialogContainer>

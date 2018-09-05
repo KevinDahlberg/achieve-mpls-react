@@ -14,7 +14,6 @@ export default class SingleQuestion extends Component {
     }
 
     componentWillMount(){
-        console.log('component mounting');
     }
 
     onAnswerChange = (e, id) => {

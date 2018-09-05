@@ -21,17 +21,20 @@ export class UsersTableRow extends Component {
         const { user, deleteUser } = this.props;
         deleteUser(user);
     }
+    
+    viewUser = () => {
+        const { user, viewUser } = this.props;
+        viewUser(user);
+    }
 
     render() {
         const { user, idx } = this.props;
         return (
-            <TableRow key={idx}>
-                <TableColumn><Button primary raised onClick={this.resetPW}>Reset PW</Button></TableColumn>
+            <TableRow key={idx} onClick={this.viewUser}>
                 <TableColumn>{user.fname} {user.lname}</TableColumn>
                 <TableColumn>{user.email}</TableColumn>
                 <TableColumn>{user.role}</TableColumn>
-                <TableColumn>{user.session_count}</TableColumn>
-                <TableColumn>{user.status}</TableColumn>
+                <TableColumn>{user.session}</TableColumn>
                 <TableColumn><Button icon onClick={this.editUser}>create</Button></TableColumn>
                 <TableColumn>
                     {user.role === 'admin' ? 

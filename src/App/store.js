@@ -2,62 +2,79 @@
 import moment from 'moment';
 import actions from './actions';
 import { envUrl } from './constants';
+import firebase, { auth, db } from '../firebase';
 
-export const login = (creds) => (dispatch) => {
+export const login = (email, password) => (dispatch) => {
     dispatch(actions.authenticating(true));
-    const objToSend = {
-        username: creds.email,
-        password: creds.password,
-    }
-    //fetch object
-    const init = {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        credentials: 'include',
-        body: JSON.stringify(objToSend),
-    }
-    const url = envUrl + '/auth';
-    return new Promise(function(resolve, reject) {
-        fetch(url, init)
-        .then(response => response.json())
-        .then((data) => {
-            const userObj = {
-                user: data.username,
-                role: data.role,
-                session: data.session_count,
-                userId: data.user_id,
+    return new Promise((resolve, reject) => {
+        auth.signInWithEmailAndPassword(email, password)
+        .then((user) => {
+            if (user) {
+                db.collection("users").where("email", "==", email).get()
+                .then((snap) => {
+                    // gets data from snapshot
+                    const user = snap.docs.map((doc) => doc.data())[0];
+                    // there should only be 1 user per email in db.
+                    const userObj = {
+                        firstName: user.fname,
+                        lastName: user.lname,
+                        email: user.email,
+                        role: user.role,
+                        years: user.years,
+                    }
+                    resolve(userObj);
+                    dispatch(actions.authenticateUser(userObj));
+                });
             }
-            dispatch(actions.authenticateUser(userObj));
-            resolve(data);
         })
-        .catch((error) => {
-            dispatch(actions.authenticating(false));
-            reject(error);
+        .catch(e => {
+            reject(e);
+            console.error(e.message);
+        });
+    });
+}
+
+export const signup = (email, password, fname, lname) => (dispatch) => {
+    dispatch(actions.authenticating(true));
+    return new Promise((resolve, reject) => {
+        auth.createUserWithEmailAndPassword(email, password)
+        .then((user) => {
+            if (user) {
+                db.collection("users").where("email", "==", email).get()
+                .then((snap) => {
+                    // gets data from snapshot
+                    const user = snap.docs.map((doc) => doc.data())[0];
+                    // there should only be 1 user per email in db.
+                    if (user) {
+                        const userObj = {
+                            firstName: user.fname,
+                            lastName: user.lname,
+                            email: user.email,
+                            role: user.role,
+                            years: user.years,
+                        }
+                        dispatch(actions.authenticateUser(userObj));
+                        resolve(userObj);
+                    }
+                    if (!user) {
+                        db.collection("users").doc().set({
+                            email, lname, fname,
+                        })
+                    }
+                });
+            }
+        })
+        .catch(e => {
+            reject(e);
+            console.error(e.message);
         })
     })
 }
 
 // sends out email to user so they can reset their password
 export const forgotPW = (email) => (dispatch) => {
-    console.log('forgot pw');
-    // set expiration date of chance
-    const chanceExpiration = new Date();
-    chanceExpiration.setDate(chanceExpiration.getDate() + 30);
-    const chance_expiration = moment(chanceExpiration).format('YYYY-MM-DD');
-    const objToSend = {
-        email: email,
-        chance_expiration: chance_expiration,
-    }
-    const init = {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        credentials: 'include',
-        body: JSON.stringify(objToSend),
-    }
-    const url = envUrl + '/pwregister/forgotpw';
     return new Promise((resolve, reject) => {
-        fetch(url, init)
-        .then((response) => response.json())
+        auth.sendPasswordResetEmail(email)
         .then((data) => {
             resolve(data)
         })
@@ -67,98 +84,43 @@ export const forgotPW = (email) => (dispatch) => {
     })
 }
 
-// add a new pw
-export const addPW = (password, user) => {
-    console.log(password, user);
-    const objectToSend = { password: password, id: user.id }
-    const init = {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        credentials: 'include',
-        body: JSON.stringify(objectToSend),
-    }
-    const url = envUrl + '/pwregister/addPwd'
-    return new Promise((resolve, reject) => {
-        fetch(url, init)
-        .then((response) => response.json())
-        .then((data) => {
-            resolve(data)
-        })
-        .catch((error) => {
-            reject(error);
-        })
-    })
-}
 
-// checks token with database, gets user
-export const checkToken = (token) => {
-    const objectToSend = {
-        token: token,
-        date: moment().format('MM-DD-YYYY'),
-    }
-    const init = {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        credentials: 'include',
-        body: JSON.stringify(objectToSend),
-    }
-    const url = envUrl + '/pwregister'
-    return new Promise((resolve, reject) => {
-        fetch(url, init)
-        .then((response) => response.json())
-        .then((data) => {
-            resolve(data)
-        })
-        .catch((error) => {
-            reject(error);
-        })
-    })
-}
-
-export const checkSession = () => (dispatch) => {
+export const checkLogin = () => (dispatch) => {
     dispatch(actions.authenticating(true));
-    const init = {
-        method: 'GET',
-        headers: {'Content-Type': 'application/json'},
-        credentials: 'include',
-    }
-    const url = envUrl + '/auth/clearance'
     return new Promise((resolve, reject) => {
-        fetch(url, init)
-        // .then(response => response.json())
-        .then(response => response.json())
-        .then((data) => {
-            const userObj = {
-                user: data.username,
-                role: data.role,
-                session: data.session_count,
-                userId: data.user_id,
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                db.collection("users").where("email", "==", user.email).get()
+                .then((snap) => {
+                    // gets data from snapshot
+                    const user = snap.docs.map((doc) => doc.data())[0];
+                    // there should only be 1 user per email in db.
+                    if (user) {
+                        const userObj = {
+                            firstName: user.fname,
+                            lastName: user.lname,
+                            email: user.email,
+                            role: user.role,
+                            years: user.years,
+                        }
+                        dispatch(actions.authenticateUser(userObj));
+                    }
+                    resolve(user);
+                });
+            } else {
+                reject('no user logged in');
+                dispatch(actions.authenticating(false));
             }
-            console.log(userObj);
-            dispatch(actions.authenticateUser(userObj))
-            resolve(data)
-        })
-        .catch((error) => {
-            dispatch(actions.authenticating(false));
-            reject(error);
-        })
+        });
     })
 }
 
 export const logout = () => (dispatch) => {
-    const init = {
-        method: 'GET',
-        headers: {'Content-Type': 'application/json'},
-        credentials: 'include',
-    }
-    const url = envUrl + '/logout'
     return new Promise ((resolve, reject) => {
-        fetch(url, init)
-        .then((response) => {
+        firebase.auth().signOut().then(() => {
             dispatch(actions.userLoggedOut());
-            resolve(response);
-        })
-        .catch((error) => {
+            resolve();
+        }).catch((error) => {
             reject(error);
         })
     })

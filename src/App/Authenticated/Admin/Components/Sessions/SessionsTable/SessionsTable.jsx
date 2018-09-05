@@ -59,7 +59,7 @@ export class SessionsTable extends Component {
     }
 
     viewEvents = (session) => {
-        const id = session.session_count;
+        const id = session.id;
         this.props.viewEvent(id)
     }
 

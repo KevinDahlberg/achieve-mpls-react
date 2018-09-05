@@ -23,10 +23,10 @@ export class EventsTableRow extends Component {
         const { event, index } = this.props;
         return(
             <TableRow key={index}>
-                <TableColumn>{event.meeting_count}</TableColumn>
-                <TableColumn>{event.form_name}</TableColumn>
-                <TableColumn>{moment(event.date_form_open).format('MMM D, YYYY')}</TableColumn>
-                <TableColumn>{moment(event.date_form_close).format('MMM D, YYYY')}</TableColumn>
+                <TableColumn>{event.event}</TableColumn>
+                <TableColumn>{event.form}</TableColumn>
+                <TableColumn>{moment(event.open).format('MMM D, YYYY')}</TableColumn>
+                <TableColumn>{moment(event.close).format('MMM D, YYYY')}</TableColumn>
                 <TableColumn><Button icon onClick={this.editEvent}>create</Button></TableColumn>
                 <TableColumn><Button icon onClick={this.deleteEvent}>delete</Button></TableColumn>
             </TableRow>

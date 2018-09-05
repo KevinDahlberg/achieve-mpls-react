@@ -9,9 +9,12 @@ import { connect } from 'react-redux';
 import { NavLink, withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 
+import firebase, { auth } from '../../firebase';
+
 import {
-    checkSession,
+    checkLogin,
     login,
+    signup,
 } from '../store'
 
 import * as logo from '../assets/achievempls-logo-white.png';
@@ -23,6 +26,8 @@ class Login extends Component {
             email: '',
             password: '',
             visible: false,
+            noRoleVisible: false,
+            errorMessage: '',
         }
     }
 
@@ -31,7 +36,7 @@ class Login extends Component {
     }
 
     hideDialog = () => {
-        this.setState({ visible: false });
+        this.setState({ visible: false, noRoleVisible: false });
     }
 
     onEmailChange = (e) => {
@@ -48,24 +53,29 @@ class Login extends Component {
         e.preventDefault();
         const { email, password } = this.state;
         const { login } = this.props;
-        const objToSend = {
-            email: email,
-            password: password,
-        }
-        login(objToSend)
+        login(email, password)
         .then((res) => {
             if (res.role === 'admin') {
                 this.props.history.push('/admin');
-            } else if (res.role === 'coach') {
-                this.props.history.push('/coach');
-            } else {
                 return
             }
+            if (res.role === 'coach') {
+                this.props.history.push('/coach');
+                return
+            }
+            if (!res.role) {
+                this.setState({
+                    email: '',
+                    password: '',
+                    noRoleVisible: true,
+                })
+                return
+            }
+
         })
-        .catch((error) => {
-            console.error(error);
-            this.showDialog();
-        });
+        .catch(e => {
+            this.setState({ visible: true, errorMessage: 'Username or Password Incorrect' })
+        })
     }
 
     render() {
@@ -95,7 +105,8 @@ class Login extends Component {
                             type='password'
                         />
                         <NavLink to="forgot-password">Forgot Password</NavLink>
-                        <Button raised primary type="submit">Login</Button>
+                        <NavLink to="register">Register</NavLink>
+                        <Button primary raised type="submit">Login</Button>
                     </form>
                 </div>
                 <div>
@@ -106,7 +117,17 @@ class Login extends Component {
                     onHide={this.hideDialog}
                     focusOnMount={false}
                 >
-                    <p>Incorrect Username or Password</p>
+                    {this.state.errorMessage}
+                    <Button flat primary onClick={this.hideDialog}>Close</Button>
+                </DialogContainer>
+                <DialogContainer
+                    id='no-role-dialog'
+                    visible={this.state.noRoleVisible}
+                    title='Thanks for Registering!'
+                    onHide={this.hideDialog}
+                    focusOnMount={false}
+                >
+                    <p>Your account information is being processed by the achieve mpls team.  Check back later to access your account.</p>
                     <Button flat primary onClick={this.hideDialog}>Close</Button>
                 </DialogContainer>
             </div>
@@ -122,7 +143,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators(
-        { checkSession, login }, dispatch);
+        { checkLogin, login, signup }, dispatch);
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Login));

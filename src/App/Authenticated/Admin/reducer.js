@@ -43,6 +43,11 @@ const reducer = (state = initialState, action) => {
             ...state,
             fetching: action.fetching,
         }
+        case types.FETCHING_YEARS:
+        return {
+            ...state,
+            fetching: action.fetching,
+        }
         case types.EVENTS_RECEIVED:
         return {
             ...state,

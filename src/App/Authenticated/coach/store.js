@@ -15,7 +15,6 @@ export const getExitTickets = (session, id) => (dispatch) => {
         fetch(url, init)
         .then(response => response.json())
         .then((data) => {
-            console.log(data);
             dispatch(actions.exitTicketsReceived(data))
             return data;
         })
@@ -40,7 +39,6 @@ export const sendExitTicket = (ticket) => (dispatch) => {
         fetch(url, init)
         .then((response) => response.json())
         .then((data) => {
-            console.log(data);
             resolve(data)
         })
         .catch((error) => {

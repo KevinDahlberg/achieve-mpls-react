@@ -26,7 +26,7 @@ export class FormsTableRow extends Component {
         const { form, index } = this.props;
         return (
             <TableRow key={index}>
-                <TableColumn>{form.form_name}</TableColumn>
+                <TableColumn>{form.name}</TableColumn>
                 <TableColumn><Button raised primary onClick={this.assignForm}>Assign</Button></TableColumn>
                 <TableColumn><Button icon onClick={this.editForm}>create</Button></TableColumn>
                 <TableColumn><Button icon onClick={this.deleteForm}>delete</Button></TableColumn>

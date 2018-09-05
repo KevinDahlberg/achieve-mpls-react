@@ -1,5 +1,6 @@
 import actions from './actions';
 import { envUrl } from '../../constants';
+import firebase, { auth, db } from '../../../firebase';
 
 export const fetchFormsIfNeeded = () => (dispatch, getState) => {
     if (shouldFetchForms(getState())) {
@@ -23,22 +24,20 @@ const shouldFetchForms = (state) => {
 
 export const fetchForms = () => (dispatch) => {
     dispatch(actions.fetchingForms(true))
-    const init = {
-        method: 'GET',
-        headers: {'Content-Type': 'application/json'},
-        credentials: 'include',
-    }
-    const url = envUrl + '/forms'
     return new Promise((resolve, reject) => {
-        fetch(url, init)
-        .then(response => response.json())
+        db.collection("forms").get()
         .then((data) => {
-            dispatch(actions.formsReceived(data))
-            return data;
+            const forms = data.docs.map((doc) => {
+                const docData = doc.data()
+                const id = doc.id;
+                return { ...docData, id }
+            });
+            dispatch(actions.formsReceived(forms))
+            resolve(forms)
         })
-        .then((data) => resolve(data))
         .catch((error) => {
             dispatch(actions.fetchingForms(false));
+            console.error(error);
             reject(error);
         })
     })
@@ -66,54 +65,33 @@ const shouldFetchSessions = (state) => {
 
 export const fetchSessions = (year) => (dispatch) => {
     dispatch(actions.fetchingSessions(true))
-    const init = {
-        method: 'GET',
-        headers: {'Content-Type': 'application/json'},
-        credentials: 'include',
-    }
-    const url = envUrl + '/sessions/' + year;
     return new Promise ((resolve, reject) => {
-        fetch(url, init)
-        .then(response => response.json())
+        db.collection('years').doc(year.toString()).collection('sessions').get()
         .then((data) => {
-            dispatch(actions.sessionsReceived(data))
-            return data;
+            const sessions = data.docs.map((doc) => {
+                const docData = doc.data()
+                const id = doc.id;
+                return { ...docData, id }
+            });
+            dispatch(actions.sessionsReceived(sessions))
+            resolve(sessions)
         })
-        .then((data) => resolve(data))
         .catch((error) => {
             dispatch(actions.fetchingSessions(false));
+            console.error(error);
             reject(error);
-        });
+        })
     });
-}
-
-// todo attach actions to this
-export const getEvents = (session) => (dispatch) => {
-    const init = {
-        method: 'GET',
-        headers: {'Content-Type': 'application/json'},
-        credentials: 'include',
-    }
-    const url = envUrl + '/events/' + session;
-    return new Promise((resolve, reject) => {
-        fetch(url, init)
-        .then(response => response.json())
-        .then((data) => {
-            resolve(data)
-        })
-        .catch((error) => {
-            reject(error);
-        })
-    })
 }
 
 export const fetchYearsIfNeeded = () => (dispatch, getState) => {
     if (shouldFetchYears(getState())) {
-        return dispatch(fetchYears())
+        dispatch(actions.fetchingYears(true))
+        return dispatch(fetchYears());
     } else {
         return new Promise((resolve, reject) => {
             resolve(false);
-        })
+        });
     }
 }
 
@@ -126,25 +104,21 @@ const shouldFetchYears = (state) => {
     }
 }
 
-const fetchYears = () => (dispatch) => {
-    const init = {
-        method: 'GET',
-        headers: {'Content-Type': 'application/json'},
-        credentials: 'include',
-    }
-    const url = envUrl + '/sessions/years';
-    return new Promise((resolve, reject) => {
-        fetch(url, init)
-        .then(response => response.json())
-        .then((data) => {
-            const mapped = data.map((year) => {
-                return year.year + ' - ' + (year.year + 1)
+export const fetchYears = () => (dispatch) => {
+    dispatch(actions.fetchingYears(true))
+    return new Promise ((resolve, reject) => {
+        db.collection('years').get()
+        .then(data => {
+            const years = data.docs.map((doc) => {
+                const docData = doc.data()
+                const id = doc.id;
+                return { ...docData, id }
             });
-            dispatch(actions.yearsReceived(mapped))
-            return data;
+            dispatch(actions.yearsReceived(years))
+            resolve(years)
         })
-        .then((data) => resolve(data))
         .catch((error) => {
+            dispatch(actions.fetchingYears(false));
             reject(error);
         })
     })
@@ -170,22 +144,20 @@ const shouldFetchTickets = (state) => {
     }
 }
 
-const fetchTickets = (year) => (dispatch) => {
+export const fetchTickets = (year) => (dispatch) => {
+    console.log(year);
     dispatch(actions.fetchingTickets(true))
-    const init = {
-        method: 'GET',
-        headers: {'Content-Type': 'application/json'},
-        credentials: 'include',
-    }
-    const url = envUrl + '/tickets/' + year;
     return new Promise((resolve, reject) => {
-        fetch(url, init)
-        .then(response => response.json())
+        db.collection("responses").where("year", "==", year).get()
         .then((data) => {
-            dispatch(actions.ticketsReceived(data))
-            return data;
+            const tickets = data.docs.map((doc) => {
+                const docData = doc.data()
+                const id = doc.id;
+                return { ...docData, id }
+            });
+            dispatch(actions.ticketsReceived(tickets))
+            resolve(tickets)
         })
-        .then((data) => resolve(data))
         .catch((error) => {
             dispatch(actions.fetchingTickets(false));
             console.error(error);
@@ -217,20 +189,17 @@ const shouldFetchUsers = (state) => {
 export const fetchUsers = (year) => (dispatch) => {
     //todo set up backend to filter out users based on year
     dispatch(actions.fetchingUsers(true))
-    const init = {
-        method: 'GET',
-        headers: {'Content-Type': 'application/json'},
-        credentials: 'include',
-    }
-    const url = envUrl + '/users';
     return new Promise((resolve, reject) => {
-        fetch(url, init)
-        .then(response => response.json())
+        db.collection('years').doc(year.toString()).collection('users').get()
         .then((data) => {
-            dispatch(actions.usersReceived(data))
-            return data;
+            const users = data.docs.map((doc) => {
+                const docData = doc.data()
+                const id = doc.id;
+                return { ...docData, id }
+            });
+            dispatch(actions.usersReceived(users));
+            resolve(users);
         })
-        .then((data) => resolve(data))
         .catch((error) => {
             dispatch(actions.fetchingUsers(false));
             reject(error);

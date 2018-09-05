@@ -3,7 +3,7 @@ import { sortBy } from 'lodash'
 
 export const calculateCurrentYear = (year) => {
     let currentYear = year;
-    const endOfYear = '8/1/' + currentYear;
+    const endOfYear = '9/1/' + currentYear;
     if (moment().isBefore(endOfYear)){
         currentYear = currentYear - 1;
     }
@@ -12,8 +12,7 @@ export const calculateCurrentYear = (year) => {
 
 export const prepareYearsForSelect = (years) => {
   const changedYears = years.map((year) => {
-      const newYear = year.split(' ').slice(0,1);
-      return newYear[0];
+      return year.yearRange;
   })
   return changedYears
 }

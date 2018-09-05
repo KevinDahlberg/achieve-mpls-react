@@ -26,10 +26,8 @@ export class TicketsTable extends Component {
         super(props);
         this.state = {
             ticket: {},
-            slicedTickets: this.props.tickets.slice(0,10),
-            rows: 10,
             ascending: {
-                session_count: true,
+                session: true,
                 event: true,
                 fname: true,
                 rating: true,
@@ -39,13 +37,6 @@ export class TicketsTable extends Component {
                 completed: true,
             }
         }
-    }
-    
-    componentWillReceiveProps() {
-        const { tickets } = this.props;
-        const { rows } = this.state;
-        const sliceOfTickets = tickets.slice(0,rows);
-        this.setState({ slicedTickets: sliceOfTickets });
     }
 
     // changes all items except the key of the selected item to true, sets
@@ -61,11 +52,7 @@ export class TicketsTable extends Component {
     }
 
     handlePagination = (start, rowsPerPage) => {
-        const { tickets } = this.state;
-        this.setState({
-            slicedTickets: tickets.slice(start, start + rowsPerPage),
-            rows: rowsPerPage,
-        })
+        this.props.onPagination(start, rowsPerPage);
     }
 
     viewTicket = (ticket, e) => {
@@ -78,19 +65,19 @@ export class TicketsTable extends Component {
     }
     
     render() {
-        const { tickets } = this.props;
-        const { ascending, slicedTickets } = this.state
+        const { tickets, slicedTickets } = this.props;
+        const { ascending } = this.state
         return (
             <Paper
                 zDepth={2}
                 className='table-wrapper'
             >
-                <DataTable plain>
+                <DataTable plain baseId="tickets-table">
                     <TableHeader>
                         <TableRow>
                             <TableColumn
-                                sorted={ascending.session_count}
-                                onClick={(e) => this.sortArray('session_count', ascending.session_count)}
+                                sorted={ascending.session}
+                                onClick={(e) => this.sortArray('session', ascending.session)}
                                 role="button"
                             >
                                 Session
