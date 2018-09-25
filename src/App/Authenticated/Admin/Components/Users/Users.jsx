@@ -30,14 +30,6 @@ class UsersContainer extends Component {
             singleUser: '',
             slicedUsers: [],
             tableRows: 10,
-            user: {
-                fname: '',
-                lname: '',
-                email: '',
-                role: '',
-                session: '',
-                year: '',
-            },
             users: [],
         }
     }
@@ -74,7 +66,6 @@ class UsersContainer extends Component {
     }
 
     onUserClick = (user) => {
-        console.log(user);
         this.setState({ user, addVisible: true, editing: true })
     }
 
@@ -90,7 +81,7 @@ class UsersContainer extends Component {
     }
 
     addUserClick = () => {
-        this.setState({ addVisible: true, editing: false });
+        this.setState({ addVisible: true, editing: false, user: {} });
     }
 
     addUserHide = () => {
@@ -230,7 +221,7 @@ class UsersContainer extends Component {
                                 userClick={this.onUserClick}
                             />
                         </div>
-                        {user ?
+                        {addVisible ?
                             <SingleUser
                                 deleteUser={this.deleteUser}
                                 editing={editing}

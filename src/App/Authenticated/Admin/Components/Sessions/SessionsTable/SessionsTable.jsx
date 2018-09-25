@@ -39,18 +39,13 @@ export class SessionsTable extends Component {
     }
 
     editSession = (session) => {
-        this.setState({ editVisible: true, session: session });
+        const { editSession } = this.props
+        editSession(session);
     }
 
-    deleteSessionDial = (session) => {
-        this.setState({ deleteVisible: true, session: session });
-    }
-
-    deleteSession = () => {
+    deleteSession = (session) => {
         const { deleteSession } = this.props;
-        const { session } = this.state;
         deleteSession(session);
-        this.setState({ deleteVisible: false, session: {} });
     }
 
     submitSession = (session) => {
@@ -82,7 +77,6 @@ export class SessionsTable extends Component {
                                 <TableColumn>Start Time</TableColumn>
                                 <TableColumn>School</TableColumn>
                                 <TableColumn>View Events</TableColumn>
-                                <TableColumn>Edit</TableColumn>
                                 <TableColumn>Delete</TableColumn>
                             </TableRow>
                         </TableHeader>
@@ -94,41 +88,12 @@ export class SessionsTable extends Component {
                                     session={session}
                                     viewEvents={this.viewEvents}
                                     editSession={this.editSession}
-                                    deleteSessionDial={this.deleteSessionDial}
+                                    deleteSession={this.deleteSession}
                                 />
                             ))}
                         </TableBody>
                     </DataTable>
                 </Paper>
-                {editVisible ?
-                    <SingleSession
-                        session={session}
-                        submitSession={this.submitSession}
-                        visible={editVisible}
-                        hide={this.editHide}
-                        type={'Edit'}
-                        years={years}
-                    /> :
-                    null
-                }
-                {deleteVisible ?
-                    <DialogContainer
-                        title='Delete Session'
-                        id='delete-session-dialog'
-                        visible={deleteVisible}
-                        onHide={this.deleteHide}
-                        focusOnMount={false}
-                        portal={true}
-                        lastChild={true}
-                        disableScrollLocking={true}
-                        renderNode={document.body}
-                    >
-                        <p>Are you suer you want to delete session {session.session_count}?</p>
-                        <Button raised primary onClick={this.deleteSession}>Yes</Button>
-                        <Button flat onClick={this.deleteHide}>Cancel</Button>
-                    </DialogContainer> :
-                    null
-                    }
             </div>
         )
     }

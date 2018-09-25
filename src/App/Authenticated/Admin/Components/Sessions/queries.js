@@ -26,8 +26,9 @@ export const updateSession = (session, year) => {
 }
 
 export const deleteSession = (session, year) => {
+    console.log('session', session, year);
     return new Promise((resolve, reject) => {
-        db.collection('years').doc(session.id).delete()
+        db.collection('years').doc(year.toString()).collection('sessions').doc(session.id).delete()
         .then((data) => {
             resolve(data)
         })

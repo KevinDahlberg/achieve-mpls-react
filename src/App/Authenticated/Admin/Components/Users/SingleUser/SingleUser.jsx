@@ -21,13 +21,17 @@ export class SingleUser extends Component {
 
     constructor(props) {
         super(props)
-        this.state = {
-            user: {}
-        }
+        this.state = {}
+        this.baseState = Object.assign(this.state);
     }
 
-    componentDidMount() {
+    componentWillMount() {
         const { user } = this.props
+        this.setState({ user });
+    }
+
+    componentWillReceiveProps() {
+        const { user } = this.props;
         this.setState({ user });
     }
 
@@ -75,6 +79,7 @@ export class SingleUser extends Component {
         const { user } = this.state;
         const sessionArray = this.prepareSessionsForSelect(sessions);
         const yearArray = this.prepareYearsForSelect(years);
+        console.log(user);
         return (
             <DialogContainer
                 aria-describedby='single-user-container'

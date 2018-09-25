@@ -35,8 +35,8 @@ export class SingleSession extends Component {
         this.setState({ session: newSession });
     }
 
-    onSessionChange = (e) => {
-        this.setState({ session: { ...this.state.session, session_count: e } });
+    onInputChange = (val, e) => {
+        this.setState({ session: { ...this.state.session, [e.target.name]: val } });
     }
 
     onSchoolChange = (e) => {
@@ -85,15 +85,15 @@ export class SingleSession extends Component {
                     label='Session'
                     id='session'
                     floating={true}
-                    value={session.session_count}
-                    onChange={this.onSessionChange}
+                    value={session.session}
+                    onChange={this.onInputChange}
                     className='md-cell md-cell--bottom'
                 />
                 <SelectField
                     label='Year'
                     id='session-year'
                     value={session.year}
-                    onChange={this.onYearChange}
+                    onChange={this.onInputChange}
                     className='md-cell md-cell--bottom'
                     menuItems={years}
                     simplifiedMenu={false}
@@ -102,7 +102,7 @@ export class SingleSession extends Component {
                     label='Facilitator'
                     id='session-facilitator'
                     value={session.facilitator}
-                    onChange={this.onFacilitatorChange}
+                    onChange={this.onInputChange}
                     className='md-cell md-cell--bottom'
                     menuItems={['Amy', 'Amber']}
                     simplifiedMenu={false}
@@ -111,7 +111,7 @@ export class SingleSession extends Component {
                     label='Grade'
                     id='session-grade'
                     value={session.grade}
-                    onChange={this.onGradeChange}
+                    onChange={this.onInputChange}
                     className='md-cell md-cell--bottom'
                     menuItems={[9,12]}
                     simplifiedMenu={false}
@@ -121,14 +121,14 @@ export class SingleSession extends Component {
                     id='session-school'
                     floating={true}
                     value={session.school}
-                    onChange={this.onSchoolChange}
+                    onChange={this.onInputChange}
                     className='md-cell md-cell--bottom'
                 />
                 <SelectField
                     label='Day'
                     id='session-day'
                     value={session.day}
-                    onChange={this.onDayChange}
+                    onChange={this.onInputChange}
                     className='md-cell md-cell--bottom'
                     menuItems={['Mondays', 'Tuesdays', 'Wednesdays', 'Thursdays', 'Fridays']}
                     simplifiedMenu={false}
@@ -137,7 +137,7 @@ export class SingleSession extends Component {
                     id="session-time"
                     label="Select Time"
                     value={session.start_time}
-                    onChange={this.onTimeChange}
+                    onChange={this.onInputChange}
                     lastChild={true}
                     disableScrollLocking={true}
                     renderNode={document.body}

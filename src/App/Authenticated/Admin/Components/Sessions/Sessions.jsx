@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { Button, Paper, DialogContainer } from 'react-md';
 import { withRouter } from 'react-router-dom';
 
-import {
-    Button,
-    Paper,
-} from 'react-md';
+// Components
+import { YearMenu } from '../../Shared-Components';
 
 import {
     addSession,
@@ -17,6 +16,7 @@ import {
 import {
     fetchSessions,
     fetchSessionsIfNeeded,
+    fetchTickets,
 } from '../../store'
 
 import { newSession } from './constants';
@@ -31,6 +31,8 @@ class SessionsContainer extends Component {
         this.state = {
             singleSession: newSession,
             addVisible: false,
+            editVisible: false,
+            deleteVisible: false,
             fetching: true,
         }
     }
@@ -51,6 +53,52 @@ class SessionsContainer extends Component {
         this.setState({ addVisible: true });
     }
 
+    deleteSession = () => {
+        const { fetchSessions, currentYear } = this.props;
+        const { singleSession } = this.state;
+        this.hideDeleteSession();
+        deleteSession(singleSession, currentYear)
+        .then(() => {
+            fetchSessions(currentYear);
+        });
+    }
+
+    hideDeleteSession = () => {
+        this.setState({ deleteVisible: false });
+    }
+
+    hideEditSession = () => {
+        this.setState({ editVisible: false });
+    }
+
+    getSessions = (year) => {
+        this.setState({ fetching: true })
+        fetchSessions(year)
+        .then(() => {
+            this.setState({ fetching: false });
+        });
+    }
+
+    onYearChange = (year) => {
+        const { years, fetchSessions } = this.props;
+        this.setState({ fetching: true });
+        const selectedYear = years.filter(yr => yr.yearRange === year)[0]
+        fetchSessions(parseFloat(selectedYear.year))
+        .then((res) => {
+            this.setState({ fetching: false });
+        });
+    }
+
+    showDeleteSession = (session) => {
+        console.log('show delete');
+        this.setState({ deleteVisible: true, editVisible: false, singleSession: session });
+    }
+
+    showEditSession = (session) => {
+        console.log('show edit', session);
+        this.setState({ editVisible: true, singleSession: session });
+    }
+
     submitSession = (session) => {
         const { fetchSessions, currentYear, } = this.props;
         this.setState({ addVisible: false });
@@ -68,29 +116,27 @@ class SessionsContainer extends Component {
         });
     }
 
-    deleteSession = (session) => {
-        const { fetchSessions, currentYear, } = this.props;
-        deleteSession(session)
-        .then(() => {
-            fetchSessions(currentYear);
-        });
-    }
-
     viewEvent = (sessionId) => {
         const { history } = this.props;
         history.push('/admin/events/' + sessionId);
     }
 
     render() {
-        const { sessions, formArray, years } = this.props;
-        const { addVisible, singleSession, fetching } = this.state;
+        const { sessions, formArray, years, currentYear } = this.props;
+        const { addVisible, deleteVisible, editVisible, singleSession, fetching } = this.state;
         const updatedYears = prepareYearsForSelect(years);
+        console.log('sessions', sessions);
         return (
             <div className='tab-wrapper'>
                 {fetching ? null :
                 <div>
                     <div className='tab-title'>
                         <h2>Manage Sessions</h2>
+                        <YearMenu
+                            years={years}
+                            currentYear={currentYear}
+                            onYearChange={this.onYearChange}
+                        />
                     </div>
                     <div className='tab-items'>
                         <Paper
@@ -104,7 +150,8 @@ class SessionsContainer extends Component {
                     <div className="table-container">
                         {sessions.length === 0 ? null :
                         <SessionsTable
-                            deleteSession={this.deleteSession}
+                            editSession={this.showEditSession}
+                            deleteSession={this.showDeleteSession}
                             sessions={sessions}
                             getEvent={this.getEvents}
                             formArray={formArray}
@@ -114,14 +161,43 @@ class SessionsContainer extends Component {
                         />
                         }
                     </div>
+                    <SingleSession
+                        hide={this.addSessionHide}
+                        session={singleSession}
+                        visible={addVisible}
+                        submitSession={this.submitSession}
+                        years={updatedYears}
+                        type='Add'
+                    />
+                    {editVisible ?
                         <SingleSession
-                            hide={this.addSessionHide}
                             session={singleSession}
-                            visible={addVisible}
                             submitSession={this.submitSession}
-                            years={updatedYears}
-                            type='Add'
-                        />
+                            visible={editVisible}
+                            hide={this.hideEditSession}
+                            type={'Edit'}
+                            years={years}
+                        /> :
+                        null
+                    }
+                    {deleteVisible ?
+                        <DialogContainer
+                            title='Delete Session'
+                            id='delete-session-dialog'
+                            visible={deleteVisible}
+                            onHide={this.hideDeleteSession}
+                            focusOnMount={false}
+                            portal={true}
+                            lastChild={true}
+                            disableScrollLocking={true}
+                            renderNode={document.body}
+                        >
+                            <p>Are you sure you want to delete session {singleSession.session}?</p>
+                            <Button raised primary onClick={this.deleteSession}>Yes</Button>
+                            <Button flat onClick={this.hideDeleteSession}>Cancel</Button>
+                        </DialogContainer> :
+                        null
+                    }
                 </div>}
             </div>
         );

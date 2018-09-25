@@ -17,23 +17,23 @@ export class SessionsTableRow extends Component {
         editSession(session);
     }
 
-    deleteSession = () => {
-        const { session, deleteSessionDial } = this.props;
-        deleteSessionDial(session);
+    deleteSession = (e) => {
+        const { session, deleteSession } = this.props;
+        e.stopPropagation();
+        deleteSession(session);
     }
 
     render() {
         const { session, idx } = this.props;
         return (
-            <TableRow key={idx}>
-                <TableColumn>{session.session_count}</TableColumn>
+            <TableRow key={idx} onClick={this.editSession}>
+                <TableColumn>{session.session}</TableColumn>
                 <TableColumn>{session.grade}</TableColumn>
                 <TableColumn>{session.facilitator}</TableColumn>
-                <TableColumn>{session.day}</TableColumn>
-                <TableColumn>{session.start_time}</TableColumn>
+                <TableColumn>{session.dayOfWeek}</TableColumn>
+                <TableColumn>{session.startTime}</TableColumn>
                 <TableColumn>{session.school}</TableColumn>
                 <TableColumn><Button raised primary onClick={this.viewEvents}>Events</Button></TableColumn>
-                <TableColumn><Button icon onClick={this.editSession}>create</Button></TableColumn>
                 <TableColumn><Button icon onClick={this.deleteSession}>delete</Button></TableColumn>
             </TableRow>
         )
