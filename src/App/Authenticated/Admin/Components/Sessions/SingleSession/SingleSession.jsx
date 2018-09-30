@@ -15,11 +15,23 @@ export class SingleSession extends Component {
     constructor(props){
         super(props);
         this.state = {
-            session: this.props.session,
+            editing: false,
+            session: {
+                dayOfWeek: '',
+                events: [],
+                facilitator: '',
+                grade: '',
+                id: '',
+                school: '',
+                session: '',
+                startTime: '',
+                year: '',
+            },
         }
     }
 
     componentWillMount() {
+        const { editing, session } = this.props
         this.setState({ session: { ...this.state.session, start_time: new Date() } });
     }
 

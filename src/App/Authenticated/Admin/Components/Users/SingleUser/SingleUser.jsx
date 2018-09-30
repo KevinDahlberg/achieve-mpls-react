@@ -48,11 +48,12 @@ export class SingleUser extends Component {
     }
 
     onSessionChange = (e) => {
+
         this.setState({ user: { ...this.state.user, session: e } });
     }
 
     onYearChange = (e) => {
-        this.setState({ user: { ...this.state.user, year: e } });
+        this.setState({ user: { ...this.state.user, years: [e] } });
     }
 
     onSubmit = () => {
@@ -64,7 +65,7 @@ export class SingleUser extends Component {
     }
 
     prepareSessionsForSelect = (sessions) => {
-        return sessions.map((session) => session.session_count);
+        return sessions.map((session) => session.session);
     }
 
     prepareYearsForSelect = (years) => {

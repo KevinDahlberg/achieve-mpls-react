@@ -27,7 +27,12 @@ class UsersContainer extends Component {
             editing: false,
             fetching: true,
             search: '',
-            singleUser: '',
+            singleUser: {
+                email: '',
+                fname: '',
+                lname: '',
+                years: [],
+            },
             slicedUsers: [],
             tableRows: 10,
             users: [],
@@ -37,7 +42,8 @@ class UsersContainer extends Component {
     componentWillMount() {
         const { 
             currentYear, 
-            fetchUsersIfNeeded, 
+            fetchSessionsIfNeeded,
+            fetchUsersIfNeeded,
             users,
         } = this.props;
         fetchUsersIfNeeded(currentYear)
@@ -47,7 +53,13 @@ class UsersContainer extends Component {
             } else {
                 this.filterSearch(users, null);
             }
-            this.setState({ fetching: false });
+        })
+        .then(() => {
+            fetchSessionsIfNeeded(currentYear)
+            .then((res) => {
+                const yearObj = { session: '', year: currentYear }
+                this.setState({ fetching: false, singleUser: { ...this.state.singleUser, years: [yearObj] } });
+            })
         });
     };
 
@@ -126,9 +138,7 @@ class UsersContainer extends Component {
         }
     }
 
-    prepareUserToSubmit = (user, sessions) => {
-        const userSession = sessions.filter((session) => session.session_count === user.session_count)
-        user.session_id = userSession[0].id;
+    prepareUserToSubmit = (user) => {
         const userYear = user.year.split(' ').slice(0,1);
         user.year = userYear[0];
         return user;
@@ -145,6 +155,7 @@ class UsersContainer extends Component {
     submitAddUser = (user) => {
         const { sessions, fetchUsers, currentYear } = this.props;
         const userToSend = this.prepareUserToSubmit(user, sessions);
+        console.log(userToSend);
         addNewUser(userToSend)
         .then(() => {
             fetchUsers(currentYear)
@@ -171,7 +182,7 @@ class UsersContainer extends Component {
 
     render() {
         const { years, currentYear, sessions } = this.props;
-        const { search, addVisible, editing, slicedUsers, user, users, fetching, addYearVisible } = this.state;
+        const { search, addVisible, editing, slicedUsers, singleUser, user, users, fetching, addYearVisible } = this.state;
         return( 
             <div className='tab-wrapper'>
                 {fetching ? null :
@@ -228,7 +239,7 @@ class UsersContainer extends Component {
                                 hide={this.addUserHide}
                                 sessions={sessions}
                                 submitUser={this.submitAddUser}
-                                user={user}
+                                user={singleUser}
                                 visible={addVisible}
                                 years={years}
                             /> : null
