@@ -27,11 +27,29 @@ export class SingleUser extends Component {
 
     componentWillMount() {
         const { user } = this.props
-        this.setState({ user });
+        const prepedUser = this.prepareUserYearObj(user);
+        this.setState({ user: prepedUser });
     }
 
     componentWillReceiveProps() {
         const { user } = this.props;
+        this.setState({ user });
+    }
+
+    addYear = () => {
+        const { user } = this.state;
+        const newYear = {
+            session: '',
+            year: '',
+        }
+        user.years = [newYear, ...user.years]
+        this.setState({ user });
+    }
+
+    deleteYear = (idx) => {
+        const { user } = this.state;
+        const yearArray = user.years.filter((year, index) => index !== idx);
+        user.years = yearArray;
         this.setState({ user });
     }
 
@@ -47,13 +65,16 @@ export class SingleUser extends Component {
         this.setState({ user: { ...this.state.user, role: e } });
     }
 
-    onSessionChange = (e) => {
-
-        this.setState({ user: { ...this.state.user, session: e } });
+    onSessionChange = (val, idx) => {
+        const { user } = this.state;
+        user.years[idx].session = val;
+        this.setState({ user });
     }
 
-    onYearChange = (e) => {
-        this.setState({ user: { ...this.state.user, years: [e] } });
+    onYearChange = (val, idx) => {
+        const { user } = this.state;
+        user.years[idx].year = val;
+        this.setState({ user });
     }
 
     onSubmit = () => {
@@ -73,6 +94,16 @@ export class SingleUser extends Component {
             return year.yearRange;
         })
         return changedYears
+    }
+
+    prepareUserYearObj = (user) => {
+        console.log(user);
+        const years = user.years.map(year => {
+            year.year = year.year.toString() + ' - ' + (parseInt(year.year) + 1)
+            return year
+        });
+        user.years = years;
+        return user;
     }
 
     render() {
@@ -95,26 +126,34 @@ export class SingleUser extends Component {
                 width={400}
             >
                 <h1>{type} User</h1>
-                <SelectField
-                    label='Session'
-                    id='session'
-                    name='session'
-                    value={user.session}
-                    onChange={this.onSessionChange}
-                    simplifiedMenu={false}
-                    className='md-cell md-cell--bottom'
-                    menuItems={sessionArray}
-                />
-                <SelectField
-                    label='Year'
-                    id='year'
-                    name='year'
-                    value={user.year}
-                    onChange={this.onYearChange}
-                    simplifiedMenu={false}
-                    className='md-cell md-cell--bottom'
-                    menuItems={yearArray}
-                />
+                {user.years.map((year, idx) => {
+                    return (
+                        <div key={idx}>
+                            <SelectField
+                                label='Session'
+                                id='session'
+                                name='session'
+                                value={year.session}
+                                onChange={(val) => this.onSessionChange(val, idx)}
+                                simplifiedMenu={false}
+                                className='md-cell md-cell--bottom'
+                                menuItems={sessionArray}
+                            />
+                            <SelectField
+                                label='Year'
+                                id='year'
+                                name='year'
+                                value={year.year}
+                                onChange={(val) => this.onYearChange(val, idx)}
+                                simplifiedMenu={false}
+                                className='md-cell md-cell--bottom'
+                                menuItems={yearArray}
+                            />
+                            <Button icon className='dialog-clear' onClick={(e) => this.deleteYear(idx)}>clear</Button>
+                        </div>
+                    )
+                })}
+                <Button icon onClick={this.addYear}>add</Button>
                 <SelectField
                     label='Role'
                     id='role'

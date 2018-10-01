@@ -4,6 +4,12 @@ import actions from './actions';
 import { envUrl } from './constants';
 import firebase, { auth, db } from '../firebase';
 
+import { calculateCurrentYear } from './Authenticated/Admin/utils';
+import { addNewUser, addNewUserToYears, updateUserInUsers } from './Authenticated/Admin/Components/Users/queries';
+
+const todaysDate = new Date();
+const currentYear = calculateCurrentYear(todaysDate.getFullYear());
+
 export const login = (email, password) => (dispatch) => {
     dispatch(actions.authenticating(true));
     return new Promise((resolve, reject) => {
@@ -16,8 +22,8 @@ export const login = (email, password) => (dispatch) => {
                     const user = snap.docs.map((doc) => doc.data())[0];
                     // there should only be 1 user per email in db.
                     const userObj = {
-                        firstName: user.fname,
-                        lastName: user.lname,
+                        fname: user.fname,
+                        lname: user.lname,
                         email: user.email,
                         role: user.role,
                         years: user.years,
@@ -33,8 +39,10 @@ export const login = (email, password) => (dispatch) => {
         });
     });
 }
-
+// addNewUser, addNewUserToYears, updateUserInUsers
 export const signup = (email, password, fname, lname) => (dispatch) => {
+    const currYear = { session: '', year: currentYear.toString() }
+    console.log(currYear);
     dispatch(actions.authenticating(true));
     return new Promise((resolve, reject) => {
         auth.createUserWithEmailAndPassword(email, password)
@@ -46,19 +54,33 @@ export const signup = (email, password, fname, lname) => (dispatch) => {
                     const user = snap.docs.map((doc) => doc.data())[0];
                     // there should only be 1 user per email in db.
                     if (user) {
+                        const userYears = user.years ? user.years : [];
+                        const userRole = user.role ? user.role : '';
                         const userObj = {
-                            firstName: user.fname,
-                            lastName: user.lname,
+                            fname: user.fname,
+                            lname: user.lname,
                             email: user.email,
-                            role: user.role,
-                            years: user.years,
+                            role: userRole,
+                            years: [...userYears, currYear]
                         }
-                        dispatch(actions.authenticateUser(userObj));
-                        resolve(userObj);
+                        addNewUserToYears(userObj, currYear)
+                        .then(res => {
+                            dispatch(actions.authenticateUser(userObj));
+                            resolve(userObj);
+                        })
                     }
                     if (!user) {
-                        db.collection("users").doc().set({
-                            email, lname, fname,
+                        const userObj = {
+                            email, 
+                            lname, 
+                            fname,
+                            role: '',
+                            years: [currYear]
+                        }
+                        addNewUser(userObj)
+                        .then(res => {
+                            dispatch(actions.authenticateUser(userObj));
+                            resolve(userObj);
                         })
                     }
                 });
@@ -97,8 +119,8 @@ export const checkLogin = () => (dispatch) => {
                     // there should only be 1 user per email in db.
                     if (user) {
                         const userObj = {
-                            firstName: user.fname,
-                            lastName: user.lname,
+                            fname: user.fname,
+                            lname: user.lname,
                             email: user.email,
                             role: user.role,
                             years: user.years,

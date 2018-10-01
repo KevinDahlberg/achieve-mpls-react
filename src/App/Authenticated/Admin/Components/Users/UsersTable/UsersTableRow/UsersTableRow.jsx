@@ -35,7 +35,6 @@ export class UsersTableRow extends Component {
                 <TableColumn>{user.email}</TableColumn>
                 <TableColumn>{user.role}</TableColumn>
                 <TableColumn>{user.session}</TableColumn>
-                <TableColumn><Button icon onClick={this.editUser}>create</Button></TableColumn>
                 <TableColumn>
                     {user.role === 'admin' ? 
                         <Button raised onClick={this.deleteUser}>delete</Button> :

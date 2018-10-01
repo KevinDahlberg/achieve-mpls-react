@@ -14,9 +14,6 @@ import {
     TablePagination,
 } from 'react-md';
 
-import { usersOptions } from '../constants';
-
-import { SingleUser } from '../SingleUser';
 import { UsersTableRow } from './UsersTableRow';
 
 export class UsersTable extends Component {
@@ -90,7 +87,7 @@ export class UsersTable extends Component {
     }
 
     editUserClick = (user) => {
-        this.setState({ user: user, editVisible: true });
+        this.props.onUserClick(user);
     }
 
     deleteUserClick = (user) => {
@@ -148,7 +145,6 @@ export class UsersTable extends Component {
                             >
                                 Session
                             </TableColumn>
-                            <TableColumn>Edit</TableColumn>
                             <TableColumn>Remove</TableColumn>
                         </TableRow>
                     </TableHeader>

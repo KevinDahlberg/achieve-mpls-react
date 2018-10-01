@@ -11,6 +11,7 @@ import {
     fetchUsers,
 } from '../../store';
 import { sortArray } from '../../utils';
+import { getSingleUser } from './queries';
 import { usersOptions } from './constants';
 
 import { SingleUser } from './SingleUser';
@@ -25,6 +26,7 @@ class UsersContainer extends Component {
             addVisible: false,
             addYearVisible: false,
             editing: false,
+            editVisible: false,
             fetching: true,
             search: '',
             singleUser: {
@@ -77,10 +79,6 @@ class UsersContainer extends Component {
         })
     }
 
-    onUserClick = (user) => {
-        this.setState({ user, addVisible: true, editing: true })
-    }
-
     onYearChange = (year) => {
         const { tableRows } = this.state;
         const { fetchUsers, years } = this.props;
@@ -125,6 +123,31 @@ class UsersContainer extends Component {
         })
     }
 
+    editUserClick = (user) => {
+        getSingleUser(user)
+        .then((res) => {
+            const userObj = {
+                yearsId: user.id,
+                userId: res.id,
+                ...res
+            }
+            this.setState({ editVisible: true, editing: true, singleUser: userObj });
+        })
+        
+    }
+
+    editUserHide = () => {
+        const { currentYear } = this.props;
+        const yearObj = { session: '', year: currentYear }
+        const singleUser = {
+            email: '',
+            fname: '',
+            lname: '',
+            years: [yearObj],
+        }
+        this.setState({ editVisible: false, singleUser });
+    }
+
     filterSearch = (users, search) => {
         const { tableRows } = this.state;
         if (search) {
@@ -139,8 +162,11 @@ class UsersContainer extends Component {
     }
 
     prepareUserToSubmit = (user) => {
-        const userYear = user.year.split(' ').slice(0,1);
-        user.year = userYear[0];
+        const fixedYear = user.years.map(yearObj => {
+            yearObj.year = yearObj.year.split(' ').slice(0,1)[0];
+            return yearObj;
+        })
+        user.years = fixedYear;
         return user;
     }
 
@@ -153,10 +179,10 @@ class UsersContainer extends Component {
     }
 
     submitAddUser = (user) => {
-        const { sessions, fetchUsers, currentYear } = this.props;
-        const userToSend = this.prepareUserToSubmit(user, sessions);
-        console.log(userToSend);
-        addNewUser(userToSend)
+        const { fetchUsers, currentYear } = this.props;
+        user = this.prepareUserToSubmit(user);
+        console.log(user);
+        addNewUser(user)
         .then(() => {
             fetchUsers(currentYear)
             .then((res) => {
@@ -166,9 +192,9 @@ class UsersContainer extends Component {
     }
 
     submitEditUser = (user) => {
-        const { fetchUsers, currentYear, sessions, users } = this.props;
+        const { fetchUsers, currentYear, users } = this.props;
         this.setState({ search: '' });
-        const userToSend = this.prepareUserToSubmit(user, sessions)
+        const userToSend = this.prepareUserToSubmit(user)
         const userId = users.filter((singleUser) => singleUser.email === user.email);
         userToSend.id = userId[0].id;
         updateUser(userToSend)
@@ -182,7 +208,7 @@ class UsersContainer extends Component {
 
     render() {
         const { years, currentYear, sessions } = this.props;
-        const { search, addVisible, editing, slicedUsers, singleUser, user, users, fetching, addYearVisible } = this.state;
+        const { search, addVisible, editing, editVisible, slicedUsers, singleUser, users, fetching, addYearVisible } = this.state;
         return( 
             <div className='tab-wrapper'>
                 {fetching ? null :
@@ -223,7 +249,7 @@ class UsersContainer extends Component {
                             <UsersTable 
                                 deleteUser = {this.deleteUser}
                                 onPagination={this.onPagination}
-                                onUserClick={this.onUserClick}
+                                onUserClick={this.editUserClick}
                                 sessions = {sessions}
                                 slicedUsers={slicedUsers}
                                 sortArray={this.sortUsers}
@@ -241,6 +267,18 @@ class UsersContainer extends Component {
                                 submitUser={this.submitAddUser}
                                 user={singleUser}
                                 visible={addVisible}
+                                years={years}
+                            /> : null
+                        }
+                        {editVisible ?
+                            <SingleUser
+                                deleteUser={this.deleteUser}
+                                editing={editing}
+                                hide={this.editUserHide}
+                                sessions={sessions}
+                                submitUser={this.submitEditUser}
+                                user={singleUser}
+                                visible={editVisible}
                                 years={years}
                             /> : null
                         }
