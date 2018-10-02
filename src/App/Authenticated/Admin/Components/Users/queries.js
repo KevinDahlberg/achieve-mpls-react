@@ -116,15 +116,45 @@ export const updateUserInYears = (user, year) => {
 }
 
 export const deleteUser = (user) => {
+    console.log(user)
+    let promiseArr = []
+    promiseArr = [deleteUserInUsers(user)]
+    for (const yr of user.years) {
+        promiseArr.push(deleteUserInYears(user, yr))
+    }
     return new Promise((resolve, reject) => {
-        db.collection('users').doc(user.id).delete()
-        .then((res) => {
-            resolve(res);
+        Promise.all(promiseArr)
+        .then((response) => {
+            resolve(response);
+        })
+        .catch((error) => {
+            reject(error);
+        });
+    });
+}
+
+const deleteUserInUsers = (user) => {
+    return new Promise((resolve, reject) => {
+        db.collection('users').doc(user.userId).delete()
+        .then((response) => {
+            resolve(response)
         })
         .catch((error) => {
             reject(error);
         })
-    }) 
+    })
+}
+
+const deleteUserInYears = (user, year) => {
+    return new Promise((resolve, reject) => {
+        db.collection('years').doc(year.year).collection('users').doc(user.yearsId).delete()
+        .then((response) => {
+            resolve(response)
+        })
+        .catch((error) => {
+            reject(error);
+        })
+    })
 }
 
 export const addNewYear = (details) => {

@@ -17,8 +17,9 @@ export class UsersTableRow extends Component {
         editUser(user);
     }
 
-    deleteUser = () => {
+    deleteUser = (e) => {
         const { user, deleteUser } = this.props;
+        e.stopPropagation();
         deleteUser(user);
     }
     
@@ -36,10 +37,7 @@ export class UsersTableRow extends Component {
                 <TableColumn>{user.role}</TableColumn>
                 <TableColumn>{user.session}</TableColumn>
                 <TableColumn>
-                    {user.role === 'admin' ? 
-                        <Button raised onClick={this.deleteUser}>delete</Button> :
-                        <Button raised onClick={this.deleteUser}>Deactivate</Button>
-                    }
+                    <Button icon onClick={this.deleteUser}>delete</Button>
                 </TableColumn>
             </TableRow>
         )

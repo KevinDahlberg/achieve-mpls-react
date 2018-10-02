@@ -1,9 +1,9 @@
 /** Sessions Queries */
 import { db } from '../../../../../firebase';
 
-export const addSession = (session, year) => {
+export const addSession = (session) => {
     return new Promise((resolve, reject) => {
-       db.collection('years').doc(year.toString()).add(session)
+       db.collection('years').doc(session.year).collection('sessions').add(session)
         .then((data) => {
             resolve(data)
         })
@@ -13,9 +13,9 @@ export const addSession = (session, year) => {
     })
 }
 
-export const updateSession = (session, year) => {
+export const updateSession = (session) => {
     return new Promise((resolve, reject) => {
-        db.collection('years').doc(year.toString()).update({...session})
+        db.collection('years').doc(session.year).collection('sessions').update({...session})
         .then((data) => {
             resolve(data)
         })

@@ -1,9 +1,10 @@
 export const newSession = {
-    day: '',
+    dayOfWeek: '',
+    events: [],
     facilitator: '',
     grade: '',
+    id: '',
     school: '',
-    session_count: '',
-    start_time: new Date(),
-    year: '', 
+    session: '',
+    year: '',
 }

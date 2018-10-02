@@ -78,20 +78,12 @@ export class UsersTable extends Component {
         this.setState({ user: {}, resetVisible: false });
     }
     
-    deleteUser = () => {
-        const { deleteUser } = this.props;
-        const { user } = this.state;
-        deleteUser(user);
-        this.setState({ user: {} })
-        this.deleteHide();
+    deleteUser = (user) => {
+        this.props.deleteUser(user);
     }
 
     editUserClick = (user) => {
         this.props.onUserClick(user);
-    }
-
-    deleteUserClick = (user) => {
-        this.setState({ user: user, deleteVisible: true });
     }
 
     submitUser = (user) => {
@@ -110,8 +102,8 @@ export class UsersTable extends Component {
 
 
     render() {
-        const { users, slicedUsers, sessions, years } = this.props;
-        const { user, ascending, editVisible, deleteVisible } = this.state;
+        const { users, slicedUsers } = this.props;
+        const { ascending } = this.state;
         return (
             <Paper zDepth={2} className='table-wrapper'>
                 <DataTable plain baseId={'users-table'}>
@@ -153,7 +145,7 @@ export class UsersTable extends Component {
                             <UsersTableRow
                                 user={user}
                                 key={idx}
-                                deleteUser={this.deleteUserClick}
+                                deleteUser={this.deleteUser}
                                 editUser={this.editUserClick}
                                 resetPW={this.resetPWClick}
                                 viewUser={this.viewUser}

@@ -114,13 +114,21 @@ class UsersContainer extends Component {
     deleteUser = (user) => {
         const { fetchUsers, currentYear } = this.props;
         this.setState({ search: '' });
-        deleteUser(user)
-        .then(() => {
-            fetchUsers(currentYear)
-            .then((res) => {
-                this.filterSearch(res, null);            
+        getSingleUser(user)
+        .then((res) => {
+            const userObj = {
+                yearsId: user.id,
+                userId: res.id,
+                ...res
+            }
+            deleteUser(userObj)
+            .then(() => {
+                fetchUsers(currentYear)
+                .then((res) => {
+                    this.filterSearch(res, null);            
+                });
             });
-        })
+        });
     }
 
     editUserClick = (user) => {

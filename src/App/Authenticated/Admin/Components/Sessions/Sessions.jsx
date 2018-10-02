@@ -89,6 +89,10 @@ class SessionsContainer extends Component {
         });
     }
 
+    prepareYearForSelect = (year) => {
+        return year.toString() + ' - ' + (parseInt(year) + 1)
+    }
+
     showDeleteSession = (session) => {
         console.log('show delete');
         this.setState({ deleteVisible: true, editVisible: false, singleSession: session });
@@ -100,9 +104,21 @@ class SessionsContainer extends Component {
     }
 
     submitSession = (session) => {
+        console.log(session);
         const { fetchSessions, currentYear, } = this.props;
+        session.year = session.year.split(' ').slice(0,1)[0];
         this.setState({ addVisible: false });
         addSession(session)
+        .then((res) => {
+            fetchSessions(currentYear)
+        });
+    }
+
+    submitEditSession = (session) => {
+        const { fetchSessions, currentYear, } = this.props;
+        session.year = session.year.split(' ').slice(0,1)[0];
+        this.setState({ addVisible: false });
+        updateSession(session)
         .then((res) => {
             fetchSessions(currentYear)
         });
@@ -125,6 +141,8 @@ class SessionsContainer extends Component {
         const { sessions, formArray, years, currentYear } = this.props;
         const { addVisible, deleteVisible, editVisible, singleSession, fetching } = this.state;
         const updatedYears = prepareYearsForSelect(years);
+        singleSession.year = this.prepareYearForSelect(singleSession.year);
+        console.log(singleSession);
         console.log('sessions', sessions);
         return (
             <div className='tab-wrapper'>
@@ -172,7 +190,7 @@ class SessionsContainer extends Component {
                     {editVisible ?
                         <SingleSession
                             session={singleSession}
-                            submitSession={this.submitSession}
+                            submitSession={this.submitEditSession}
                             visible={editVisible}
                             hide={this.hideEditSession}
                             type={'Edit'}
