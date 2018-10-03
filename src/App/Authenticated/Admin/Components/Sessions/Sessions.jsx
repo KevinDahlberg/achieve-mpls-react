@@ -94,12 +94,10 @@ class SessionsContainer extends Component {
     }
 
     showDeleteSession = (session) => {
-        console.log('show delete');
         this.setState({ deleteVisible: true, editVisible: false, singleSession: session });
     }
 
     showEditSession = (session) => {
-        console.log('show edit', session);
         this.setState({ editVisible: true, singleSession: session });
     }
 
@@ -115,9 +113,10 @@ class SessionsContainer extends Component {
     }
 
     submitEditSession = (session) => {
+        console.log('session', session);
         const { fetchSessions, currentYear, } = this.props;
         session.year = session.year.split(' ').slice(0,1)[0];
-        this.setState({ addVisible: false });
+        this.setState({ editVisible: false });
         updateSession(session)
         .then((res) => {
             fetchSessions(currentYear)
@@ -142,8 +141,6 @@ class SessionsContainer extends Component {
         const { addVisible, deleteVisible, editVisible, singleSession, fetching } = this.state;
         const updatedYears = prepareYearsForSelect(years);
         singleSession.year = this.prepareYearForSelect(singleSession.year);
-        console.log(singleSession);
-        console.log('sessions', sessions);
         return (
             <div className='tab-wrapper'>
                 {fetching ? null :
@@ -194,7 +191,7 @@ class SessionsContainer extends Component {
                             visible={editVisible}
                             hide={this.hideEditSession}
                             type={'Edit'}
-                            years={years}
+                            years={updatedYears}
                         /> :
                         null
                     }

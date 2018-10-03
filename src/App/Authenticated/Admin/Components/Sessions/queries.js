@@ -15,7 +15,7 @@ export const addSession = (session) => {
 
 export const updateSession = (session) => {
     return new Promise((resolve, reject) => {
-        db.collection('years').doc(session.year).collection('sessions').update({...session})
+        db.collection('years').doc(session.year).collection('sessions').doc(session.id).update({...session})
         .then((data) => {
             resolve(data)
         })

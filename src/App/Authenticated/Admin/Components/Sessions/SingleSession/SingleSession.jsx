@@ -19,6 +19,7 @@ export class SingleSession extends Component {
     }
 
     componentWillMount() {
+        this.setState({ session: this.props.session });
     }
 
     hide = () => {
@@ -49,12 +50,14 @@ export class SingleSession extends Component {
     }
 
     onDayChange = (e) => {
-        this.setState({ session: { ...this.state.session, day: e } });
+        this.setState({ session: { ...this.state.session, dayOfWeek: e } });
     }
 
 
     render() {
-        const { visible, type, years, session } = this.props;
+        const { visible, type, years } = this.props;
+        const { session } = this.state;
+        console.log('years', years, 'session', session);
         return (
             <DialogContainer
                 aria-describedby='single-session-container'
@@ -117,7 +120,7 @@ export class SingleSession extends Component {
                 <SelectField
                     label='Day'
                     id='session-day'
-                    value={session.day}
+                    value={session.dayOfWeek}
                     onChange={this.onDayChange}
                     className='md-cell md-cell--bottom'
                     menuItems={['Mondays', 'Tuesdays', 'Wednesdays', 'Thursdays', 'Fridays']}

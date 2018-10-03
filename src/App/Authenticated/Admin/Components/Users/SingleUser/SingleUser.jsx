@@ -97,7 +97,6 @@ export class SingleUser extends Component {
     }
 
     prepareUserYearObj = (user) => {
-        console.log(user);
         const years = user.years.map(year => {
             year.year = year.year.toString() + ' - ' + (parseInt(year.year) + 1)
             return year
