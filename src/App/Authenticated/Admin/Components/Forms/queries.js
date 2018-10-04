@@ -15,7 +15,7 @@ export const addForm = (form) => {
 
 export const updateForm = (form) => {
     return new Promise((resolve, reject) => {
-        db.collection('forms').update({...form})
+        db.collection('forms').doc(form.id).update({...form})
         .then((response) => {
             resolve(response);
         })

@@ -96,6 +96,7 @@ class FormsContainer extends Component {
     render() {
         const { forms, years } = this.props;
         const { form, addVisible, fetching } = this.state;
+        console.log(forms);
         const preppedYears = prepareYearsForSelect(years);
         return(
             <div className='tab-wrapper'>

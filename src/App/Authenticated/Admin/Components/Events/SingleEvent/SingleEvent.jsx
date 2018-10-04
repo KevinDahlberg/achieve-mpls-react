@@ -22,19 +22,19 @@ export class SingleEvent extends Component {
     }
 
     onEventNumberChange = (e) => {
-        this.setState({ event: { ...this.state.event, meeting_count: e } });
+        this.setState({ event: { ...this.state.event, event: e } });
     }
 
     onFormChange = (e) => {
-        this.setState({ event: { ...this.state.event, form_name: e } });
+        this.setState({ event: { ...this.state.event, form: e } });
     }
 
     onOpenDateChange = (e) => {
-        this.setState({ event: { ...this.state.event, date_form_open: e } });
+        this.setState({ event: { ...this.state.event, open: e } });
     }
 
     onCloseDateChange = (e) => {
-        this.setState({ event: { ...this.state.event, date_form_close: e } });
+        this.setState({ event: { ...this.state.event, close: e } });
     }
 
     onSubmit = () => {
@@ -55,6 +55,7 @@ export class SingleEvent extends Component {
     render() {
         const { visible, type, formArray } = this.props;
         const { event } = this.state;
+        console.log(event);
         const preppedForms = this.prepareFormArray(formArray);
         return(
             <DialogContainer

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import moment from 'moment';
-import { Button, Paper } from 'react-md';
+import { Button, Paper, DialogContainer } from 'react-md';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -20,6 +20,8 @@ class EventsContainer extends Component {
             fetching: true,
             singleEvent: newEvent,
             addVisible: false,
+            editVisible: false,
+            deleteVisible: false,
             currentSession: {}
         }
     }
@@ -122,7 +124,7 @@ class EventsContainer extends Component {
 
     render() {
         const { formArray } = this.props;
-        const { currentSession, fetching, events, singleEvent, addVisible } = this.state;
+        const { currentSession, fetching, events, singleEvent, addVisible, editVisible, deleteVisible } = this.state;
         return(
             <div className="tab-wrapper">
                 <div className="tab-title">
@@ -145,18 +147,51 @@ class EventsContainer extends Component {
                                 />
                             </div>
                             <div>
-                                <SingleEvent
-                                    event={singleEvent}
-                                    formArray={formArray}
-                                    hide={this.addEventHide}
-                                    submitEvent={this.submitEvent}
-                                    type='Add'
-                                    visible={addVisible}
-                                />
+                                {addVisible ?
+                                    <SingleEvent
+                                        event={singleEvent}
+                                        formArray={formArray}
+                                        hide={this.addEventHide}
+                                        submitEvent={this.submitEvent}
+                                        type='Add'
+                                        visible={addVisible}
+                                    /> :
+                                    null
+                                }
+                                {editVisible ?
+                                    <SingleEvent
+                                        event={singleEvent}
+                                        visible={editVisible}
+                                        hide={this.editHide}
+                                        submitEvent={this.submitEvent}
+                                        formArray={formArray}
+                                        type='Edit'
+                                    /> :
+                                    null
+                                }
+                                {deleteVisible ?
+                                    <DialogContainer
+                                        title='Delete Event'
+                                        id='delete-event-dialog'
+                                        visible={deleteVisible}
+                                        onHide={this.deleteHide}
+                                        focusOnMount={false}
+                                        portal={true}
+                                        lastChild={true}
+                                        disableScrollLocking={true}
+                                        renderNode={document.body}
+                                    >
+                                        <p>Are you sure you want to delete Event {singleEvent.count}</p>
+                                        <Button raised primary onClick={this.deleteEvent}>Yes</Button>
+                                        <Button flat onClick={this.deleteHide}>Cancel</Button>
+                                    </DialogContainer> :
+                                    null
+                                }
                             </div>
-                        </div>
+                         </div>
                     }
-                </div>
+            </div>
+
         )
     }
 }

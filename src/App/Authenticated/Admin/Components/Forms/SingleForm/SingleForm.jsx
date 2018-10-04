@@ -35,7 +35,7 @@ export class SingleForm extends Component {
     }
 
     onFormNameChange = (e) => {
-        this.setState({ form: { ...this.state.form, form_name: e }})
+        this.setState({ form: { ...this.state.form, name: e }})
     }
 
     onQuestionChange = (value, index) => {
@@ -87,7 +87,7 @@ export class SingleForm extends Component {
                 <TextField
                     id='form-name'
                     label='Form Name'
-                    value={form.form_name}
+                    value={form.name}
                     onChange={this.onFormNameChange}
                     className='md-cell md-cell--bottom'
                     required
