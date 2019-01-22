@@ -1,1 +1,0 @@
-export { SingleTicket } from './SingleTicket';

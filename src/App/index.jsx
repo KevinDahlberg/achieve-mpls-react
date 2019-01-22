@@ -3,15 +3,15 @@ import { Switch, Route, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import Authorization from './authorization';
-import { checkLogin } from './store';
+import Authorization from './containers/Auth';
+import { checkLogin } from './containers/Auth/store/operations';
 //views
-import Coach from './Authenticated/Coach';
-import ForgotPassword from './Login/ForgotPassword';
-import CreatePassword from './Login/CreatePassword';
-import Login from './Login/login';
-import Signup from './Login/Signup';
-import Admin from './Authenticated/Admin';
+import Coach from './containers/Authenticated/Coach';
+import ForgotPassword from './containers/Auth/ForgotPassword';
+import CreatePassword from './containers/Auth/CreatePassword';
+import Login from './containers/Auth/Login';
+import Signup from './containers/Auth/Signup';
+import Admin from './containers/Authenticated/Admin';
 
 class App extends Component {
     constructor(props) {

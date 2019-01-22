@@ -1,1 +1,0 @@
-export const envUrl = 'https://coach-experience-app.appspot.com'

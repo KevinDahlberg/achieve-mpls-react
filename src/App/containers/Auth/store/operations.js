@@ -1,17 +1,16 @@
-/** Authentication Queries */
 import moment from 'moment';
-import actions from './actions';
-import { envUrl } from './constants';
-import firebase, { auth, db } from '../firebase';
 
-import { calculateCurrentYear } from './Authenticated/Admin/utils';
-import { addNewUser, addNewUserToYears, updateUserInUsers } from './Authenticated/Admin/Components/Users/queries';
+import * as actions from './actions';
+import firebase, { auth, db } from '../../../../firebase';
+
+import { calculateCurrentYear } from '../../../../utils/years';
+import { addNewUser, addNewUserToYears, updateUserInUsers } from '../../Authenticated/Admin/Users/store/operations';
 
 const todaysDate = new Date();
 const currentYear = calculateCurrentYear(todaysDate.getFullYear());
 
 export const login = (email, password) => (dispatch) => {
-    dispatch(actions.authenticating(true));
+    dispatch(actions.loginUserStart());
     return new Promise((resolve, reject) => {
         auth.signInWithEmailAndPassword(email, password)
         .then((user) => {
@@ -21,28 +20,22 @@ export const login = (email, password) => (dispatch) => {
                     // gets data from snapshot
                     const user = snap.docs.map((doc) => doc.data())[0];
                     // there should only be 1 user per email in db.
-                    const userObj = {
-                        fname: user.fname,
-                        lname: user.lname,
-                        email: user.email,
-                        role: user.role,
-                        years: user.years,
-                    }
-                    resolve(userObj);
-                    dispatch(actions.authenticateUser(userObj));
+                    dispatch(actions.loginUserSuccess(user));
+                    resolve(user);
                 });
             }
         })
         .catch(e => {
             reject(e);
+            actions.loginUserFailure(e);
             console.error(e.message);
         });
     });
 }
 // addNewUser, addNewUserToYears, updateUserInUsers
 export const signup = (email, password, fname, lname) => (dispatch) => {
+    dispatch(actions.authenticateUserStart());
     const currYear = { session: '', year: currentYear.toString() }
-    dispatch(actions.authenticating(true));
     return new Promise((resolve, reject) => {
         auth.createUserWithEmailAndPassword(email, password)
         .then((user) => {
@@ -64,8 +57,8 @@ export const signup = (email, password, fname, lname) => (dispatch) => {
                         }
                         addNewUserToYears(userObj, currYear)
                         .then(res => {
-                            dispatch(actions.authenticateUser(userObj));
-                            resolve(userObj);
+                            dispatch(actions.authenticateUserSuccess(user));
+                            resolve(user);
                         })
                     }
                     if (!user) {
@@ -78,7 +71,7 @@ export const signup = (email, password, fname, lname) => (dispatch) => {
                         }
                         addNewUser(userObj)
                         .then(res => {
-                            dispatch(actions.authenticateUser(userObj));
+                            dispatch(actions.authenticateUserSuccess(userObj));
                             resolve(userObj);
                         })
                     }
@@ -86,6 +79,7 @@ export const signup = (email, password, fname, lname) => (dispatch) => {
             }
         })
         .catch(e => {
+            dispatch(actions.authenticateUserFailure(e));
             reject(e);
             console.error(e.message);
         })
@@ -94,12 +88,15 @@ export const signup = (email, password, fname, lname) => (dispatch) => {
 
 // sends out email to user so they can reset their password
 export const forgotPW = (email) => (dispatch) => {
+    dispatch(actions.forgotPWStart());
     return new Promise((resolve, reject) => {
         auth.sendPasswordResetEmail(email)
         .then((data) => {
+            dispatch(actions.forgotPWSuccess());
             resolve(data)
         })
         .catch((error) => {
+            dispatch(actions.forgotPWFailure(error));
             reject(error);
         })
     })
@@ -107,7 +104,7 @@ export const forgotPW = (email) => (dispatch) => {
 
 
 export const checkLogin = () => (dispatch) => {
-    dispatch(actions.authenticating(true));
+    dispatch(actions.authenticateUserStart());
     return new Promise((resolve, reject) => {
         auth.onAuthStateChanged((user) => {
             if (user) {
@@ -124,25 +121,28 @@ export const checkLogin = () => (dispatch) => {
                             role: user.role,
                             years: user.years,
                         }
-                        dispatch(actions.authenticateUser(userObj));
+                        dispatch(actions.authenticateUserSuccess(userObj));
                     }
                     resolve(user);
                 });
             } else {
                 reject('no user logged in');
-                dispatch(actions.authenticating(false));
+                dispatch(actions.authenticateUserFailure({error: 'no user logged in'}));
             }
         });
     })
 }
 
 export const logout = () => (dispatch) => {
+    dispatch(actions.logoutUserStart());
     return new Promise ((resolve, reject) => {
         firebase.auth().signOut().then(() => {
-            dispatch(actions.userLoggedOut());
+            dispatch(actions.logoutUserSuccess());
             resolve();
         }).catch((error) => {
+            dispatch(actions.logoutUserFailure(error));
             reject(error);
         })
     })
 }
+

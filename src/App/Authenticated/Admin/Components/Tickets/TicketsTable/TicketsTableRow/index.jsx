@@ -1,2 +1,0 @@
-
-export { TicketsTableRow } from './TicketsTableRow';

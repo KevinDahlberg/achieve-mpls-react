@@ -1,1 +1,0 @@
-export { FormsTable } from './FormsTable';
