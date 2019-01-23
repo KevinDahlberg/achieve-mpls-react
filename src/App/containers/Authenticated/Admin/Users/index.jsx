@@ -5,6 +5,8 @@ import { Button, Paper, TextField, } from 'react-md';
 import Fuse from 'fuse.js';
 
 import { addNewUser, deleteUser, getUsers, updateUser, addNewYear, getSingleUser } from './store/operations';
+import { getSessions } from '../Sessions/store/operations';
+
 import { sortArray } from '../../../../../utils/sorting';
 import { usersOptions } from '../../../../../constants/fuse';
 
@@ -36,26 +38,10 @@ class UsersContainer extends Component {
     }
 
     componentWillMount() {
-        // const { 
-        //     currentYear, 
-        //     users,
-        // } = this.props;
-        // getUsers(currentYear)
-        // .then((res) => {
-        //     if (res) {
-        //         this.filterSearch(res, null);
-        //     } else {
-        //         this.filterSearch(users, null);
-        //     }
-        // })
-        // .then(() => {
-        //     fetchSessionsIfNeeded(currentYear)
-        //     .then((res) => {
-        //         const yearObj = { session: '', year: currentYear }
-        //         this.setState({ fetching: false, singleUser: { ...this.state.singleUser, years: [yearObj] } });
-        //     })
-        // });
-    };
+        const { getSessions, getUsers } = this.props;
+        getUsers();
+        getSessions();
+    }
 
     onSearchChange = (e) => {
         const { users } = this.props;
@@ -295,17 +281,16 @@ class UsersContainer extends Component {
 }
 
 const mapStateToProps = state => ({
-    users: state.adminReducer.users,
-    fetchingUsers: state.adminReducer.fetchingUsers,
-    years: state.adminReducer.years,
-    currentYear: state.adminReducer.currentYear,
-    sessions: state.adminReducer.sessions
+    sessions: state.sessions,
+    users: state.users,
+    years: state.years,
 })
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators(
         {
-            getUsers
+            getSessions,
+            getUsers,
         }, 
         dispatch
     );

@@ -7,7 +7,10 @@ const blankUser = {
 }
 
 const initialState = {
-    users: [],
+    originalUsers: [],
+    paginatedUsers: [],
+    searchedUsers: [],
+    searchString: '',
     currentUser: clone(blankUser),
     isGettingUsers: false,
     gettingUsersError: {},
@@ -15,9 +18,6 @@ const initialState = {
     updatingUserError: {},
     isDeletingUser: false,
     deletingUserError: {},
-    years: [],
-    isGettingYears: false,
-    gettingYearsError: {},
 }
 
 function usersReducer(state = clone(initialState), action) {
@@ -42,12 +42,12 @@ function usersReducer(state = clone(initialState), action) {
             return { ...state, isDeletingUser: false, deletingUserError: action.error };
         case types.SET_CURRENT_USER:
             return { ...state, currentUser: action.data };
-        case types.GET_YEARS_START:
-            return { ...state, isGettingYears: true, gettingYearsError: {} };
-        case types.GET_YEARS_SUCCESS:
-            return { ...state, isGettingYears: false, years: action.data };
-        case types.GET_YEARS_FAILURE:
-            return { ...state, isGettingYears: false, gettingYearsError: action.error };
+        case types.SET_SORTED_USERS:
+            return { ...state, originalUsers: action.data };
+        case types.SET_PAGINATION_USERS:
+            return { ...state, paginatedUsers: action.data };
+        case types.SET_SEARCH_USERS:
+            return { ...state, searchedUsers: action.data.users, searchString: action.data.searchString };
         default:
             return state;
     }

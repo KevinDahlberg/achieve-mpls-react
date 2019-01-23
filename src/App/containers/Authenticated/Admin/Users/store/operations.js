@@ -1,7 +1,12 @@
+import Fuse from 'fuse.js';
+
 import * as actions from './actions';
 
 /** Users Queries */
 import { db } from '../../../../../../firebase';
+
+import { sortArray } from '../../../../../../utils/sorting';
+import { usersOptions } from '../../../../../../constants/fuse';
 
 export const addNewUser = (user) => {
     let promiseArr = []
@@ -158,38 +163,12 @@ const deleteUserInYears = (user, year) => {
     })
 }
 
-export const addNewYear = (details) => {
-    const yearObj = { year: details.year, yearRange: details.yearRange };
-    return new Promise((resolve, reject) => {
-        db.collection('years').doc(details.year).set(yearObj)
-        .then((response) => {
-            let i;
-            for (i = 0; i < details.sessions; i++) {
-                const sessionObj = {
-                    dayOfWeek: '',
-                    events: [],
-                    facilitator: '',
-                    grade: '',
-                    school: '',
-                    session: i + 1,
-                    startTime: '',
-                    year: details.year,
-                }
-                db.collection('years').doc(details.year.toString()).collection('sessions').add(sessionObj);
-            }
-            resolve(response);
-        })
-        .catch((error) => {
-            reject(error);
-        })
-    })
-}
-
-export const getUsers = (year) => (dispatch) => {
+export const getUsers = () => (dispatch, getStore) => {
     //todo set up backend to filter out users based on year
     dispatch(actions.getUsersStart())
+    const { currentYear } = getStore().years;
     return new Promise((resolve, reject) => {
-        db.collection('years').doc(year.toString()).collection('users').get()
+        db.collection('years').doc(currentYear.toString()).collection('users').get()
         .then((data) => {
             const users = data.docs.map((doc) => {
                 const docData = doc.data()
@@ -204,4 +183,31 @@ export const getUsers = (year) => (dispatch) => {
             reject(error);
         })
     })
+}
+
+export const searchUsers = (search) => (dispatch, getStore) => {
+    const { originalUsers } = getStore().users;
+    const usersFused = new Fuse(originalUsers, usersOptions);
+    const searchResults = usersFused.search(search);
+    const data = {
+        searchString: search,
+        users: searchResults,
+    }
+    dispatch(actions.setSearchUsers(data));
+}
+
+export const sortUsers = (key, ascending) => (dispatch, getStore) => {
+    const { users } = getStore().users;
+    const sortedUsers = sortArray(users, key, ascending);
+    dispatch(actions.setSortedUsers(sortedUsers));
+}
+
+export const paginateUsers = (start, rowsPerPage) => (dispatch, getStore) => {
+    const { originalUsers, searchString, searchedUsers } = getStore().users;
+    if (searchString.length > 0) {
+        const sliced = searchedUsers.slice(start, start + rowsPerPage);
+        dispatch(actions.setPaginationUsers(sliced));
+    }
+    const sliced = originalUsers.slice(start, start + rowsPerPage);
+    dispatch(actions.setPaginationUsers(sliced));
 }

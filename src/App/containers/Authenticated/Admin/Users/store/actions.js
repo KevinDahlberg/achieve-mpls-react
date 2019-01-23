@@ -45,6 +45,21 @@ export const setCurrentUser = (data) => ({
     data,
 });
 
+export const setSortedUsers = (data) => ({
+    type: types.SET_SORTED_USERS,
+    data,
+});
+
+export const setPaginationUsers = (data) => ({
+    type: types.SET_PAGINATION_USERS,
+    data,
+});
+
+export const setSearchUsers = (data) => ({
+    type: types.SET_SEARCH_USERS,
+    data,
+});
+
 export const getYearsStart = () => ({
     type: types.GET_YEARS_START,
 });
@@ -58,3 +73,5 @@ export const getYearsFailure = (error) => ({
     type: types.GET_YEARS_FAILURE,
     error,
 });
+
+
